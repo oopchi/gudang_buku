@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 
 class CustomColor {
-  static const Color background = Color(0xFF222831);
-  static const Color primary = Color(0xFF393E46);
-  static const Color secondary = Color(0xFF00ADB5);
-  static const Color neutral = Color(0xFFEEEEEE);
+  static const Color background = Color(0xFFFDFDFD);
+  static const Color body = Color(0xFF9D9D9D);
+  static const Color primary = Color(0xFF19191B);
+  static const Color secondary = Color(0xFFD45555);
+  static const Color neutral = Color(0xFFFFFFFF);
 }
