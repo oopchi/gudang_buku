@@ -1,6 +1,6 @@
-# BookStore
+# Book Store
 
-Deall Test Project for Calvin Alfrido
+Project Book Store
 
 ## Steps To Run
 
