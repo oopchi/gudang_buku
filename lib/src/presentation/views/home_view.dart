@@ -1,6 +1,6 @@
-import 'package:bookstore/core/constants/colors.dart';
-import 'package:bookstore/ui/shared/sliver_appbar_helper.dart';
-import 'package:bookstore/ui/shared/spacing.dart';
+import 'package:bookstore/src/constants/colors.dart';
+import 'package:bookstore/src/presentation/shared/sliver_appbar_helper.dart';
+import 'package:bookstore/src/presentation/shared/spacing.dart';
 import 'package:bookstore/utils/text_helper.dart';
 import 'package:flutter/material.dart';
 
