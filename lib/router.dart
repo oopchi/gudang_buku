@@ -1,4 +1,4 @@
-import 'package:bookstore/src/presentation/views/home_view.dart';
+import 'package:bookstore/src/presentation/views/home/home_view.dart';
 import 'package:go_router/go_router.dart';
 
 class AppRouter {

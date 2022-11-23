@@ -3,13 +3,17 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:bookstore/src/constants/colors.dart';
+import 'package:bookstore/src/constant/colors.dart';
 import 'package:bookstore/provider_setup.dart';
-import 'package:visibility_detector/visibility_detector.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  await dotenv.load();
+
+  await Hive.initFlutter();
 
   if (kIsWeb) {
     await Firebase.initializeApp(
@@ -26,11 +30,9 @@ Future<void> main() async {
     await Firebase.initializeApp();
   }
 
-  await dotenv.load();
-
-  VisibilityDetectorController.instance.updateInterval = const Duration(
-    milliseconds: 50,
-  );
+  // VisibilityDetectorController.instance.updateInterval = const Duration(
+  //   milliseconds: 50,
+  // );
 
   // if (Platform.isAndroid || dotenv.env['MODE'] == 'RELEASE') {
   //   await initializeDateFormatting();

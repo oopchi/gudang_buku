@@ -1,7 +1,8 @@
-import 'package:bookstore/src/constants/colors.dart';
+import 'package:bookstore/src/constant/colors.dart';
+import 'package:bookstore/src/presentation/shared/appbar_helper.dart';
 import 'package:bookstore/src/presentation/shared/sliver_appbar_helper.dart';
 import 'package:bookstore/src/presentation/shared/spacing.dart';
-import 'package:bookstore/utils/text_helper.dart';
+import 'package:bookstore/src/util/text_helper.dart';
 import 'package:flutter/material.dart';
 
 class HomeView extends StatefulWidget {
@@ -40,12 +41,13 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
   }
 
   PreferredSizeWidget _buildAppBar() {
-    return AppBar(
-      shadowColor: Colors.transparent,
-      toolbarHeight: 110.0,
-      automaticallyImplyLeading: false,
+    return AppBarHelper(
+      scaffoldKey: GlobalKey(),
+      onLanguageChanged: () {},
+      useShadow: false,
+      height: 110.0,
       backgroundColor: CustomColor.background,
-      flexibleSpace: SafeArea(
+      widget: SafeArea(
         child: Padding(
           padding: const EdgeInsets.only(
             right: 10.0,
