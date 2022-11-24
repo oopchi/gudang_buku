@@ -1,7 +1,7 @@
-import 'package:bookstore/src/constant/colors.dart';
-import 'package:bookstore/src/presentation/shared/animation_helper.dart';
-import 'package:bookstore/src/presentation/shared/spacing.dart';
-import 'package:bookstore/src/util/text_helper.dart';
+import 'package:bookstore/config/constant/colors.dart';
+import 'package:bookstore/presentation/widget/animation_helper.dart';
+import 'package:bookstore/presentation/widget/spacing.dart';
+import 'package:bookstore/util/text_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 // import 'package:intl/intl.dart';
@@ -15,7 +15,7 @@ class AppBarHelper extends StatelessWidget implements PreferredSizeWidget {
     this.shape,
     this.title,
     this.leading,
-    this.backgroundColor = CustomColor.neutral,
+    this.backgroundColor = AppColor.neutral,
     this.isInSafeArea = true,
     this.widget,
     this.actions,
@@ -50,7 +50,7 @@ class AppBarHelper extends StatelessWidget implements PreferredSizeWidget {
       preferredSize: Size.fromHeight(height),
       child: Container(
         decoration: BoxDecoration(
-          color: CustomColor.neutral,
+          color: AppColor.neutral,
           boxShadow: useShadow
               ? <BoxShadow>[
                   BoxShadow(

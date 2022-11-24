@@ -1,4 +1,4 @@
-import 'package:bookstore/src/presentation/views/home/home_view.dart';
+import 'package:bookstore/presentation/pages/home/home_page.dart';
 import 'package:go_router/go_router.dart';
 
 class AppRouter {
@@ -7,7 +7,7 @@ class AppRouter {
       GoRoute(
         path: '/home',
         name: 'home',
-        builder: (context, state) => const HomeView(),
+        builder: (context, state) => const HomePage(),
       ),
     ],
     initialLocation: '/home',

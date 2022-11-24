@@ -1,7 +1,6 @@
-import 'package:bookstore/src/presentation/shared/spacing.dart';
+import 'package:bookstore/presentation/widget/spacing.dart';
+import 'package:bookstore/util/text_helper.dart';
 import 'package:flutter/material.dart';
-
-import 'package:bookstore/src/util/text_helper.dart';
 
 class ErrorAlertDialog extends StatelessWidget {
   const ErrorAlertDialog({

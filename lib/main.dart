@@ -1,3 +1,4 @@
+import 'package:bookstore/config/constant/colors.dart';
 import 'package:bookstore/router.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
@@ -5,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:bookstore/src/constant/colors.dart';
 import 'package:bookstore/provider_setup.dart';
 
 Future<void> main() async {
@@ -65,7 +65,7 @@ class MyApp extends StatelessWidget {
         title: 'Book Store',
         theme: ThemeData(
           primarySwatch: Colors.blue,
-          scaffoldBackgroundColor: CustomColor.background,
+          scaffoldBackgroundColor: AppColor.background,
         ),
         routerDelegate: AppRouter.router.routerDelegate,
         routeInformationParser: AppRouter.router.routeInformationParser,
