@@ -1,9 +1,12 @@
 import 'package:bookstore/domain/model/role_response.dart';
+import 'package:bookstore/domain/model/user_discount_response.dart';
 import 'package:equatable/equatable.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'user_response.g.dart';
 
+@HiveType(typeId: 15)
 @JsonSerializable()
 class UserResponse extends Equatable {
   const UserResponse({
@@ -15,19 +18,30 @@ class UserResponse extends Equatable {
     this.phoneNumber,
     this.meritAmount,
     this.role,
+    this.userDiscounts,
   });
 
   factory UserResponse.fromJson(Map<String, dynamic> json) =>
       _$UserResponseFromJson(json);
 
-  final int? id;
+  @HiveField(79)
+  final String? id;
+  @HiveField(80)
   final String? name;
+  @HiveField(81)
   final String? email;
+  @HiveField(82)
   final String? password;
+  @HiveField(83)
   final String? rememberToken;
+  @HiveField(84)
   final String? phoneNumber;
+  @HiveField(85)
   final int? meritAmount;
+  @HiveField(86)
   final RoleResponse? role;
+  @HiveField(87)
+  final List<UserDiscountResponse?>? userDiscounts;
 
   Map<String, dynamic> toJson() => _$UserResponseToJson(this);
 

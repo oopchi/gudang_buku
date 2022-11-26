@@ -2,8 +2,8 @@ import 'package:bookstore/config/constant/colors.dart';
 import 'package:bookstore/presentation/widget/spacing.dart';
 import 'package:flutter/material.dart';
 
-class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
-  const HomeAppBar({super.key});
+class HomeMobileAppBar extends StatelessWidget implements PreferredSizeWidget {
+  const HomeMobileAppBar({super.key});
 
   final double height = 120.0;
 

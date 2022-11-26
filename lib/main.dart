@@ -1,5 +1,8 @@
 import 'package:bookstore/config/constant/colors.dart';
+import 'package:bookstore/data/local/local_storage_hive.dart';
 import 'package:bookstore/router.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -13,7 +16,7 @@ Future<void> main() async {
 
   await dotenv.load();
 
-  await Hive.initFlutter();
+  await LocalStorage().init();
 
   if (kIsWeb) {
     await Firebase.initializeApp(
@@ -29,6 +32,13 @@ Future<void> main() async {
   } else {
     await Firebase.initializeApp();
   }
+
+  final FirebaseFirestore db = FirebaseFirestore.instance;
+  db.settings = const Settings(
+    persistenceEnabled: true,
+  );
+
+  final User? user = FirebaseAuth.instance.currentUser;
 
   // VisibilityDetectorController.instance.updateInterval = const Duration(
   //   milliseconds: 50,

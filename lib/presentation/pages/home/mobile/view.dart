@@ -1,11 +1,11 @@
+import 'package:bookstore/data/repository/book_repository_fs.dart';
+import 'package:bookstore/data/repository/genre_repository_fs.dart';
 import 'package:bookstore/presentation/pages/home/mobile/components/app_bar.dart';
 import 'package:bookstore/presentation/pages/home/mobile/components/body.dart';
-import 'package:bookstore/presentation/widget/responsive_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'cubit.dart';
-import 'state.dart';
 
 class HomeMobilePage extends StatelessWidget {
   const HomeMobilePage({super.key});
@@ -13,8 +13,13 @@ class HomeMobilePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (BuildContext context) => HomeMobileCubit(),
-      child: Builder(builder: (context) => _buildPage(context)),
+      create: (BuildContext context) => HomeMobileCubit(
+        bookRepository: BookRepositoryFS(),
+        genreRepository: GenreRepositoryFS(),
+      ),
+      child: Builder(
+        builder: (context) => _buildPage(context),
+      ),
     );
   }
 
@@ -23,8 +28,8 @@ class HomeMobilePage extends StatelessWidget {
     cubit.state;
 
     return const Scaffold(
-      appBar: HomeAppBar(),
-      body: HomeBody(),
+      appBar: HomeMobileAppBar(),
+      body: HomeMobileBody(),
     );
   }
 }
