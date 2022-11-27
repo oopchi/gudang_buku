@@ -49,12 +49,11 @@ class HomeMobileAppBar extends StatelessWidget implements PreferredSizeWidget {
                     onPressed: () {},
                     padding: const EdgeInsets.all(10.0),
                     constraints: const BoxConstraints(),
-                    icon: CircleAvatar(
-                      child: Image.network(
-                        'https://example.com/',
-                        width: 40.0,
-                        height: 40.0,
+                    icon: const CircleAvatar(
+                      foregroundImage: NetworkImage(
+                        'https://pbs.twimg.com/profile_images/2845548084/5bb04e13114b84c38007f42999b28388_400x400.jpeg',
                       ),
+                      radius: 20.0,
                     ),
                   ),
                   IconButton(

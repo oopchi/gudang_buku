@@ -1,6 +1,6 @@
 import 'package:bookstore/config/constant/colors.dart';
-import 'package:bookstore/presentation/bloc/profile/cubit.dart';
-import 'package:bookstore/presentation/bloc/profile/state.dart';
+import 'package:bookstore/presentation/pages/home/mobile/cubit.dart';
+import 'package:bookstore/presentation/pages/home/mobile/state.dart';
 import 'package:bookstore/presentation/widget/sliver_appbar_helper.dart';
 import 'package:bookstore/presentation/widget/spacing.dart';
 import 'package:bookstore/util/text_helper.dart';
@@ -12,6 +12,8 @@ class HomeMobileHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final HomeMobileLoaded state =
+        BlocProvider.of<HomeMobileCubit>(context).state as HomeMobileLoaded;
     return SliverPersistentHeader(
       delegate: SliverAppBarDelegate(
         height: 102.0,
@@ -22,19 +24,11 @@ class HomeMobileHeader extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              BlocBuilder<ProfileCubit, ProfileState>(
-                builder: (context, state) {
-                  if (state is ProfileLoaded) {
-                    return Text(
-                      'Welcome back, ${state.user.name ?? 'user'}!',
-                      style: CustomTextStyles.textBase.regular.copyWith(
-                        color: AppColor.body,
-                      ),
-                    );
-                  }
-
-                  return const SizedBox.shrink();
-                },
+              Text(
+                'Welcome back, ${state.userResponse.name ?? 'user'}!',
+                style: CustomTextStyles.textBase.regular.copyWith(
+                  color: AppColor.body,
+                ),
               ),
               const Spacing.vertical(2.0),
               Text(

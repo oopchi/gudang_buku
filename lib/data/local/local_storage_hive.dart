@@ -97,4 +97,27 @@ class LocalStorageHive implements LocalStorage {
 
     return isEmpty;
   }
+
+  @override
+  Future<Object?> overwrite<T>(LocalStoragePath path, T obj) async {
+    final Box<T> box = await Hive.openBox<T>(path.text);
+    if (box.isEmpty) {
+      await box.add(obj);
+    } else {
+      await box.putAt(0, obj);
+    }
+
+    await box.close();
+
+    return 0;
+  }
+
+  @override
+  Future<void> delete<T>(LocalStoragePath path, dynamic index) async {
+    final Box<T> box = await Hive.openBox<T>(path.text);
+
+    await box.deleteAt(0);
+
+    await box.close();
+  }
 }

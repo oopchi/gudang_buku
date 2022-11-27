@@ -1,5 +1,6 @@
 import 'package:bookstore/domain/model/book_response.dart';
 import 'package:bookstore/domain/model/genre_response.dart';
+import 'package:bookstore/domain/model/user_response.dart';
 import 'package:equatable/equatable.dart';
 
 class HomeMobileState extends Equatable {
@@ -15,6 +16,10 @@ class HomeMobileState extends Equatable {
 
   @override
   List<Object?> get props => <Object?>[];
+}
+
+class HomeMobileLoading extends HomeMobileState {
+  const HomeMobileLoading();
 }
 
 class HomeMobileFailure extends HomeMobileState {
@@ -36,14 +41,18 @@ class HomeMobileLoaded extends HomeMobileState {
     required this.recommendedBooks,
     required this.searchedBooks,
     required this.topByGenreBooks,
+    required this.genreOptions,
+    required this.userResponse,
   });
 
+  final UserResponse userResponse;
   final GenreResponse selectedGenre;
   final List<BookResponse> topByGenreBooks;
   final List<BookResponse> newArrivalBooks;
   final List<BookResponse> recommendedBooks;
   final List<BookResponse> popularBooks;
   final List<BookResponse> searchedBooks;
+  final List<GenreResponse> genreOptions;
 
   @override
   List<Object?> get props => <Object?>[];

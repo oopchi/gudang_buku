@@ -56,4 +56,28 @@ class UserResponse extends Equatable {
         meritAmount,
         role,
       ];
+
+  static UserResponse newUserResponse({
+    required String id,
+    String? email,
+    int? meritAmount,
+    String? name,
+    String? password,
+    String? phoneNumber,
+    String? rememberToken,
+    RoleResponse? role,
+    List<UserDiscountResponse?>? userDiscounts,
+  }) {
+    return UserResponse(
+      id: id,
+      email: email,
+      meritAmount: meritAmount,
+      name: name,
+      password: password,
+      phoneNumber: phoneNumber,
+      rememberToken: rememberToken,
+      role: role,
+      userDiscounts: userDiscounts,
+    );
+  }
 }

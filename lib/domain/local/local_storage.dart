@@ -42,6 +42,7 @@ extension LocalStoragePathExt on LocalStoragePath {
 
 abstract class LocalStorage {
   Future<Object?> write<T>(LocalStoragePath path, T obj);
+  Future<Object?> overwrite<T>(LocalStoragePath path, T obj);
 
   Future<List<T>> readAll<T>(LocalStoragePath path);
 
@@ -50,4 +51,6 @@ abstract class LocalStorage {
   Future<bool> containsKey<T>(LocalStoragePath path, dynamic key, T obj);
 
   Future<bool> isEmpty<T>(LocalStoragePath path);
+
+  Future<void> delete<T>(LocalStoragePath path, dynamic index);
 }

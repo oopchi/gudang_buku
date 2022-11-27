@@ -7,4 +7,7 @@ abstract class UserRepository {
   Future<Either<Failure, UserResponse>> fetchUserWithId({
     required String uid,
   });
+  Future<Either<Failure, void>> addUser({
+    required UserResponse userResponse,
+  });
 }

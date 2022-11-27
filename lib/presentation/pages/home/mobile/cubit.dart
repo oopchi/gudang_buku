@@ -1,3 +1,6 @@
+import 'package:bookstore/domain/controller/book_controller.dart';
+import 'package:bookstore/domain/controller/user_controller.dart';
+import 'package:bookstore/domain/model/user_response.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bookstore/domain/model/book_response.dart';
 import 'package:bookstore/domain/model/genre_response.dart';
@@ -12,66 +15,104 @@ class HomeMobileCubit extends Cubit<HomeMobileState> {
   HomeMobileCubit({
     required GenreRepository genreRepository,
     required BookRepository bookRepository,
+    required UserController userController,
+    required BookController bookController,
   })  : _genreRepository = genreRepository,
+        _bookController = bookController,
+        _userController = userController,
         _bookRepository = bookRepository,
         super(const HomeMobileState().init());
 
   final GenreRepository _genreRepository;
   final BookRepository _bookRepository;
-
-  List<GenreResponse>? genres;
-
-  List<BookResponse>? books;
-
-  Future<String?> _loadGenres() async {
-    final Either<Failure, List<GenreResponse>> res =
-        await _genreRepository.fetchAllGenres();
-
-    return res.fold(
-      (l) => l.message,
-      (List<GenreResponse> genres) {
-        this.genres = genres;
-        return null;
-      },
-    );
-  }
-
-  Future<String?> _loadAllBooks() async {
-    final Either<Failure, List<BookResponse>> res =
-        await _bookRepository.fetchAllBooks();
-
-    return res.fold(
-      (l) => l.message,
-      (List<BookResponse> books) {
-        this.books = books;
-        return null;
-      },
-    );
-  }
+  final UserController _userController;
+  final BookController _bookController;
 
   Future<void> load() async {
-    String? errMsg;
-    errMsg = await _loadGenres();
-    if (errMsg != null) {
-      emit(HomeMobileFailure(message: errMsg));
-      return;
+    emit(const HomeMobileLoading());
+
+    late final List<GenreResponse> genreOptions;
+    late final List<BookResponse> bookResponses;
+    late final List<BookResponse> popularBooks;
+    late final List<BookResponse> newArrivalBooks;
+    late final UserResponse userResponse;
+    late final GenreResponse selectedGenre;
+
+    final Either<Failure, UserResponse> userRes =
+        await _userController.loadUser();
+
+    userRes.fold(
+      (Failure l) => emit(
+        HomeMobileFailure(
+          message: l.message,
+        ),
+      ),
+      (UserResponse r) => userResponse = r,
+    );
+
+    if (state is! HomeMobileLoading) return;
+
+    final Either<Failure, List<GenreResponse>> genreRes =
+        await _genreRepository.fetchAllGenres();
+
+    genreRes.fold(
+      (Failure l) => emit(
+        HomeMobileFailure(
+          message: l.message,
+        ),
+      ),
+      (List<GenreResponse> r) => genreOptions = r,
+    );
+
+    if (genreOptions.isNotEmpty) {
+      selectedGenre = genreOptions[0];
+    } else {
+      selectedGenre = const GenreResponse();
     }
 
-    errMsg = null;
-    errMsg = await _loadAllBooks();
+    if (state is! HomeMobileLoading) return;
 
-    if (errMsg != null) {
-      emit(HomeMobileFailure(message: errMsg));
-      return;
-    }
+    final Either<Failure, List<BookResponse>> bookRes =
+        await _bookRepository.fetchAllBooksWithLimit();
+
+    bookRes.fold(
+      (Failure l) => emit(
+        HomeMobileFailure(
+          message: l.message,
+        ),
+      ),
+      (List<BookResponse> r) => bookResponses = r,
+    );
+
+    if (state is! HomeMobileLoading) return;
+
+    final Either<Failure, List<BookResponse>> popularBookRes =
+        await _bookController.getPopularBooks(bookResponses);
+
+    popularBookRes.fold(
+      (Failure l) => emit(
+        HomeMobileFailure(
+          message: l.message,
+        ),
+      ),
+      (List<BookResponse> r) => popularBooks = r,
+    );
+
+    if (state is! HomeMobileLoading) return;
+
+    newArrivalBooks = _bookController.getNewArrivals(bookResponses);
 
     final HomeMobileLoaded model = HomeMobileLoaded(
+      userResponse: userResponse,
       selectedGenre: selectedGenre,
       newArrivalBooks: newArrivalBooks,
       popularBooks: popularBooks,
-      recommendedBooks: recommendedBooks,
-      searchedBooks: searchedBooks,
-      topByGenreBooks: topByGenreBooks,
+      recommendedBooks: bookResponses,
+      searchedBooks: bookResponses,
+      topByGenreBooks: bookResponses,
+      genreOptions: genreOptions,
     );
+
+    emit(model);
   }
 }

@@ -1,5 +1,4 @@
 import 'package:bookstore/domain/model/book_response.dart';
-import 'package:bookstore/domain/model/transaction_response.dart';
 import 'package:equatable/equatable.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:json_annotation/json_annotation.dart';

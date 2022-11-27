@@ -1,6 +1,6 @@
 import 'package:bookstore/domain/model/genre_response.dart';
-import 'package:bookstore/presentation/bloc/genre/cubit.dart';
-import 'package:bookstore/presentation/bloc/genre/state.dart';
+import 'package:bookstore/presentation/pages/home/mobile/cubit.dart';
+import 'package:bookstore/presentation/pages/home/mobile/state.dart';
 import 'package:bookstore/presentation/widget/spacing.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -22,7 +22,8 @@ class _HomeMobileCategoryState extends State<HomeMobileCategory>
     super.initState();
 
     _genres =
-        (BlocProvider.of<GenreCubit>(context).state as GenreLoaded).genres;
+        (BlocProvider.of<HomeMobileCubit>(context).state as HomeMobileLoaded)
+            .genreOptions;
 
     _tabController = TabController(
       length: _genres.length,

@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'cubit.dart';
-import 'state.dart';
 
 class HomeTabletPage extends StatelessWidget {
   const HomeTabletPage({super.key});
