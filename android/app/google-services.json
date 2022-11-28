@@ -31,10 +31,10 @@
               "client_type": 3
             },
             {
-              "client_id": "81401705015-qfut49da2lt1970j4d4bfm7amcmnurhn.apps.googleusercontent.com",
+              "client_id": "81401705015-3e11qmcm71of3nrjss8rj4476to1lqg1.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.oopchi.bookstore"
+                "bundle_id": "com"
               }
             }
           ]

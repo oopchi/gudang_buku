@@ -8,23 +8,27 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:workmanager/workmanager.dart';
 import 'config/background_tasks.dart';
+import 'firebase_options.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await dotenv.load();
 
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   if (kIsWeb) {
-    await Firebase.initializeApp(
-      options: const FirebaseOptions(
-        apiKey: "AIzaSyAZkVv3VKza3lXpGeYDDsvMijziuzg18oA",
-        authDomain: "bookstore-2d8e6.firebaseapp.com",
-        projectId: "bookstore-2d8e6",
-        storageBucket: "bookstore-2d8e6.appspot.com",
-        messagingSenderId: "81401705015",
-        appId: "1:81401705015:web:de73d735400c0a373e45b2",
-      ),
-    );
+    // await Firebase.initializeApp(
+    //   options: const FirebaseOptions(
+    //     apiKey: "AIzaSyAZkVv3VKza3lXpGeYDDsvMijziuzg18oA",
+    //     authDomain: "bookstore-2d8e6.firebaseapp.com",
+    //     projectId: "bookstore-2d8e6",
+    //     storageBucket: "bookstore-2d8e6.appspot.com",
+    //     messagingSenderId: "81401705015",
+    //     appId: "1:81401705015:web:de73d735400c0a373e45b2",
+    //   ),
+    // );
 
     FirebaseFirestore.instance.enablePersistence(
       const PersistenceSettings(
@@ -32,20 +36,18 @@ Future<void> main() async {
       ),
     );
   } else {
-    await Firebase.initializeApp();
-
     final FirebaseFirestore db = FirebaseFirestore.instance;
     db.settings = const Settings(
       persistenceEnabled: true,
     );
+
+    await Workmanager().initialize(
+      callbackDispatcher,
+      isInDebugMode: true,
+    );
   }
 
   await LocalStorageHive().init();
-
-  await Workmanager().initialize(
-    callbackDispatcher,
-    isInDebugMode: true,
-  );
 
   runApp(
     const MyApp(),

@@ -5,6 +5,7 @@ import 'package:bookstore/util/failure_helper.dart';
 import 'package:dartz/dartz.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:workmanager/workmanager.dart';
+import 'package:flutter/foundation.dart';
 
 class UserController {
   UserController({
@@ -31,15 +32,22 @@ class UserController {
           userResponse: userResponse,
         );
 
-        final Map<String, dynamic> inputData = userResponse.toJson();
+        if (kIsWeb) {
+          await _localStorage.overwrite(
+            LocalStoragePath.user,
+            userResponse,
+          );
+        } else {
+          final Map<String, dynamic> inputData = userResponse.toJson();
 
-        inputData.removeWhere((key, value) => value == null);
+          inputData.removeWhere((key, value) => value == null);
 
-        Workmanager().registerOneOffTask(
-          LocalStoragePath.user.text,
-          LocalStoragePath.user.text,
-          inputData: inputData,
-        );
+          Workmanager().registerOneOffTask(
+            LocalStoragePath.user.text,
+            LocalStoragePath.user.text,
+            inputData: inputData,
+          );
+        }
 
         return Right(userResponse);
       }
