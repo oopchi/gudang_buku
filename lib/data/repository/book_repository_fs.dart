@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:bookstore/domain/model/book_response.dart';
+import 'package:bookstore/domain/dto/book_response.dart';
 import 'package:bookstore/domain/repository/book_repository.dart';
 import 'package:bookstore/util/exception_helper.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -51,6 +51,36 @@ class BookRepositoryFS implements BookRepository {
             },
             onError: (e) => Left(DatabaseFailure(e.toString())),
           );
+    } on ServerException {
+      return const Left(ServerFailure('Server Failure'));
+    } on SocketException {
+      return const Left(ConnectionFailure('Failed to connect to the network'));
+    }
+  }
+
+  @override
+  Future<Either<Failure, List<BookResponse>>> fetchAllBooksWithAnyPromo({
+    required List<String> promoIds,
+  }) async {
+    try {
+      return await books
+          .where(
+            'promoId',
+            arrayContainsAny: promoIds,
+          )
+          .get()
+          .then(
+        (QuerySnapshot<Object?> result) {
+          return Right(result.docs.map((QueryDocumentSnapshot<Object?> e) {
+            final Map<String, dynamic> data = e.data() as Map<String, dynamic>;
+
+            data['id'] = e.reference.id;
+
+            return BookResponse.fromJson(data);
+          }).toList());
+        },
+        onError: (e) => Left(DatabaseFailure(e.toString())),
+      );
     } on ServerException {
       return const Left(ServerFailure('Server Failure'));
     } on SocketException {

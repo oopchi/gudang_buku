@@ -1,5 +1,6 @@
-import 'package:bookstore/domain/model/role_response.dart';
-import 'package:bookstore/domain/model/user_discount_response.dart';
+import 'package:bookstore/domain/dto/book_response.dart';
+import 'package:bookstore/domain/dto/role_response.dart';
+import 'package:bookstore/domain/dto/user_discount_response.dart';
 import 'package:equatable/equatable.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:json_annotation/json_annotation.dart';
@@ -19,6 +20,7 @@ class UserResponse extends Equatable {
     this.meritAmount,
     this.role,
     this.userDiscounts,
+    this.favorites,
   });
 
   factory UserResponse.fromJson(Map<String, dynamic> json) =>
@@ -42,6 +44,8 @@ class UserResponse extends Equatable {
   final RoleResponse? role;
   @HiveField(87)
   final List<UserDiscountResponse?>? userDiscounts;
+  @HiveField(88)
+  final List<BookResponse?>? favorites;
 
   Map<String, dynamic> toJson() => _$UserResponseToJson(this);
 
@@ -55,6 +59,8 @@ class UserResponse extends Equatable {
         phoneNumber,
         meritAmount,
         role,
+        userDiscounts,
+        favorites,
       ];
 
   static UserResponse newUserResponse({

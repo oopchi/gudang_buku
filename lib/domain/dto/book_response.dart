@@ -1,5 +1,5 @@
-import 'package:bookstore/domain/model/author_response.dart';
-import 'package:bookstore/domain/model/genre_response.dart';
+import 'package:bookstore/domain/dto/author_response.dart';
+import 'package:bookstore/domain/dto/genre_response.dart';
 import 'package:equatable/equatable.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:json_annotation/json_annotation.dart';
@@ -18,6 +18,7 @@ class BookResponse extends Equatable {
     this.releasedDate,
     this.authors,
     this.genres,
+    this.promoId,
   });
 
   factory BookResponse.fromJson(Map<String, dynamic> json) =>
@@ -39,6 +40,8 @@ class BookResponse extends Equatable {
   final List<AuthorResponse?>? authors;
   @HiveField(23)
   final List<GenreResponse?>? genres;
+  @HiveField(199)
+  final String? promoId;
 
   Map<String, dynamic> toJson() => _$BookResponseToJson(this);
 

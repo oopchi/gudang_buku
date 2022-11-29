@@ -1,4 +1,4 @@
-import 'package:bookstore/domain/model/transaction_response.dart';
+import 'package:bookstore/domain/dto/transaction_response.dart';
 import 'package:bookstore/util/failure_helper.dart';
 import 'package:dartz/dartz.dart';
 

@@ -1,9 +1,9 @@
-import 'package:bookstore/domain/model/address_response.dart';
-import 'package:bookstore/domain/model/courier_response.dart';
-import 'package:bookstore/domain/model/discount_response.dart';
-import 'package:bookstore/domain/model/payment_method_response.dart';
-import 'package:bookstore/domain/model/transaction_detail_response.dart';
-import 'package:bookstore/domain/model/user_response.dart';
+import 'package:bookstore/domain/dto/address_response.dart';
+import 'package:bookstore/domain/dto/courier_response.dart';
+import 'package:bookstore/domain/dto/discount_response.dart';
+import 'package:bookstore/domain/dto/payment_method_response.dart';
+import 'package:bookstore/domain/dto/transaction_detail_response.dart';
+import 'package:bookstore/domain/dto/user_response.dart';
 import 'package:equatable/equatable.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:json_annotation/json_annotation.dart';

@@ -1,4 +1,6 @@
+import 'package:bookstore/config/constant/routes.dart';
 import 'package:bookstore/presentation/pages/home/home_page.dart';
+import 'package:bookstore/presentation/widget/bottom_navigation_helper.dart';
 import 'package:go_router/go_router.dart';
 
 class AppRouter {
@@ -12,19 +14,181 @@ class AppRouter {
     initialLocation: '/home',
     routes: <RouteBase>[
       GoRoute(
-        name: 'home',
-        path: '/home',
+        name: AppRoutes.landingPage,
+        path: '/',
         builder: (context, state) => const HomePage(),
-        // redirect: (context, state) async {
-        //   final Box<GenreResponse> genre =
-        //       await Hive.openBox<GenreResponse>(LocalStorageKeys.genre.label);
-
-        //   if (!await AuthMiddleware.isAuthenticated()) {
-        //     return '/home';
-        //   }
-
-        //   return '/home';
-        // },
+        routes: <RouteBase>[
+          GoRoute(
+            name: AppRoutes.landingPageToSignUp,
+            path: '/sign-up',
+            builder: (context, state) => const HomePage(),
+          ),
+          GoRoute(
+            name: AppRoutes.landingPageToLogin,
+            path: '/login',
+            builder: (context, state) => const HomePage(),
+            routes: <RouteBase>[
+              GoRoute(
+                name: AppRoutes.loginToForgotPassword,
+                path: '/forgot-password',
+                builder: (context, state) => const HomePage(),
+              ),
+            ],
+          ),
+        ],
+      ),
+      ShellRoute(
+        builder: (context, state, child) {
+          switch (state.path) {
+            case '/home':
+            case '/shop':
+            case '/cart':
+            case '/favorite':
+            case '/profile':
+              return BottomNavigationScaffold(
+                child: child,
+              );
+            default:
+              return child;
+          }
+        },
+        routes: <RouteBase>[
+          GoRoute(
+            name: AppRoutes.home,
+            path: '/home',
+            builder: (context, state) => const HomePage(),
+            routes: <RouteBase>[
+              GoRoute(
+                name: AppRoutes.homeToShop,
+                path: '/shop', // pake query param bukan path param
+                builder: (context, state) => const HomePage(),
+              ),
+            ],
+          ),
+          GoRoute(
+            name: AppRoutes.shop,
+            path: '/shop',
+            builder: (context, state) => const HomePage(),
+            routes: <RouteBase>[
+              GoRoute(
+                name: AppRoutes.shopToProduct,
+                path: '/:product',
+                builder: (context, state) => const HomePage(),
+              ),
+            ],
+          ),
+          GoRoute(
+            name: AppRoutes.favorites,
+            path: '/favorites',
+            builder: (context, state) => const HomePage(),
+          ),
+          GoRoute(
+            name: AppRoutes.cart,
+            path: '/cart',
+            builder: (context, state) => const HomePage(),
+            routes: <RouteBase>[
+              GoRoute(
+                name: AppRoutes.cartToCheckout,
+                path: '/checkout',
+                builder: (context, state) => const HomePage(),
+                routes: <RouteBase>[
+                  GoRoute(
+                    name: AppRoutes.cartToCheckoutToPaymentMethods,
+                    path: '/payment-methods',
+                    builder: (context, state) => const HomePage(),
+                    routes: <RouteBase>[
+                      GoRoute(
+                        name: AppRoutes.cartToCheckoutToPaymentMethodsToAdd,
+                        path: '/add',
+                        builder: (context, state) => const HomePage(),
+                      ),
+                    ],
+                  ),
+                  GoRoute(
+                    name: AppRoutes.cartToCheckoutToShippingAddress,
+                    path: '/shipping-address',
+                    builder: (context, state) => const HomePage(),
+                    routes: <RouteBase>[
+                      GoRoute(
+                        name: AppRoutes.cartToCheckoutToShippingAddressToAdd,
+                        path: '/add',
+                        builder: (context, state) => const HomePage(),
+                      ),
+                      GoRoute(
+                        name: AppRoutes.cartToCheckoutToShippingAddressToEdit,
+                        path: '/:shippingAddress',
+                        builder: (context, state) => const HomePage(),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ],
+          ),
+          GoRoute(
+            name: AppRoutes.profile,
+            path: '/profile',
+            builder: (context, state) => const HomePage(),
+            routes: <RouteBase>[
+              GoRoute(
+                name: AppRoutes.profileToOrders,
+                path: '/orders',
+                builder: (context, state) => const HomePage(),
+                routes: <RouteBase>[
+                  GoRoute(
+                    name: AppRoutes.profileToOrdersToOrderDetails,
+                    path: '/:order',
+                    builder: (context, state) => const HomePage(),
+                  ),
+                ],
+              ),
+              GoRoute(
+                name: AppRoutes.profileToSettings,
+                path: '/settings',
+                builder: (context, state) => const HomePage(),
+              ),
+              GoRoute(
+                name: AppRoutes.profileToReviews,
+                path: '/reviews',
+                builder: (context, state) => const HomePage(),
+              ),
+              GoRoute(
+                name: AppRoutes.profileToPaymentMethods,
+                path: '/payment-methods',
+                builder: (context, state) => const HomePage(),
+                routes: <RouteBase>[
+                  GoRoute(
+                    name: AppRoutes.profileToPaymentMethodsToAdd,
+                    path: '/add',
+                    builder: (context, state) => const HomePage(),
+                  ),
+                ],
+              ),
+              GoRoute(
+                name: AppRoutes.profileToShippingAddress,
+                path: '/shipping-address',
+                builder: (context, state) => const HomePage(),
+                routes: <RouteBase>[
+                  GoRoute(
+                    name: AppRoutes.profileToShippingAddressToAdd,
+                    path: '/add',
+                    builder: (context, state) => const HomePage(),
+                  ),
+                  GoRoute(
+                    name: AppRoutes.profileToShippingAddressToEdit,
+                    path: '/:shippingAddress',
+                    builder: (context, state) => const HomePage(),
+                  ),
+                ],
+              ),
+              GoRoute(
+                name: AppRoutes.profileToPromoCodes,
+                path: '/promo-codes',
+                builder: (context, state) => const HomePage(),
+              ),
+            ],
+          ),
+        ],
       ),
     ],
   );

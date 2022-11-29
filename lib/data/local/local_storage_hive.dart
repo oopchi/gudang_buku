@@ -1,20 +1,20 @@
 import 'package:bookstore/domain/local/local_storage.dart';
-import 'package:bookstore/domain/model/address_response.dart';
-import 'package:bookstore/domain/model/allowed_media_type_response.dart';
-import 'package:bookstore/domain/model/author_response.dart';
-import 'package:bookstore/domain/model/book_response.dart';
-import 'package:bookstore/domain/model/chat_response.dart';
-import 'package:bookstore/domain/model/courier_response.dart';
-import 'package:bookstore/domain/model/discount_response.dart';
-import 'package:bookstore/domain/model/genre_response.dart';
-import 'package:bookstore/domain/model/media_response.dart';
-import 'package:bookstore/domain/model/payment_method_response.dart';
-import 'package:bookstore/domain/model/restock_response.dart';
-import 'package:bookstore/domain/model/role_response.dart';
-import 'package:bookstore/domain/model/transaction_detail_response.dart';
-import 'package:bookstore/domain/model/transaction_response.dart';
-import 'package:bookstore/domain/model/user_discount_response.dart';
-import 'package:bookstore/domain/model/user_response.dart';
+import 'package:bookstore/domain/dto/address_response.dart';
+import 'package:bookstore/domain/dto/allowed_media_type_response.dart';
+import 'package:bookstore/domain/dto/author_response.dart';
+import 'package:bookstore/domain/dto/book_response.dart';
+import 'package:bookstore/domain/dto/chat_response.dart';
+import 'package:bookstore/domain/dto/courier_response.dart';
+import 'package:bookstore/domain/dto/discount_response.dart';
+import 'package:bookstore/domain/dto/genre_response.dart';
+import 'package:bookstore/domain/dto/media_response.dart';
+import 'package:bookstore/domain/dto/payment_method_response.dart';
+import 'package:bookstore/domain/dto/restock_response.dart';
+import 'package:bookstore/domain/dto/role_response.dart';
+import 'package:bookstore/domain/dto/transaction_detail_response.dart';
+import 'package:bookstore/domain/dto/transaction_response.dart';
+import 'package:bookstore/domain/dto/user_discount_response.dart';
+import 'package:bookstore/domain/dto/user_response.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 class LocalStorageHive implements LocalStorage {

@@ -6,6 +6,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:workmanager/workmanager.dart';
 import 'config/background_tasks.dart';
 import 'firebase_options.dart';
@@ -16,6 +17,7 @@ Future<void> main() async {
   await dotenv.load();
 
   await Firebase.initializeApp(
+    name: 'bookStore',
     options: DefaultFirebaseOptions.currentPlatform,
   );
   if (kIsWeb) {
@@ -30,11 +32,11 @@ Future<void> main() async {
     //   ),
     // );
 
-    FirebaseFirestore.instance.enablePersistence(
-      const PersistenceSettings(
-        synchronizeTabs: true,
-      ),
-    );
+    // FirebaseFirestore.instance.enablePersistence(
+    //   const PersistenceSettings(
+    //     synchronizeTabs: true,
+    //   ),
+    // );
   } else {
     final FirebaseFirestore db = FirebaseFirestore.instance;
     db.settings = const Settings(
@@ -59,16 +61,19 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(
-      title: 'Book Store',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        scaffoldBackgroundColor: AppColor.background,
+    return ScreenUtilInit(
+      designSize: const Size(375, 812),
+      builder: (context, child) => MaterialApp.router(
+        title: 'Gudang Buku',
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
+          scaffoldBackgroundColor: AppColor.background,
+        ),
+        routerDelegate: AppRouter().router.routerDelegate,
+        routeInformationParser: AppRouter().router.routeInformationParser,
+        routeInformationProvider: AppRouter().router.routeInformationProvider,
+        debugShowCheckedModeBanner: false,
       ),
-      routerDelegate: AppRouter().router.routerDelegate,
-      routeInformationParser: AppRouter().router.routeInformationParser,
-      routeInformationProvider: AppRouter().router.routeInformationProvider,
-      debugShowCheckedModeBanner: false,
     );
   }
 }

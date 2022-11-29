@@ -14,12 +14,20 @@ class ResponsiveLayout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        if (constraints.maxWidth >= 1280) return desktopBody;
-        if (constraints.maxWidth >= 601) return tabletBody;
-        return mobileBody;
+    return GestureDetector(
+      onTap: () {
+        final FocusScopeNode currentScope = FocusScope.of(context);
+        if (!currentScope.hasPrimaryFocus && currentScope.hasFocus) {
+          FocusManager.instance.primaryFocus?.unfocus();
+        }
       },
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          if (constraints.maxWidth >= 1280) return desktopBody;
+          if (constraints.maxWidth >= 601) return tabletBody;
+          return mobileBody;
+        },
+      ),
     );
   }
 }

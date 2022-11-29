@@ -1,6 +1,6 @@
 import 'package:bookstore/data/local/local_storage_hive.dart';
 import 'package:bookstore/domain/local/local_storage.dart';
-import 'package:bookstore/domain/model/user_response.dart';
+import 'package:bookstore/domain/dto/user_response.dart';
 import 'package:workmanager/workmanager.dart';
 
 @pragma('vm:entry-point')

@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:bookstore/domain/model/user_response.dart';
+import 'package:bookstore/domain/dto/user_response.dart';
 import 'package:bookstore/domain/repository/user_repository.dart';
 import 'package:bookstore/util/exception_helper.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';

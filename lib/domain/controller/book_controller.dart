@@ -1,8 +1,8 @@
 import 'package:bookstore/domain/controller/transaction_controller.dart';
 import 'package:bookstore/domain/local/local_storage.dart';
-import 'package:bookstore/domain/model/book_response.dart';
-import 'package:bookstore/domain/model/transaction_detail_response.dart';
-import 'package:bookstore/domain/model/transaction_response.dart';
+import 'package:bookstore/domain/dto/book_response.dart';
+import 'package:bookstore/domain/dto/transaction_detail_response.dart';
+import 'package:bookstore/domain/dto/transaction_response.dart';
 import 'package:bookstore/domain/repository/book_repository.dart';
 import 'package:bookstore/util/failure_helper.dart';
 import 'package:dartz/dartz.dart';
@@ -19,7 +19,7 @@ class BookController {
   final LocalStorage _localStorage;
   final TransactionController _transactionController;
 
-  Future<Either<Failure, List<BookResponse>>> loadAllBooks() async {
+  Future<Either<Failure, List<BookResponse>>> loadAllBooksWithLimit() async {
     if (await _localStorage.isEmpty(LocalStoragePath.book)) {
       return _bookRepository.fetchAllBooksWithLimit();
     }
