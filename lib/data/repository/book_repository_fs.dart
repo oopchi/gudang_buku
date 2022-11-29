@@ -62,6 +62,8 @@ class BookRepositoryFS implements BookRepository {
   Future<Either<Failure, List<BookResponse>>> fetchAllBooksWithAnyPromo({
     required List<String> promoIds,
   }) async {
+    if (promoIds.isEmpty) return const Right(<BookResponse>[]);
+
     try {
       return await books
           .where(

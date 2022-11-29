@@ -1,14 +1,18 @@
 import 'package:bookstore/config/constant/routes.dart';
+import 'package:bookstore/presentation/widget/spacing.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
 class BottomNavigationScaffold extends StatelessWidget {
   const BottomNavigationScaffold({
     super.key,
     required this.child,
+    required this.currentIndex,
   });
 
   final Widget child;
+  final int currentIndex;
 
   @override
   Widget build(BuildContext context) {
@@ -20,63 +24,121 @@ class BottomNavigationScaffold extends StatelessWidget {
         }
       },
       child: Scaffold(
-        bottomNavigationBar: _buildBottomNavigationBar(context),
+        backgroundColor: Colors.white,
         body: SafeArea(
-          child: child,
+          child: Stack(
+            fit: StackFit.expand,
+            children: <Widget>[
+              child,
+              Positioned(
+                bottom: .0,
+                left: .0,
+                child: _buildBottomNavigationBar(context),
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 
   Widget _buildBottomNavigationBar(BuildContext context) {
-    return BottomNavigationBar(
-      onTap: (int index) {
-        switch (index) {
-          case 0:
-            context.goNamed(AppRoutes.home);
-            break;
-          case 1:
-            context.goNamed(AppRoutes.shop);
-            break;
-          case 2:
-            context.goNamed(AppRoutes.cart);
-            break;
-          case 3:
-            context.goNamed(AppRoutes.favorites);
-            break;
-          case 4:
-            context.goNamed(AppRoutes.profile);
-            break;
-          default:
-        }
-      },
-      items: const <BottomNavigationBarItem>[
-        BottomNavigationBarItem(
-          icon: Icon(
-            Icons.home,
+    return Container(
+      width: MediaQuery.of(context).size.width,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(12.0.r),
+        ),
+      ),
+      padding: EdgeInsets.fromLTRB(
+        18.0.w,
+        .0,
+        18.0.w,
+        25.0.h,
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          _buildIconButton(
+            activeIcon: Icons.home,
+            inactiveIcon: Icons.home,
+            label: 'Home',
+            isSelected: currentIndex == 0,
+            onTap: () => context.goNamed(AppRoutes.home),
+          ),
+          _buildIconButton(
+            activeIcon: Icons.shopping_cart,
+            inactiveIcon: Icons.shopping_cart,
+            label: 'Shop',
+            isSelected: currentIndex == 1,
+            onTap: () => context.goNamed(AppRoutes.shop),
+          ),
+          _buildIconButton(
+            activeIcon: Icons.shopping_bag,
+            inactiveIcon: Icons.shopping_bag,
+            label: 'Bag',
+            isSelected: currentIndex == 2,
+            onTap: () => context.goNamed(AppRoutes.cart),
+          ),
+          _buildIconButton(
+            activeIcon: Icons.favorite,
+            inactiveIcon: Icons.favorite,
+            label: 'Favorite',
+            isSelected: currentIndex == 3,
+            onTap: () => context.goNamed(AppRoutes.favorites),
+          ),
+          _buildIconButton(
+            activeIcon: Icons.account_circle,
+            inactiveIcon: Icons.account_circle_outlined,
+            label: 'Profile',
+            isSelected: currentIndex == 4,
+            onTap: () => context.goNamed(AppRoutes.profile),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildIconButton({
+    required IconData activeIcon,
+    required IconData inactiveIcon,
+    required String label,
+    required bool isSelected,
+    VoidCallback? onTap,
+  }) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(100.0.r),
+        onTap: onTap,
+        child: Padding(
+          padding: EdgeInsets.all(8.0.sp),
+          child: Column(
+            children: <Widget>[
+              Icon(
+                isSelected ? activeIcon : inactiveIcon,
+                size: 30.0.sp,
+                color: isSelected
+                    ? const Color(0xFFDB3022)
+                    : const Color(0xFF9B9B9B),
+              ),
+              Spacing.vertical(2.0.sp),
+              Text(
+                label,
+                style: TextStyle(
+                  fontFamily: 'Metropolis',
+                  fontSize: 10.0.sp,
+                  fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+                  color: isSelected
+                      ? const Color(0xFFDB3022)
+                      : const Color(0xFF9B9B9B),
+                ),
+              ),
+            ],
           ),
         ),
-        BottomNavigationBarItem(
-          icon: Icon(
-            Icons.shop,
-          ),
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(
-            Icons.shopping_cart,
-          ),
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(
-            Icons.favorite,
-          ),
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(
-            Icons.account_circle_outlined,
-          ),
-        ),
-      ],
+      ),
     );
   }
 }

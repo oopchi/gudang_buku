@@ -171,9 +171,17 @@ class ProductCard extends StatelessWidget {
     if (model.discountString == null) return const SizedBox.shrink();
 
     return Container(
+      constraints: BoxConstraints(
+        minHeight: 24.0.w,
+        minWidth: 40.0.w,
+      ),
       padding: EdgeInsets.symmetric(
         vertical: 6.0.w,
         horizontal: 5.0.w,
+      ),
+      decoration: BoxDecoration(
+        color: const Color(0xFFDB3022),
+        borderRadius: BorderRadius.circular(100.0.r),
       ),
       child: Text(
         model.discountString!,

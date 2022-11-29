@@ -20,17 +20,17 @@ class AppRouter {
         routes: <RouteBase>[
           GoRoute(
             name: AppRoutes.landingPageToSignUp,
-            path: '/sign-up',
+            path: 'sign-up',
             builder: (context, state) => const HomePage(),
           ),
           GoRoute(
             name: AppRoutes.landingPageToLogin,
-            path: '/login',
+            path: 'login',
             builder: (context, state) => const HomePage(),
             routes: <RouteBase>[
               GoRoute(
                 name: AppRoutes.loginToForgotPassword,
-                path: '/forgot-password',
+                path: 'forgot-password',
                 builder: (context, state) => const HomePage(),
               ),
             ],
@@ -39,13 +39,30 @@ class AppRouter {
       ),
       ShellRoute(
         builder: (context, state, child) {
-          switch (state.path) {
+          switch (state.fullpath) {
             case '/home':
+              return BottomNavigationScaffold(
+                currentIndex: 0,
+                child: child,
+              );
             case '/shop':
+              return BottomNavigationScaffold(
+                currentIndex: 1,
+                child: child,
+              );
             case '/cart':
-            case '/favorite':
+              return BottomNavigationScaffold(
+                currentIndex: 2,
+                child: child,
+              );
+            case '/favorites':
+              return BottomNavigationScaffold(
+                currentIndex: 3,
+                child: child,
+              );
             case '/profile':
               return BottomNavigationScaffold(
+                currentIndex: 4,
                 child: child,
               );
             default:
@@ -60,7 +77,7 @@ class AppRouter {
             routes: <RouteBase>[
               GoRoute(
                 name: AppRoutes.homeToShop,
-                path: '/shop', // pake query param bukan path param
+                path: 'shop', // pake query param bukan path param
                 builder: (context, state) => const HomePage(),
               ),
             ],
@@ -72,7 +89,7 @@ class AppRouter {
             routes: <RouteBase>[
               GoRoute(
                 name: AppRoutes.shopToProduct,
-                path: '/:product',
+                path: ':product',
                 builder: (context, state) => const HomePage(),
               ),
             ],
@@ -89,34 +106,34 @@ class AppRouter {
             routes: <RouteBase>[
               GoRoute(
                 name: AppRoutes.cartToCheckout,
-                path: '/checkout',
+                path: 'checkout',
                 builder: (context, state) => const HomePage(),
                 routes: <RouteBase>[
                   GoRoute(
                     name: AppRoutes.cartToCheckoutToPaymentMethods,
-                    path: '/payment-methods',
+                    path: 'payment-methods',
                     builder: (context, state) => const HomePage(),
                     routes: <RouteBase>[
                       GoRoute(
                         name: AppRoutes.cartToCheckoutToPaymentMethodsToAdd,
-                        path: '/add',
+                        path: 'add',
                         builder: (context, state) => const HomePage(),
                       ),
                     ],
                   ),
                   GoRoute(
                     name: AppRoutes.cartToCheckoutToShippingAddress,
-                    path: '/shipping-address',
+                    path: 'shipping-address',
                     builder: (context, state) => const HomePage(),
                     routes: <RouteBase>[
                       GoRoute(
                         name: AppRoutes.cartToCheckoutToShippingAddressToAdd,
-                        path: '/add',
+                        path: 'add',
                         builder: (context, state) => const HomePage(),
                       ),
                       GoRoute(
                         name: AppRoutes.cartToCheckoutToShippingAddressToEdit,
-                        path: '/:shippingAddress',
+                        path: ':shippingAddress',
                         builder: (context, state) => const HomePage(),
                       ),
                     ],
@@ -132,58 +149,58 @@ class AppRouter {
             routes: <RouteBase>[
               GoRoute(
                 name: AppRoutes.profileToOrders,
-                path: '/orders',
+                path: 'orders',
                 builder: (context, state) => const HomePage(),
                 routes: <RouteBase>[
                   GoRoute(
                     name: AppRoutes.profileToOrdersToOrderDetails,
-                    path: '/:order',
+                    path: ':order',
                     builder: (context, state) => const HomePage(),
                   ),
                 ],
               ),
               GoRoute(
                 name: AppRoutes.profileToSettings,
-                path: '/settings',
+                path: 'settings',
                 builder: (context, state) => const HomePage(),
               ),
               GoRoute(
                 name: AppRoutes.profileToReviews,
-                path: '/reviews',
+                path: 'reviews',
                 builder: (context, state) => const HomePage(),
               ),
               GoRoute(
                 name: AppRoutes.profileToPaymentMethods,
-                path: '/payment-methods',
+                path: 'payment-methods',
                 builder: (context, state) => const HomePage(),
                 routes: <RouteBase>[
                   GoRoute(
                     name: AppRoutes.profileToPaymentMethodsToAdd,
-                    path: '/add',
+                    path: 'add',
                     builder: (context, state) => const HomePage(),
                   ),
                 ],
               ),
               GoRoute(
                 name: AppRoutes.profileToShippingAddress,
-                path: '/shipping-address',
+                path: 'shipping-address',
                 builder: (context, state) => const HomePage(),
                 routes: <RouteBase>[
                   GoRoute(
                     name: AppRoutes.profileToShippingAddressToAdd,
-                    path: '/add',
+                    path: 'add',
                     builder: (context, state) => const HomePage(),
                   ),
                   GoRoute(
                     name: AppRoutes.profileToShippingAddressToEdit,
-                    path: '/:shippingAddress',
+                    path: ':shippingAddress',
                     builder: (context, state) => const HomePage(),
                   ),
                 ],
               ),
               GoRoute(
                 name: AppRoutes.profileToPromoCodes,
-                path: '/promo-codes',
+                path: 'promo-codes',
                 builder: (context, state) => const HomePage(),
               ),
             ],
