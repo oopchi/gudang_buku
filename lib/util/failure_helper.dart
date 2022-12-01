@@ -9,13 +9,36 @@ abstract class Failure extends Equatable {
 }
 
 class ServerFailure extends Failure {
-  const ServerFailure(String message) : super(message);
+  const ServerFailure(super.message);
 }
 
 class ConnectionFailure extends Failure {
-  const ConnectionFailure(String message) : super(message);
+  const ConnectionFailure(super.message);
 }
 
 class DatabaseFailure extends Failure {
-  const DatabaseFailure(String message) : super(message);
+  const DatabaseFailure(super.message);
+}
+
+enum AuthFailureException {
+  providerAlreadyLinked,
+  credentialAlreadyInUse,
+  emailAlreadyInUse,
+  accountExistsWithDifferentCredential,
+  invalidCredential,
+  operationNotAllowed,
+  userDisabled,
+  userNotFound,
+  wrongPassword,
+  invalidVerificationCode,
+  invalidVerificationId,
+}
+
+class AuthFailure extends Failure {
+  const AuthFailure(
+    super.message, {
+    required this.authFailureException,
+  });
+
+  final AuthFailureException authFailureException;
 }

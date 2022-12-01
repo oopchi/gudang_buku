@@ -8,12 +8,14 @@ import 'package:bookstore/data/repository/favorite_repository_fs.dart';
 import 'package:bookstore/data/repository/media_repository_fs.dart';
 import 'package:bookstore/data/repository/promo_repository_fs.dart';
 import 'package:bookstore/data/repository/review_repository_fs.dart';
+import 'package:bookstore/data/service/auth_service_fs.dart';
 import 'package:bookstore/domain/controller/home_view_controller.dart';
 import 'package:bookstore/presentation/pages/home/mobile/components/body.dart';
 import 'package:bookstore/presentation/pages/home/mobile/state.dart';
 import 'package:bookstore/presentation/widget/loading_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:provider/provider.dart';
 
 import 'cubit.dart';
 
@@ -35,6 +37,7 @@ class HomeMobilePage extends StatelessWidget {
           authorRepository: AuthorRepositoryFS(),
           favoriteRepository: FavoriteRepositoryFS(),
           mediaRepository: MediaRepositoryFS(),
+          authServiceFS: Provider.of<AuthServiceFS>(context),
         ),
       )..load(),
       child: Builder(

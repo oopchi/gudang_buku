@@ -62,8 +62,9 @@ class UserRepositoryFS implements UserRepository {
   }
 
   @override
-  Future<Either<Failure, void>> addUser(
-      {required UserResponse userResponse}) async {
+  Future<Either<Failure, void>> addOrUpdateUser({
+    required UserResponse userResponse,
+  }) async {
     try {
       return users.doc(userResponse.id).set(userResponse.toJson()).then(
             (_) => Right(_),

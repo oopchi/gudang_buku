@@ -1,4 +1,5 @@
 import 'package:bookstore/config/constant/colors.dart';
+import 'package:bookstore/config/provider_setup.dart';
 import 'package:bookstore/config/router/router.dart';
 import 'package:bookstore/data/local/local_storage_hive.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -7,6 +8,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
 import 'package:workmanager/workmanager.dart';
 import 'config/background_tasks.dart';
 import 'firebase_options.dart';
@@ -61,18 +63,21 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ScreenUtilInit(
-      designSize: const Size(375, 812),
-      builder: (context, child) => MaterialApp.router(
-        title: 'Gudang Buku',
-        theme: ThemeData(
-          primarySwatch: Colors.blue,
-          scaffoldBackgroundColor: AppColor.background,
+    return MultiProvider(
+      providers: providers,
+      child: ScreenUtilInit(
+        designSize: const Size(375, 812),
+        builder: (context, child) => MaterialApp.router(
+          title: 'Gudang Buku',
+          theme: ThemeData(
+            primarySwatch: Colors.blue,
+            scaffoldBackgroundColor: AppColor.background,
+          ),
+          routerDelegate: AppRouter().router.routerDelegate,
+          routeInformationParser: AppRouter().router.routeInformationParser,
+          routeInformationProvider: AppRouter().router.routeInformationProvider,
+          debugShowCheckedModeBanner: false,
         ),
-        routerDelegate: AppRouter().router.routerDelegate,
-        routeInformationParser: AppRouter().router.routeInformationParser,
-        routeInformationProvider: AppRouter().router.routeInformationProvider,
-        debugShowCheckedModeBanner: false,
       ),
     );
   }

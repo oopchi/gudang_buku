@@ -5,6 +5,7 @@ import 'package:bookstore/presentation/pages/login/login_page.dart';
 import 'package:bookstore/presentation/pages/register/register_page.dart';
 import 'package:bookstore/presentation/widget/bottom_navigation_helper.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 
 class AppRouter {
   AppRouter._internal();
@@ -20,8 +21,10 @@ class AppRouter {
         name: AppRoutes.landingPage.name,
         path: AppRoutes.landingPage.path,
         builder: (context, state) => const HomePage(),
-        redirect: (context, state) =>
-            AuthServiceFS().isLoggedIn() ? AppRoutes.home.fullPath : null,
+        redirect: (context, state) async =>
+            await Provider.of<AuthServiceFS>(context).isLoggedIn()
+                ? AppRoutes.home.fullPath
+                : null,
         routes: <RouteBase>[
           GoRoute(
             name: AppRoutes.landingPageToSignUp.name,

@@ -51,17 +51,23 @@ class LocalStorageHive implements LocalStorage {
 
   @override
   Future<T?> readAt<T>(LocalStoragePath path, int index) async {
-    final Box<T> box = await Hive.openBox<T>(path.text);
+    if (!await containsKey(path, index)) return null;
 
-    final T? result = box.getAt(index);
+    try {
+      final Box<T> box = await Hive.openBox<T>(path.text);
 
-    await box.close();
+      final T? result = box.getAt(index);
 
-    return result;
+      await box.close();
+
+      return result;
+    } catch (e) {
+      return null;
+    }
   }
 
   @override
-  Future<bool> containsKey<T>(LocalStoragePath path, dynamic key, T obj) async {
+  Future<bool> containsKey<T>(LocalStoragePath path, dynamic key) async {
     final Box<T> box = await Hive.openBox<T>(path.text);
 
     final bool containsKey = box.containsKey(key);

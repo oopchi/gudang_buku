@@ -1,3 +1,4 @@
+import 'package:bookstore/data/service/auth_service_fs.dart';
 import 'package:bookstore/domain/dto/amount_type_response.dart';
 import 'package:bookstore/domain/dto/author_book_response.dart';
 import 'package:bookstore/domain/dto/author_response.dart';
@@ -6,7 +7,6 @@ import 'package:bookstore/domain/dto/event_response.dart';
 import 'package:bookstore/domain/dto/favorite_response.dart';
 import 'package:bookstore/domain/dto/media_response.dart';
 import 'package:bookstore/domain/dto/review_response.dart';
-import 'package:bookstore/domain/dto/user_response.dart';
 import 'package:bookstore/domain/local/local_storage.dart';
 import 'package:bookstore/domain/model/event_model.dart';
 import 'package:bookstore/domain/model/favorite_button_model.dart';
@@ -39,6 +39,7 @@ class HomeViewController {
     required AuthorBookRepository authorBookRepository,
     required AuthorRepository authorRepository,
     required AmountTypeRepository amountTypeRepository,
+    required AuthServiceFS authServiceFS,
   })  : _bookRepository = bookRepository,
         _amountTypeRepository = amountTypeRepository,
         _favoriteRepository = favoriteRepository,
@@ -47,10 +48,8 @@ class HomeViewController {
         _mediaRepository = mediaRepository,
         _promoRepository = promoRepository,
         _reviewRepository = reviewRepository,
-        _authorRepository = authorRepository,
-        _localStorage = localStorage;
-
-  final LocalStorage _localStorage;
+        _authServiceFS = authServiceFS,
+        _authorRepository = authorRepository;
 
   final AuthorRepository _authorRepository;
   final BookRepository _bookRepository;
@@ -61,6 +60,8 @@ class HomeViewController {
   final MediaRepository _mediaRepository;
   final AuthorBookRepository _authorBookRepository;
   final AmountTypeRepository _amountTypeRepository;
+
+  final AuthServiceFS _authServiceFS;
 
   Future<Either<Failure, List<EventModel>>> getAllEvents() async {
     final Either<Failure, List<EventResponse>> eventRes =
@@ -123,19 +124,6 @@ class HomeViewController {
     List<PromoResponse> promoResponses,
     List<BookResponse> bookResponses,
   ) async {
-    // final UserResponse user =
-    //     await _localStorage.readAt(LocalStoragePath.user, 0);
-
-    const UserResponse user = UserResponse(
-      email: 'user@mail.com',
-      id: '1',
-      meritAmount: 0,
-      name: 'cceececece',
-      password: 'hjlkjl',
-      avatarUrl:
-          'https://upload.wikimedia.org/wikipedia/id/a/a7/Doraemon_versi_2005.png',
-    );
-
     final List<PromoModel> promos = <PromoModel>[];
 
     final Either<Failure, List<AmountTypeResponse>> amountTypeRes =
@@ -166,7 +154,7 @@ class HomeViewController {
 
     final Either<Failure, List<FavoriteResponse>> favoriteRes =
         await _favoriteRepository.fetchAllFavoritesForUserId(
-      userId: user.id!,
+      userId: _authServiceFS.getUser().uid,
     );
 
     if (favoriteRes.isLeft()) {

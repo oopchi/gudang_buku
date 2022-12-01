@@ -1,9 +1,31 @@
-class LoginMobileState {
+import 'package:equatable/equatable.dart';
+
+class LoginMobileState extends Equatable {
+  const LoginMobileState();
+
   LoginMobileState init() {
-    return LoginMobileState();
+    return const LoginMobileState();
   }
 
   LoginMobileState clone() {
-    return LoginMobileState();
+    return const LoginMobileState();
   }
+
+  @override
+  List<Object?> get props => <Object?>[];
 }
+
+class LoginMobileFailure extends LoginMobileState {
+  const LoginMobileFailure({
+    required this.message,
+  });
+
+  final String message;
+
+  @override
+  List<Object?> get props => <Object?>[];
+}
+
+class LoginMobileLoading extends LoginMobileState {}
+
+class LoginMobileLoaded extends LoginMobileState {}

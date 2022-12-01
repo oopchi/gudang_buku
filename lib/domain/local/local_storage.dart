@@ -15,10 +15,12 @@ enum LocalStoragePath {
   transaction,
   userDiscount,
   user,
+  credential,
 }
 
 extension LocalStoragePathExt on LocalStoragePath {
   static const Map<LocalStoragePath, String> texts = <LocalStoragePath, String>{
+    LocalStoragePath.credential: 'credential',
     LocalStoragePath.address: 'address',
     LocalStoragePath.allowedMedia: 'allowedMedia',
     LocalStoragePath.author: 'author',
@@ -48,7 +50,7 @@ abstract class LocalStorage {
 
   Future<T?> readAt<T>(LocalStoragePath path, int index);
 
-  Future<bool> containsKey<T>(LocalStoragePath path, dynamic key, T obj);
+  Future<bool> containsKey<T>(LocalStoragePath path, dynamic key);
 
   Future<bool> isEmpty<T>(LocalStoragePath path);
 
