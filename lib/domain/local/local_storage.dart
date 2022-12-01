@@ -1,6 +1,6 @@
 enum LocalStoragePath {
   address,
-  allowedMediaType,
+  allowedMedia,
   author,
   book,
   chat,
@@ -20,7 +20,7 @@ enum LocalStoragePath {
 extension LocalStoragePathExt on LocalStoragePath {
   static const Map<LocalStoragePath, String> texts = <LocalStoragePath, String>{
     LocalStoragePath.address: 'address',
-    LocalStoragePath.allowedMediaType: 'allowedMediaType',
+    LocalStoragePath.allowedMedia: 'allowedMedia',
     LocalStoragePath.author: 'author',
     LocalStoragePath.book: 'book',
     LocalStoragePath.chat: 'chat',

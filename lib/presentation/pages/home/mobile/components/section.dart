@@ -36,28 +36,36 @@ class HomeMobileSection extends StatelessWidget {
   }
 
   Widget _buildProductList() {
-    return ListView(
-      padding: EdgeInsets.only(
-        left: 16.0.w,
+    return Container(
+      height: 414.0.h,
+      alignment: Alignment.center,
+      child: ListView(
+        physics: const BouncingScrollPhysics(
+          parent: AlwaysScrollableScrollPhysics(),
+        ),
+        padding: EdgeInsets.only(
+          left: 16.0.w,
+        ),
+        scrollDirection: Axis.horizontal,
+        children: <Widget>[
+          for (final ProductCardModel model in models)
+            Padding(
+              padding: EdgeInsets.only(
+                right: 17.0.w,
+              ),
+              child: ProductCard(
+                model: model,
+              ),
+            ),
+        ],
       ),
-      scrollDirection: Axis.horizontal,
-      children: <Widget>[
-        for (final ProductCardModel model in models)
-          Padding(
-            padding: EdgeInsets.only(
-              right: 17.0.w,
-            ),
-            child: ProductCard(
-              model: model,
-            ),
-          ),
-      ],
     );
   }
 
   Widget _buildHeader() {
     return Row(
       children: <Widget>[
+        Spacing.horizontal(14.0.w),
         Expanded(
           child: _buildHeaderTitle(),
         ),
@@ -95,6 +103,7 @@ class HomeMobileSection extends StatelessWidget {
 
   Widget _buildViewAllButton() {
     return Material(
+      color: Colors.transparent,
       borderRadius: BorderRadius.circular(8.0.r),
       child: InkWell(
         borderRadius: BorderRadius.circular(8.0.r),

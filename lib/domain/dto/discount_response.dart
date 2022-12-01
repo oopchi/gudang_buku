@@ -1,22 +1,19 @@
-import 'package:bookstore/domain/dto/user_response.dart';
+import 'package:bookstore/util/json_helper.dart';
 import 'package:equatable/equatable.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'discount_response.g.dart';
 
-@HiveType(typeId: 6)
 @JsonSerializable()
 class DiscountResponse extends Equatable {
   const DiscountResponse({
     this.id,
     this.name,
     this.maxUse,
-    this.discountType,
+    this.amountType,
     this.description,
     this.amount,
-    this.rewardType,
-    this.issuer,
+    this.issuerId,
     this.requiredMerit,
     this.startDate,
     this.endDate,
@@ -25,27 +22,32 @@ class DiscountResponse extends Equatable {
   factory DiscountResponse.fromJson(Map<String, dynamic> json) =>
       _$DiscountResponseFromJson(json);
 
-  @HiveField(31)
   final String? id;
-  @HiveField(32)
+
   final String? name;
-  @HiveField(33)
+
   final int? maxUse;
-  @HiveField(34)
-  final String? discountType;
-  @HiveField(35)
+
+  final String? amountType;
+
   final String? description;
-  @HiveField(36)
+
   final int? amount;
-  @HiveField(37)
-  final String? rewardType;
-  @HiveField(38)
-  final UserResponse? issuer;
-  @HiveField(39)
+
+  final String? issuerId;
+
   final int? requiredMerit;
-  @HiveField(40)
+
+  @JsonKey(
+    fromJson: JsonHelper.fromTimestamp,
+    toJson: JsonHelper.toTimestamp,
+  )
   final DateTime? startDate;
-  @HiveField(41)
+
+  @JsonKey(
+    fromJson: JsonHelper.fromTimestamp,
+    toJson: JsonHelper.toTimestamp,
+  )
   final DateTime? endDate;
 
   Map<String, dynamic> toJson() => _$DiscountResponseToJson(this);
@@ -55,11 +57,10 @@ class DiscountResponse extends Equatable {
         id,
         name,
         maxUse,
-        discountType,
+        amountType,
         description,
         amount,
-        rewardType,
-        issuer,
+        issuerId,
         requiredMerit,
         startDate,
         endDate,

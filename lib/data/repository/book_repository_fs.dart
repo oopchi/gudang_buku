@@ -68,7 +68,7 @@ class BookRepositoryFS implements BookRepository {
       return await books
           .where(
             'promoId',
-            arrayContainsAny: promoIds,
+            whereIn: promoIds,
           )
           .get()
           .then(
@@ -99,6 +99,58 @@ class BookRepositoryFS implements BookRepository {
         (DocumentSnapshot<Object?> result) {
           return Right(
               BookResponse.fromJson(result.data() as Map<String, dynamic>));
+        },
+        onError: (e) => Left(DatabaseFailure(e.toString())),
+      );
+    } on ServerException {
+      return const Left(ServerFailure('Server Failure'));
+    } on SocketException {
+      return const Left(ConnectionFailure('Failed to connect to the network'));
+    }
+  }
+
+  @override
+  Future<Either<Failure, List<BookResponse>>> fetchAllBooksWithPromoId({
+    required String promoId,
+  }) async {
+    try {
+      return await books
+          .where(
+            'promoId',
+            isEqualTo: promoId,
+          )
+          .get()
+          .then(
+        (QuerySnapshot<Object?> result) {
+          return Right(result.docs.map((QueryDocumentSnapshot<Object?> e) {
+            final Map<String, dynamic> data = e.data() as Map<String, dynamic>;
+
+            data['id'] = e.reference.id;
+
+            return BookResponse.fromJson(data);
+          }).toList());
+        },
+        onError: (e) => Left(DatabaseFailure(e.toString())),
+      );
+    } on ServerException {
+      return const Left(ServerFailure('Server Failure'));
+    } on SocketException {
+      return const Left(ConnectionFailure('Failed to connect to the network'));
+    }
+  }
+
+  @override
+  Future<Either<Failure, List<BookResponse>>> fetchAllBooks() async {
+    try {
+      return await books.get().then(
+        (QuerySnapshot<Object?> result) {
+          return Right(result.docs.map((QueryDocumentSnapshot<Object?> e) {
+            final Map<String, dynamic> data = e.data() as Map<String, dynamic>;
+
+            data['id'] = e.reference.id;
+
+            return BookResponse.fromJson(data);
+          }).toList());
         },
         onError: (e) => Left(DatabaseFailure(e.toString())),
       );

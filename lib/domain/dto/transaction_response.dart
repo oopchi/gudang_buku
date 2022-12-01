@@ -1,63 +1,64 @@
-import 'package:bookstore/domain/dto/address_response.dart';
-import 'package:bookstore/domain/dto/courier_response.dart';
-import 'package:bookstore/domain/dto/discount_response.dart';
-import 'package:bookstore/domain/dto/payment_method_response.dart';
-import 'package:bookstore/domain/dto/transaction_detail_response.dart';
-import 'package:bookstore/domain/dto/user_response.dart';
+import 'package:bookstore/util/json_helper.dart';
 import 'package:equatable/equatable.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'transaction_response.g.dart';
 
-@HiveType(typeId: 13)
 @JsonSerializable()
 class TransactionResponse extends Equatable {
   const TransactionResponse({
     this.id,
-    this.address,
+    this.addressId,
     this.checkedOutAt,
-    this.complaintHandler,
+    this.complaintHandlerId,
     this.complaintResolvedAt,
     this.complaintStartedAt,
-    this.courier,
-    this.discount,
-    this.paymentMethod,
+    this.courierId,
+    this.discountId,
+    this.paymentMethodId,
     this.resiNumber,
     this.status,
-    this.user,
-    this.transactionDetails,
+    this.userId,
   });
 
   factory TransactionResponse.fromJson(Map<String, dynamic> json) =>
       _$TransactionResponseFromJson(json);
 
-  @HiveField(62)
   final String? id;
-  @HiveField(63)
+
+  @JsonKey(
+    fromJson: JsonHelper.fromTimestamp,
+    toJson: JsonHelper.toTimestamp,
+  )
   final DateTime? checkedOutAt;
-  @HiveField(64)
+
   final String? status;
-  @HiveField(65)
-  final PaymentMethodResponse? paymentMethod;
-  @HiveField(66)
-  final CourierResponse? courier;
-  @HiveField(67)
+
+  final String? paymentMethodId;
+
+  final String? courierId;
+
+  @JsonKey(
+    fromJson: JsonHelper.fromTimestamp,
+    toJson: JsonHelper.toTimestamp,
+  )
   final DateTime? complaintStartedAt;
-  @HiveField(68)
+
+  @JsonKey(
+    fromJson: JsonHelper.fromTimestamp,
+    toJson: JsonHelper.toTimestamp,
+  )
   final DateTime? complaintResolvedAt;
-  @HiveField(69)
-  final UserResponse? complaintHandler;
-  @HiveField(70)
+
+  final String? complaintHandlerId;
+
   final String? resiNumber;
-  @HiveField(71)
-  final UserResponse? user;
-  @HiveField(72)
-  final DiscountResponse? discount;
-  @HiveField(73)
-  final AddressResponse? address;
-  @HiveField(88)
-  final List<TransactionDetailResponse?>? transactionDetails;
+
+  final String? userId;
+
+  final String? discountId;
+
+  final String? addressId;
 
   Map<String, dynamic> toJson() => _$TransactionResponseToJson(this);
 
@@ -66,15 +67,14 @@ class TransactionResponse extends Equatable {
         id,
         checkedOutAt,
         status,
-        paymentMethod,
-        courier,
+        paymentMethodId,
+        courierId,
         complaintStartedAt,
         complaintResolvedAt,
-        complaintHandler,
+        complaintHandlerId,
         resiNumber,
-        user,
-        discount,
-        address,
-        transactionDetails,
+        userId,
+        discountId,
+        addressId,
       ];
 }

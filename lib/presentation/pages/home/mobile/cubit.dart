@@ -1,4 +1,5 @@
 import 'package:bookstore/domain/controller/home_view_controller.dart';
+import 'package:bookstore/domain/model/event_model.dart';
 import 'package:bookstore/domain/model/promo_model.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:dartz/dartz.dart';
@@ -26,12 +27,25 @@ class HomeMobileCubit extends Cubit<HomeMobileState> {
           message: l.message,
         ),
       ),
-      (List<PromoModel> promos) {
-        final HomeMobileLoaded model = HomeMobileLoaded(
-          promos: promos,
-        );
+      (List<PromoModel> promos) async {
+        final Either<Failure, List<EventModel>> eventRes =
+            await _homeViewController.getAllEvents();
 
-        emit(model);
+        eventRes.fold(
+          (Failure l) => emit(
+            HomeMobileFailure(
+              message: l.message,
+            ),
+          ),
+          (List<EventModel> events) {
+            final HomeMobileLoaded model = HomeMobileLoaded(
+              promos: promos,
+              events: events,
+            );
+
+            emit(model);
+          },
+        );
       },
     );
   }

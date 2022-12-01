@@ -43,8 +43,9 @@ class UserRepositoryFS implements UserRepository {
   }
 
   @override
-  Future<Either<Failure, UserResponse>> fetchUserWithId(
-      {required String uid}) async {
+  Future<Either<Failure, UserResponse>> fetchUserWithId({
+    required String uid,
+  }) async {
     try {
       return users.doc(uid).get().then(
         (DocumentSnapshot<Object?> result) {

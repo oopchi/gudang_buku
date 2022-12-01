@@ -45,7 +45,7 @@ class PromoRepositoryFS implements PromoRepository {
       return await promos
           .where(
             'endDate',
-            isLessThan: DateTime.now(),
+            isGreaterThanOrEqualTo: DateTime.now(),
           )
           .get()
           .then(

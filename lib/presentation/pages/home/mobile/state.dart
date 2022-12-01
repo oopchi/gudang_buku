@@ -1,3 +1,4 @@
+import 'package:bookstore/domain/model/event_model.dart';
 import 'package:bookstore/domain/model/promo_model.dart';
 import 'package:equatable/equatable.dart';
 
@@ -34,12 +35,15 @@ class HomeMobileFailure extends HomeMobileState {
 class HomeMobileLoaded extends HomeMobileState {
   const HomeMobileLoaded({
     required this.promos,
+    required this.events,
   });
 
   final List<PromoModel> promos;
+  final List<EventModel> events;
 
   @override
   List<Object?> get props => <Object?>[
         promos,
+        events,
       ];
 }

@@ -1,12 +1,9 @@
-import 'package:bookstore/domain/dto/book_response.dart';
-import 'package:bookstore/domain/dto/role_response.dart';
+import 'package:bookstore/util/json_helper.dart';
 import 'package:equatable/equatable.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'promo_response.g.dart';
 
-@HiveType(typeId: 20)
 @JsonSerializable()
 class PromoResponse extends Equatable {
   const PromoResponse({
@@ -15,26 +12,33 @@ class PromoResponse extends Equatable {
     this.description,
     this.endDate,
     this.name,
-    this.promoType,
+    this.amountTypeId,
     this.startDate,
   });
 
   factory PromoResponse.fromJson(Map<String, dynamic> json) =>
       _$PromoResponseFromJson(json);
 
-  @HiveField(100)
   final String? id;
-  @HiveField(101)
+
   final String? name;
-  @HiveField(102)
+
   final String? description;
-  @HiveField(103)
-  final String? promoType;
-  @HiveField(104)
+
+  final String? amountTypeId;
+
+  @JsonKey(
+    fromJson: JsonHelper.fromTimestamp,
+    toJson: JsonHelper.toTimestamp,
+  )
   final DateTime? startDate;
-  @HiveField(105)
+
+  @JsonKey(
+    fromJson: JsonHelper.fromTimestamp,
+    toJson: JsonHelper.toTimestamp,
+  )
   final DateTime? endDate;
-  @HiveField(106)
+
   final int? amount;
 
   Map<String, dynamic> toJson() => _$PromoResponseToJson(this);
@@ -44,7 +48,7 @@ class PromoResponse extends Equatable {
         id,
         name,
         description,
-        promoType,
+        amountTypeId,
         startDate,
         endDate,
         amount,

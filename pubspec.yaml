@@ -56,6 +56,7 @@ dependencies:
   flutter_screenutil: ^5.6.0
   flutter_rating_bar: ^4.0.1
   email_validator: ^2.1.17
+  carousel_slider: ^4.1.1
 
 dev_dependencies:
   build_runner: ^2.2.0
@@ -99,49 +100,54 @@ flutter:
   # list giving the asset and other descriptors for the font. For
   # example:
   fonts:
-    - family: Poppins
+    - family: Metropolis
       fonts:
-        - asset: fonts/Poppins-Regular.ttf
-        - asset: fonts/Poppins-Black.ttf
-          weight: 900
-        - asset: fonts/Poppins-BlackItalic.ttf
+        - asset: fonts/Metropolis-Regular-400.otf
+          weight: 400
+        - asset: fonts/Metropolis-Black-Italic-900.otf
           weight: 900
           style: italic
-        - asset: fonts/Poppins-ExtraBold.ttf
-          weight: 800
-        - asset: fonts/Poppins-ExtraBoldItalic.ttf
-          weight: 800
-          style: italic
-        - asset: fonts/Poppins-Bold.ttf
+        - asset: fonts/Metropolis-Black-900.otf
+          weight: 900
+        - asset: fonts/Metropolis-Bold-700.otf
           weight: 700
-        - asset: fonts/Poppins-BoldItalic.ttf
+        - asset: fonts/Metropolis-Bold-Italic-700.otf
           weight: 700
           style: italic
-        - asset: fonts/Poppins-SemiBold.ttf
-          weight: 600
-        - asset: fonts/Poppins-SemiBoldItalic.ttf
-          weight: 600
+        - asset: fonts/Metropolis-Extra-Bold-Italic-800.otf
+          weight: 800
           style: italic
-        - asset: fonts/Poppins-Medium.ttf
-          weight: 500
-        - asset: fonts/Poppins-MediumItalic.ttf
-          weight: 500
-          style: italic
-        - asset: fonts/Poppins-Light.ttf
-          weight: 300
-        - asset: fonts/Poppins-LightItalic.ttf
-          weight: 300
-          style: italic
-        - asset: fonts/Poppins-ExtraLight.ttf
-          weight: 200
-        - asset: fonts/Poppins-ExtraLightItalic.ttf
+        - asset: fonts/Metropolis-Extra-Light-Italic-400.otf
           weight: 200
           style: italic
-        - asset: fonts/Poppins-Thin.ttf
+        - asset: fonts/Metropolis-ExtraBold-800.otf
+          weight: 800
+        - asset: fonts/Metropolis-ExtraLight-400.otf
+          weight: 200
+        - asset: fonts/Metropolis-Italic-400.otf
+          weight: 400
+          style: italic
+        - asset: fonts/Metropolis-Light-400.otf
+          weight: 300
+        - asset: fonts/Metropolis-Light-Italic-400.otf
+          weight: 300
+          style: italic
+        - asset: fonts/Metropolis-Medium-500.otf
+          weight: 500
+        - asset: fonts/Metropolis-Medium-Italic-700.otf
+          weight: 500
+          style: italic
+        - asset: fonts/Metropolis-Semi-Bold-Italic-700.otf
+          weight: 600
+          style: italic
+        - asset: fonts/Metropolis-SemiBold-600.otf
+          weight: 600
+        - asset: fonts/Metropolis-Thin-400.otf
           weight: 100
-        - asset: fonts/Poppins-ThinItalic.ttf
+        - asset: fonts/Metropolis-Thin-Italic-400.otf
           weight: 100
           style: italic
+
   #   - family: Trajan Pro
   #     fonts:
   #       - asset: fonts/TrajanPro.ttf

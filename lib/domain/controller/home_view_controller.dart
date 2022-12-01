@@ -1,13 +1,24 @@
+import 'package:bookstore/domain/dto/amount_type_response.dart';
+import 'package:bookstore/domain/dto/author_book_response.dart';
+import 'package:bookstore/domain/dto/author_response.dart';
 import 'package:bookstore/domain/dto/book_response.dart';
+import 'package:bookstore/domain/dto/event_response.dart';
+import 'package:bookstore/domain/dto/favorite_response.dart';
 import 'package:bookstore/domain/dto/media_response.dart';
 import 'package:bookstore/domain/dto/review_response.dart';
 import 'package:bookstore/domain/dto/user_response.dart';
 import 'package:bookstore/domain/local/local_storage.dart';
+import 'package:bookstore/domain/model/event_model.dart';
 import 'package:bookstore/domain/model/favorite_button_model.dart';
 import 'package:bookstore/domain/model/product_card_model.dart';
 import 'package:bookstore/domain/model/promo_model.dart';
 import 'package:bookstore/domain/dto/promo_response.dart';
+import 'package:bookstore/domain/repository/amount_type_repository.dart';
+import 'package:bookstore/domain/repository/author_book_repository.dart';
+import 'package:bookstore/domain/repository/author_repository.dart';
 import 'package:bookstore/domain/repository/book_repository.dart';
+import 'package:bookstore/domain/repository/event_repository.dart';
+import 'package:bookstore/domain/repository/favorite_repository.dart';
 import 'package:bookstore/domain/repository/media_repository.dart';
 import 'package:bookstore/domain/repository/promo_repository.dart';
 import 'package:bookstore/domain/repository/review_repository.dart';
@@ -21,19 +32,46 @@ class HomeViewController {
     required BookRepository bookRepository,
     required PromoRepository promoRepository,
     required LocalStorage localStorage,
-    required MediaRepository mediaRepository,
     required ReviewRepository reviewRepository,
+    required EventRepository eventRepository,
+    required FavoriteRepository favoriteRepository,
+    required MediaRepository mediaRepository,
+    required AuthorBookRepository authorBookRepository,
+    required AuthorRepository authorRepository,
+    required AmountTypeRepository amountTypeRepository,
   })  : _bookRepository = bookRepository,
+        _amountTypeRepository = amountTypeRepository,
+        _favoriteRepository = favoriteRepository,
+        _authorBookRepository = authorBookRepository,
+        _eventRepository = eventRepository,
         _mediaRepository = mediaRepository,
         _promoRepository = promoRepository,
         _reviewRepository = reviewRepository,
+        _authorRepository = authorRepository,
         _localStorage = localStorage;
 
   final LocalStorage _localStorage;
+
+  final AuthorRepository _authorRepository;
   final BookRepository _bookRepository;
   final PromoRepository _promoRepository;
-  final MediaRepository _mediaRepository;
   final ReviewRepository _reviewRepository;
+  final EventRepository _eventRepository;
+  final FavoriteRepository _favoriteRepository;
+  final MediaRepository _mediaRepository;
+  final AuthorBookRepository _authorBookRepository;
+  final AmountTypeRepository _amountTypeRepository;
+
+  Future<Either<Failure, List<EventModel>>> getAllEvents() async {
+    final Either<Failure, List<EventResponse>> eventRes =
+        await _eventRepository.fetchAllEvents();
+
+    return eventRes.fold(
+      (l) => Left(l),
+      (List<EventResponse> eventResponses) =>
+          Right(_createEvents(eventResponses)),
+    );
+  }
 
   Future<Either<Failure, List<PromoModel>>> getAllPromoWithBooks() async {
     final Either<Failure, List<PromoResponse>> promoRes =
@@ -42,12 +80,8 @@ class HomeViewController {
     return promoRes.fold(
       (l) => Left(l),
       (List<PromoResponse> promoResponses) async {
-        final List<String> promoIds = promoResponses.map((e) => e.id!).toList();
-
         final Either<Failure, List<BookResponse>> booksRes =
-            await _bookRepository.fetchAllBooksWithAnyPromo(
-          promoIds: promoIds,
-        );
+            await _bookRepository.fetchAllBooks();
 
         return booksRes.fold(
           (l) => Left(l),
@@ -65,14 +99,60 @@ class HomeViewController {
     );
   }
 
+  List<EventModel> _createEvents(List<EventResponse> eventResponses) {
+    return eventResponses.map((EventResponse e) {
+      DateTimeRange? dateTimeRange;
+
+      if (e.startDate != null && e.endDate != null) {
+        dateTimeRange = DateTimeRange(
+          start: e.startDate!,
+          end: e.endDate!,
+        );
+      }
+      return EventModel(
+        id: e.id!,
+        name: e.name!,
+        description: e.description,
+        dateTimeRange: dateTimeRange,
+        imageUrl: e.coverUrl!,
+      );
+    }).toList();
+  }
+
   Future<Either<Failure, List<PromoModel>>> _createPromosWithBooks(
     List<PromoResponse> promoResponses,
     List<BookResponse> bookResponses,
   ) async {
-    final UserResponse user =
-        await _localStorage.readAt(LocalStoragePath.user, 0);
+    // final UserResponse user =
+    //     await _localStorage.readAt(LocalStoragePath.user, 0);
+
+    const UserResponse user = UserResponse(
+      email: 'user@mail.com',
+      id: '1',
+      meritAmount: 0,
+      name: 'cceececece',
+      password: 'hjlkjl',
+      avatarUrl:
+          'https://upload.wikimedia.org/wikipedia/id/a/a7/Doraemon_versi_2005.png',
+    );
 
     final List<PromoModel> promos = <PromoModel>[];
+
+    final Either<Failure, List<AmountTypeResponse>> amountTypeRes =
+        await _amountTypeRepository.fetchAllAmountType();
+
+    if (amountTypeRes.isLeft()) {
+      return Left(amountTypeRes.asLeft());
+    }
+
+    final List<AmountTypeResponse> amountTypeResponses =
+        amountTypeRes.asRight();
+
+    final Map<String, String> amountTypeMap = <String, String>{
+      for (final AmountTypeResponse amountTypeResponse in amountTypeResponses)
+        amountTypeResponse.id!: amountTypeResponse.name!,
+    };
+
     final Map<String, List<ProductCardModel>> promoProductMap =
         <String, List<ProductCardModel>>{
       for (final PromoResponse promoResponse in promoResponses)
@@ -84,11 +164,26 @@ class HomeViewController {
         promoResponse.id!: promoResponse,
     };
 
+    final Either<Failure, List<FavoriteResponse>> favoriteRes =
+        await _favoriteRepository.fetchAllFavoritesForUserId(
+      userId: user.id!,
+    );
+
+    if (favoriteRes.isLeft()) {
+      return Left(favoriteRes.asLeft());
+    }
+
+    final List<FavoriteResponse> userFavoriteResponse = favoriteRes.asRight();
+
+    bookResponses.removeWhere((element) =>
+        element.promoId == null ||
+        !promoProductMap.containsKey(element.promoId));
+
     for (final BookResponse bookResponse in bookResponses) {
       final FavoriteButtonModel favoriteButtonModel = FavoriteButtonModel(
         showButton: true,
-        isFavorite: user.favorites
-                ?.indexWhere((element) => element?.id! == bookResponse.id!) !=
+        isFavorite: userFavoriteResponse
+                .indexWhere((element) => element.bookId! == bookResponse.id!) !=
             -1,
       );
 
@@ -105,8 +200,31 @@ class HomeViewController {
 
       final String imageUrl = mediaResponses[0].url!;
 
-      final String author = bookResponse.authors!.fold(
-          '', (previousValue, element) => '$previousValue, ${element!.name}');
+      final Either<Failure, List<AuthorBookResponse>> authorBookRes =
+          await _authorBookRepository.fetchAllAuthorBookWithBookId(
+        bookId: bookResponse.id!,
+      );
+
+      if (authorBookRes.isLeft()) {
+        return Left(authorBookRes.asLeft());
+      }
+
+      final List<AuthorBookResponse> authorBookResponses =
+          authorBookRes.asRight();
+
+      final Either<Failure, List<AuthorResponse>> authorRes =
+          await _authorRepository.fetchAllAuthorWithId(
+        authorIds: authorBookResponses.map((e) => e.authorId!).toList(),
+      );
+
+      if (authorRes.isLeft()) {
+        return Left(authorRes.asLeft());
+      }
+
+      final List<AuthorResponse> authorResponses = authorRes.asRight();
+
+      final String author = authorResponses.fold(
+          '', (previousValue, element) => '$previousValue, ${element.name}');
 
       final Either<Failure, List<ReviewResponse>> reviewRes =
           await _reviewRepository.fetchAllReviewsWithBookId(
@@ -154,7 +272,7 @@ class HomeViewController {
         );
       }
 
-      final List<ProductCardModel> productCardModels = <ProductCardModel>[];
+      final List<ProductCardModel> productCardModels = mapEntry.value;
 
       final PromoModel promo = PromoModel(
         id: currentPromoResponse.id!,
@@ -162,7 +280,8 @@ class HomeViewController {
         description: currentPromoResponse.description ?? '',
         productCardModels: productCardModels,
         amount: currentPromoResponse.amount ?? 0,
-        amountType: currentPromoResponse.promoType ?? 'Amount',
+        amountType:
+            amountTypeMap[currentPromoResponse.amountTypeId] ?? 'Amount',
         dateTimeRange: dateTimeRange,
       );
 

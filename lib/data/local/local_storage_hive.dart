@@ -1,20 +1,4 @@
 import 'package:bookstore/domain/local/local_storage.dart';
-import 'package:bookstore/domain/dto/address_response.dart';
-import 'package:bookstore/domain/dto/allowed_media_type_response.dart';
-import 'package:bookstore/domain/dto/author_response.dart';
-import 'package:bookstore/domain/dto/book_response.dart';
-import 'package:bookstore/domain/dto/chat_response.dart';
-import 'package:bookstore/domain/dto/courier_response.dart';
-import 'package:bookstore/domain/dto/discount_response.dart';
-import 'package:bookstore/domain/dto/genre_response.dart';
-import 'package:bookstore/domain/dto/media_response.dart';
-import 'package:bookstore/domain/dto/payment_method_response.dart';
-import 'package:bookstore/domain/dto/restock_response.dart';
-import 'package:bookstore/domain/dto/role_response.dart';
-import 'package:bookstore/domain/dto/transaction_detail_response.dart';
-import 'package:bookstore/domain/dto/transaction_response.dart';
-import 'package:bookstore/domain/dto/user_discount_response.dart';
-import 'package:bookstore/domain/dto/user_response.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 class LocalStorageHive implements LocalStorage {
@@ -27,22 +11,22 @@ class LocalStorageHive implements LocalStorage {
   Future<void> init() async {
     await Hive.initFlutter();
 
-    Hive.registerAdapter(AddressResponseAdapter());
-    Hive.registerAdapter(AllowedMediaTypeResponseAdapter());
-    Hive.registerAdapter(AuthorResponseAdapter());
-    Hive.registerAdapter(BookResponseAdapter());
-    Hive.registerAdapter(ChatResponseAdapter());
-    Hive.registerAdapter(CourierResponseAdapter());
-    Hive.registerAdapter(DiscountResponseAdapter());
-    Hive.registerAdapter(GenreResponseAdapter());
-    Hive.registerAdapter(MediaResponseAdapter());
-    Hive.registerAdapter(PaymentMethodResponseAdapter());
-    Hive.registerAdapter(RestockResponseAdapter());
-    Hive.registerAdapter(RoleResponseAdapter());
-    Hive.registerAdapter(TransactionDetailResponseAdapter());
-    Hive.registerAdapter(TransactionResponseAdapter());
-    Hive.registerAdapter(UserDiscountResponseAdapter());
-    Hive.registerAdapter(UserResponseAdapter());
+    // Hive.registerAdapter(AddressResponseAdapter());
+    // Hive.registerAdapter(AllowedMediaResponseAdapter());
+    // Hive.registerAdapter(AuthorResponseAdapter());
+    // Hive.registerAdapter(BookResponseAdapter());
+    // Hive.registerAdapter(ChatResponseAdapter());
+    // Hive.registerAdapter(CourierResponseAdapter());
+    // Hive.registerAdapter(DiscountResponseAdapter());
+    // Hive.registerAdapter(GenreResponseAdapter());
+    // Hive.registerAdapter(MediaResponseAdapter());
+    // Hive.registerAdapter(PaymentMethodResponseAdapter());
+    // Hive.registerAdapter(RestockResponseAdapter());
+    // Hive.registerAdapter(RoleResponseAdapter());
+    // Hive.registerAdapter(TransactionDetailResponseAdapter());
+    // Hive.registerAdapter(TransactionResponseAdapter());
+    // Hive.registerAdapter(UserDiscountResponseAdapter());
+    // Hive.registerAdapter(UserResponseAdapter());
   }
 
   @override

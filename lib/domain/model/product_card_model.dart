@@ -1,6 +1,7 @@
 import 'package:bookstore/domain/model/favorite_button_model.dart';
+import 'package:equatable/equatable.dart';
 
-class ProductCardModel {
+class ProductCardModel extends Equatable {
   const ProductCardModel({
     required this.favoriteButtonModel,
     required this.imageUrl,
@@ -21,4 +22,17 @@ class ProductCardModel {
   final String title;
   final int price;
   final int? discountedPrice;
+
+  @override
+  List<Object?> get props => <Object?>[
+        favoriteButtonModel,
+        imageUrl,
+        author,
+        discountString,
+        discountedPrice,
+        numOfRating,
+        price,
+        rating,
+        title,
+      ];
 }

@@ -1,13 +1,8 @@
-import 'package:bookstore/domain/dto/book_response.dart';
-import 'package:bookstore/domain/dto/role_response.dart';
-import 'package:bookstore/domain/dto/user_discount_response.dart';
 import 'package:equatable/equatable.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'user_response.g.dart';
 
-@HiveType(typeId: 15)
 @JsonSerializable()
 class UserResponse extends Equatable {
   const UserResponse({
@@ -18,34 +13,30 @@ class UserResponse extends Equatable {
     this.rememberToken,
     this.phoneNumber,
     this.meritAmount,
-    this.role,
-    this.userDiscounts,
-    this.favorites,
+    this.avatarUrl,
+    this.roleId,
   });
 
   factory UserResponse.fromJson(Map<String, dynamic> json) =>
       _$UserResponseFromJson(json);
 
-  @HiveField(79)
   final String? id;
-  @HiveField(80)
+
   final String? name;
-  @HiveField(81)
+
   final String? email;
-  @HiveField(82)
+
   final String? password;
-  @HiveField(83)
+
   final String? rememberToken;
-  @HiveField(84)
+
   final String? phoneNumber;
-  @HiveField(85)
+
   final int? meritAmount;
-  @HiveField(86)
-  final RoleResponse? role;
-  @HiveField(87)
-  final List<UserDiscountResponse?>? userDiscounts;
-  @HiveField(88)
-  final List<BookResponse?>? favorites;
+
+  final String? roleId;
+
+  final String? avatarUrl;
 
   Map<String, dynamic> toJson() => _$UserResponseToJson(this);
 
@@ -58,9 +49,8 @@ class UserResponse extends Equatable {
         rememberToken,
         phoneNumber,
         meritAmount,
-        role,
-        userDiscounts,
-        favorites,
+        roleId,
+        avatarUrl,
       ];
 
   static UserResponse newUserResponse({
@@ -71,8 +61,8 @@ class UserResponse extends Equatable {
     String? password,
     String? phoneNumber,
     String? rememberToken,
-    RoleResponse? role,
-    List<UserDiscountResponse?>? userDiscounts,
+    String? roleId,
+    String? avatarUrl,
   }) {
     return UserResponse(
       id: id,
@@ -82,8 +72,8 @@ class UserResponse extends Equatable {
       password: password,
       phoneNumber: phoneNumber,
       rememberToken: rememberToken,
-      role: role,
-      userDiscounts: userDiscounts,
+      roleId: roleId,
+      avatarUrl: avatarUrl,
     );
   }
 }

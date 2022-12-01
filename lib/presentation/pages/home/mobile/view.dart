@@ -1,15 +1,14 @@
 import 'package:bookstore/data/local/local_storage_hive.dart';
+import 'package:bookstore/data/repository/amount_type_repository_fs.dart';
+import 'package:bookstore/data/repository/author_book_repository_fs.dart';
+import 'package:bookstore/data/repository/author_repository_fs.dart';
 import 'package:bookstore/data/repository/book_repository_fs.dart';
-import 'package:bookstore/data/repository/genre_repository_fs.dart';
+import 'package:bookstore/data/repository/event_repository_fs.dart';
+import 'package:bookstore/data/repository/favorite_repository_fs.dart';
 import 'package:bookstore/data/repository/media_repository_fs.dart';
 import 'package:bookstore/data/repository/promo_repository_fs.dart';
 import 'package:bookstore/data/repository/review_repository_fs.dart';
-import 'package:bookstore/data/repository/transaction_repository_fs.dart';
-import 'package:bookstore/data/repository/user_repository_fs.dart';
-import 'package:bookstore/domain/controller/book_controller.dart';
 import 'package:bookstore/domain/controller/home_view_controller.dart';
-import 'package:bookstore/domain/controller/transaction_controller.dart';
-import 'package:bookstore/domain/controller/user_controller.dart';
 import 'package:bookstore/presentation/pages/home/mobile/components/body.dart';
 import 'package:bookstore/presentation/pages/home/mobile/state.dart';
 import 'package:bookstore/presentation/widget/loading_helper.dart';
@@ -26,11 +25,16 @@ class HomeMobilePage extends StatelessWidget {
     return BlocProvider(
       create: (BuildContext context) => HomeMobileCubit(
         homeViewController: HomeViewController(
+          localStorage: LocalStorageHive(),
           bookRepository: BookRepositoryFS(),
           promoRepository: PromoRepositoryFS(),
-          localStorage: LocalStorageHive(),
-          mediaRepository: MediaRepositoryFS(),
+          eventRepository: EventRepositoryFS(),
           reviewRepository: ReviewRepositoryFS(),
+          amountTypeRepository: AmountTypeRepositoryFS(),
+          authorBookRepository: AuthorBookRepositoryFS(),
+          authorRepository: AuthorRepositoryFS(),
+          favoriteRepository: FavoriteRepositoryFS(),
+          mediaRepository: MediaRepositoryFS(),
         ),
       )..load(),
       child: Builder(

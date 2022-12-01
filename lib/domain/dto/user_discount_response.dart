@@ -1,16 +1,14 @@
-import 'package:bookstore/domain/dto/discount_response.dart';
+import 'package:bookstore/util/json_helper.dart';
 import 'package:equatable/equatable.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'user_discount_response.g.dart';
 
-@HiveType(typeId: 14)
 @JsonSerializable()
 class UserDiscountResponse extends Equatable {
   const UserDiscountResponse({
     this.id,
-    this.discount,
+    this.discountId,
     this.numUsed,
     this.claimDate,
   });
@@ -18,13 +16,16 @@ class UserDiscountResponse extends Equatable {
   factory UserDiscountResponse.fromJson(Map<String, dynamic> json) =>
       _$UserDiscountResponseFromJson(json);
 
-  @HiveField(74)
   final String? id;
-  @HiveField(76)
-  final DiscountResponse? discount;
-  @HiveField(77)
+
+  final String? discountId;
+
   final int? numUsed;
-  @HiveField(78)
+
+  @JsonKey(
+    fromJson: JsonHelper.fromTimestamp,
+    toJson: JsonHelper.toTimestamp,
+  )
   final DateTime? claimDate;
 
   Map<String, dynamic> toJson() => _$UserDiscountResponseToJson(this);
@@ -32,7 +33,7 @@ class UserDiscountResponse extends Equatable {
   @override
   List<Object?> get props => <Object?>[
         id,
-        discount,
+        discountId,
         numUsed,
         claimDate,
       ];
