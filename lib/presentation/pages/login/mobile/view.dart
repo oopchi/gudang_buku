@@ -43,185 +43,12 @@ class _LoginMobilePageState extends State<LoginMobilePage> {
   }
 
   Widget _buildPage(BuildContext context) {
-    final LoginMobileCubit cubit = BlocProvider.of<LoginMobileCubit>(context);
-    cubit.state;
-
     return Scaffold(
       appBar: AppBarHelper(
         height: 130,
         child: _buildTopBar(),
       ),
-      body: BlocConsumer<LoginMobileCubit, LoginMobileState>(
-        buildWhen: (previous, current) => current is! LoginMobileSuccess,
-        listener: (context, state) {
-          if (state is LoginMobileSuccess) {
-            context.goNamed(AppRoutes.home.name);
-          }
-
-          if (state is LoginMobileFailure) {
-            ScaffoldMessenger.of(context)
-              ..hideCurrentSnackBar()
-              ..showSnackBar(AppSnackBar(
-                content: state.message,
-              ));
-          }
-        },
-        builder: (context, state) {
-          if (state is LoginMobileLoading) return const AppLoadingView();
-
-          if (state is LoginMobileFormState) {
-            return Form(
-              key: _formKey,
-              child: ListView(
-                padding: EdgeInsets.symmetric(
-                  horizontal: 16.0.w,
-                ),
-                children: <Widget>[
-                  Spacing.vertical(12.0.h),
-                  AppTextFormField(
-                    onChanged: (email) => cubit.checkEmail(email),
-                    validator: (String? value) =>
-                        FormValidator.validateEmail(value ?? '')
-                            ? null
-                            : 'Invalid email address',
-                    autofocus: true,
-                    errorText: state.emailErr ? 'Invalid email address' : null,
-                    hintText: 'example@mail.com',
-                    label: 'Email',
-                    suffixIcon: state.emailErr
-                        ? Icon(
-                            Icons.warning,
-                            size: 24.0.sp,
-                            color: AppColor.error,
-                          )
-                        : Icon(
-                            Icons.check,
-                            size: 24.0.sp,
-                            color: Colors.green,
-                          ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(
-                      vertical: 16.0.h,
-                    ),
-                    child: AppTextFormField(
-                      onChanged: (password) => cubit.checkPassword(password),
-                      validator: (String? password) {
-                        if (password == null) return null;
-                        final RegExp numericRegex = RegExp(r'[0-9]');
-
-                        if (password.length < 8) {
-                          return 'Password needs to have 8 or more characters';
-                        }
-
-                        if (!numericRegex.hasMatch(password)) {
-                          return 'Password needs to have at least one number';
-                        }
-
-                        return null;
-                      },
-                      autofocus: true,
-                      errorText: !(state.hasPasswordOneNumber &&
-                              state.isPasswordEightCharacters)
-                          ? 'Invalid password'
-                          : null,
-                      hintText: 'Password123',
-                      label: 'Password',
-                      obscureText: !(state).isVisible,
-                      suffixIcon: IconButton(
-                        iconSize: 20.0.sp,
-                        onPressed: () => cubit.toggleVisible(),
-                        icon: state.isVisible
-                            ? const Icon(
-                                Icons.visibility,
-                                color: Colors.black,
-                              )
-                            : const Icon(
-                                Icons.visibility_off,
-                                color: Colors.grey,
-                              ),
-                      ),
-                    ),
-                  ),
-                  _buildForgotButton(context),
-                  Spacing.vertical(16.0.h),
-                  Row(
-                    children: <Widget>[
-                      AnimatedContainer(
-                        duration: const Duration(
-                          milliseconds: 500,
-                        ),
-                        width: 20.0.sp,
-                        height: 20.0.sp,
-                        decoration: BoxDecoration(
-                            color: state.isPasswordEightCharacters
-                                ? Colors.green
-                                : Colors.transparent,
-                            border: state.isPasswordEightCharacters
-                                ? Border.all(color: Colors.transparent)
-                                : Border.all(color: Colors.grey.shade400),
-                            borderRadius: BorderRadius.circular(50.0.r)),
-                        child: Center(
-                          child: Icon(
-                            Icons.check,
-                            color: Colors.white,
-                            size: 15.0.sp,
-                          ),
-                        ),
-                      ),
-                      Spacing.horizontal(10.0.w),
-                      Text(
-                        'Contains at least 8 characters',
-                        style: CustomTextStyles.regular.size(18.0),
-                      )
-                    ],
-                  ),
-                  Spacing.vertical(16.0.h),
-                  Row(
-                    children: [
-                      AnimatedContainer(
-                        duration: const Duration(milliseconds: 500),
-                        width: 20.0.sp,
-                        height: 20.0.sp,
-                        decoration: BoxDecoration(
-                            color: state.hasPasswordOneNumber
-                                ? Colors.green
-                                : Colors.transparent,
-                            border: state.hasPasswordOneNumber
-                                ? Border.all(color: Colors.transparent)
-                                : Border.all(color: Colors.grey.shade400),
-                            borderRadius: BorderRadius.circular(50.0.r)),
-                        child: Center(
-                          child: Icon(
-                            Icons.check,
-                            color: Colors.white,
-                            size: 15.0.sp,
-                          ),
-                        ),
-                      ),
-                      Spacing.horizontal(10.0.w),
-                      Text(
-                        'Contains at least 1 number',
-                        style: CustomTextStyles.regular.size(18.0),
-                      ),
-                    ],
-                  ),
-                  Spacing.vertical(32.0.h),
-                  _buildLoginButton(
-                    context,
-                    state.email,
-                    state.password,
-                  ),
-                  Spacing.vertical(20.0.h),
-                  _buildGoogleLoginButton(context),
-                ],
-              ),
-            );
-          }
-
-          return const SizedBox.shrink();
-        },
-      ),
+      body: _buildBody(),
     );
   }
 
@@ -250,6 +77,160 @@ class _LoginMobilePageState extends State<LoginMobilePage> {
           ),
         ),
       ],
+    );
+  }
+
+  Widget _buildBody() {
+    return BlocConsumer<LoginMobileCubit, LoginMobileState>(
+      buildWhen: (previous, current) => current is! LoginMobileSuccess,
+      listener: (context, state) {
+        if (state is LoginMobileSuccess) {
+          context.goNamed(AppRoutes.home.name);
+        }
+
+        if (state is LoginMobileFailure) {
+          ScaffoldMessenger.of(context)
+            ..hideCurrentSnackBar()
+            ..showSnackBar(AppSnackBar(
+              content: state.message,
+            ));
+        }
+      },
+      builder: (context, state) {
+        if (state is LoginMobileLoading) return const AppLoadingView();
+
+        if (state is LoginMobileFormState) {
+          return _buildForm(context, state);
+        }
+
+        return const SizedBox.shrink();
+      },
+    );
+  }
+
+  Widget _buildForm(BuildContext context, LoginMobileFormState state) {
+    final LoginMobileCubit cubit = BlocProvider.of<LoginMobileCubit>(context);
+    cubit.state;
+    return Form(
+      key: _formKey,
+      child: ListView(
+        padding: EdgeInsets.symmetric(
+          horizontal: 16.0.w,
+        ),
+        children: <Widget>[
+          Spacing.vertical(73.0.h),
+          _buildEmailTextField(context, state),
+          _buildPasswordTextField(context, state),
+          _buildForgotButton(context),
+          Spacing.vertical(32.0.h),
+          _buildLoginButton(
+            context,
+            state.email,
+            state.password,
+          ),
+          Spacing.vertical(20.0.h),
+          _buildGoogleLoginButton(context),
+          Spacing.vertical(20.0.h),
+          _buildSignUpButton(context),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildEmailTextField(
+    BuildContext context,
+    LoginMobileFormState state,
+  ) {
+    final LoginMobileCubit cubit = BlocProvider.of<LoginMobileCubit>(context);
+    return AppTextFormField(
+      onChanged: (email) => cubit.checkEmail(email),
+      validator: (String? value) => FormValidator.validateEmail(value ?? '')
+          ? null
+          : 'Invalid email address',
+      autofocus: true,
+      errorText: state.emailErr ? 'Invalid email address' : null,
+      hintText: 'example@mail.com',
+      label: 'Email',
+      suffixIcon: state.emailErr
+          ? Icon(
+              Icons.warning,
+              size: 24.0.sp,
+              color: AppColor.error,
+            )
+          : Icon(
+              Icons.check,
+              size: 24.0.sp,
+              color: Colors.green,
+            ),
+    );
+  }
+
+  Widget _buildPasswordTextField(
+      BuildContext context, LoginMobileFormState state) {
+    final LoginMobileCubit cubit = BlocProvider.of<LoginMobileCubit>(context);
+    return Padding(
+      padding: EdgeInsets.symmetric(
+        vertical: 16.0.h,
+      ),
+      child: AppTextFormField(
+        onChanged: (password) => cubit.checkPassword(password),
+        validator: (String? password) {
+          if (password == null) return null;
+          final RegExp numericRegex = RegExp(r'[0-9]');
+
+          if (password.length < 8) {
+            return 'Password needs to have 8 or more characters';
+          }
+
+          if (!numericRegex.hasMatch(password)) {
+            return 'Password needs to have at least one number';
+          }
+
+          return null;
+        },
+        errorText:
+            !(state.hasPasswordOneNumber && state.isPasswordEightCharacters)
+                ? 'Invalid password'
+                : null,
+        hintText: 'Password123',
+        label: 'Password',
+        obscureText: !(state).isVisible,
+        suffixIcon: IconButton(
+          iconSize: 20.0.sp,
+          onPressed: () => cubit.toggleVisible(),
+          icon: state.isVisible
+              ? const Icon(
+                  Icons.visibility,
+                  color: Colors.black,
+                )
+              : const Icon(
+                  Icons.visibility_off,
+                  color: Colors.grey,
+                ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSignUpButton(BuildContext context) {
+    return SizedBox(
+      width: double.infinity,
+      child: Align(
+        alignment: Alignment.centerRight,
+        child: GestureDetector(
+          onTap: () {
+            context.goNamed(AppRoutes.landingPageToSignUp.name);
+          },
+          child: Center(
+            child: Text(
+              'Don\'t have an account?',
+              style: CustomTextStyles.medium.size(14.0, AppColor.red).copyWith(
+                    decoration: TextDecoration.underline,
+                  ),
+            ),
+          ),
+        ),
+      ),
     );
   }
 
@@ -350,7 +331,6 @@ class _LoginMobilePageState extends State<LoginMobilePage> {
             ),
           ),
         ),
-        Spacing.vertical(47.0.h),
       ],
     );
   }
