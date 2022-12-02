@@ -24,16 +24,16 @@ Future<void> main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   if (kIsWeb) {
-    // await Firebase.initializeApp(
-    //   options: const FirebaseOptions(
-    //     apiKey: "AIzaSyAZkVv3VKza3lXpGeYDDsvMijziuzg18oA",
-    //     authDomain: "bookstore-2d8e6.firebaseapp.com",
-    //     projectId: "bookstore-2d8e6",
-    //     storageBucket: "bookstore-2d8e6.appspot.com",
-    //     messagingSenderId: "81401705015",
-    //     appId: "1:81401705015:web:de73d735400c0a373e45b2",
-    //   ),
-    // );
+    await Firebase.initializeApp(
+      options: const FirebaseOptions(
+        apiKey: "AIzaSyAZkVv3VKza3lXpGeYDDsvMijziuzg18oA",
+        authDomain: "bookstore-2d8e6.firebaseapp.com",
+        projectId: "bookstore-2d8e6",
+        storageBucket: "bookstore-2d8e6.appspot.com",
+        messagingSenderId: "81401705015",
+        appId: "1:81401705015:web:de73d735400c0a373e45b2",
+      ),
+    );
 
     // FirebaseFirestore.instance.enablePersistence(
     //   const PersistenceSettings(
@@ -67,6 +67,7 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: providers,
       child: ScreenUtilInit(
+        minTextAdapt: true,
         designSize: const Size(375, 812),
         builder: (context, child) => MaterialApp.router(
           scrollBehavior: AppScrollBehavior(),

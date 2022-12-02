@@ -11,8 +11,8 @@ class RegisterPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return const ResponsiveLayout(
       mobileBody: RegisterMobilePage(),
-      tabletBody: LoginTabletPage(),
-      desktopBody: LoginDesktopPage(),
+      tabletBody: RegisterMobilePage(),
+      desktopBody: RegisterMobilePage(),
     );
   }
 }

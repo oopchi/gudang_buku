@@ -45,7 +45,7 @@ class _LoginMobilePageState extends State<LoginMobilePage> {
   Widget _buildPage(BuildContext context) {
     return Scaffold(
       appBar: AppBarHelper(
-        height: 130,
+        height: 130.0.h,
         child: _buildTopBar(),
       ),
       body: _buildBody(),

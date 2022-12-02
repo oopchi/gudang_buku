@@ -11,8 +11,8 @@ class LoginPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return const ResponsiveLayout(
       mobileBody: LoginMobilePage(),
-      tabletBody: LoginTabletPage(),
-      desktopBody: LoginDesktopPage(),
+      tabletBody: LoginMobilePage(),
+      desktopBody: LoginMobilePage(),
     );
   }
 }
