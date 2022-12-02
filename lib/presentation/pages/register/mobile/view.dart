@@ -82,7 +82,9 @@ class _RegisterMobilePageState extends State<RegisterMobilePage> {
 
   Widget _buildBody() {
     return BlocConsumer<RegisterMobileCubit, RegisterMobileState>(
-      buildWhen: (previous, current) => current is! RegisterMobileSuccess,
+      buildWhen: (previous, current) =>
+          current is! RegisterMobileSuccess &&
+          current is! RegisterMobileFailure,
       listener: (context, state) {
         if (state is RegisterMobileSuccess) {
           context.goNamed(AppRoutes.home.name);

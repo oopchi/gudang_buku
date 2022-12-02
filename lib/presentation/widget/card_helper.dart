@@ -1,3 +1,4 @@
+import 'package:bookstore/config/constant/colors.dart';
 import 'package:bookstore/domain/model/product_card_model.dart';
 import 'package:bookstore/presentation/widget/spacing.dart';
 import 'package:bookstore/util/format_helper.dart';
@@ -149,6 +150,24 @@ class ProductCard extends StatelessWidget {
                 child: Image.network(
                   model.imageUrl,
                   fit: BoxFit.cover,
+                  loadingBuilder: (context, child, loadingProgress) {
+                    if (loadingProgress?.expectedTotalBytes ==
+                        loadingProgress?.cumulativeBytesLoaded) {
+                      return child;
+                    }
+
+                    return const Center(
+                      child: CircularProgressIndicator(
+                        color: AppColor.red,
+                      ),
+                    );
+                  },
+                  errorBuilder: (context, error, stackTrace) => Center(
+                    child: Icon(
+                      Icons.error,
+                      size: 40.0.sp,
+                    ),
+                  ),
                 ),
               ),
             ),

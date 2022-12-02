@@ -82,7 +82,8 @@ class _LoginMobilePageState extends State<LoginMobilePage> {
 
   Widget _buildBody() {
     return BlocConsumer<LoginMobileCubit, LoginMobileState>(
-      buildWhen: (previous, current) => current is! LoginMobileSuccess,
+      buildWhen: (previous, current) =>
+          current is! LoginMobileSuccess && current is! LoginMobileFailure,
       listener: (context, state) {
         if (state is LoginMobileSuccess) {
           context.goNamed(AppRoutes.home.name);

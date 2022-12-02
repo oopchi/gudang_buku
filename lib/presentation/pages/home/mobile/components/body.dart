@@ -1,3 +1,4 @@
+import 'package:bookstore/config/constant/colors.dart';
 import 'package:bookstore/config/constant/routes.dart';
 import 'package:bookstore/domain/model/promo_model.dart';
 import 'package:bookstore/presentation/pages/home/mobile/components/header.dart';
@@ -9,17 +10,50 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
-class HomeMobileBody extends StatelessWidget {
+class HomeMobileBody extends StatefulWidget {
   const HomeMobileBody({super.key});
 
   @override
+  State<HomeMobileBody> createState() => _HomeMobileBodyState();
+}
+
+class _HomeMobileBodyState extends State<HomeMobileBody> {
+  final RefreshController _refreshController = RefreshController();
+
+  @override
+  void dispose() {
+    _refreshController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      physics: const BouncingScrollPhysics(
-        parent: AlwaysScrollableScrollPhysics(),
+    final HomeMobileCubit cubit = BlocProvider.of<HomeMobileCubit>(context);
+    return SmartRefresher(
+      controller: _refreshController,
+      enablePullDown: true,
+      onRefresh: () => cubit.onRefresh(
+        onComplete: () {
+          _refreshController.refreshCompleted();
+        },
       ),
-      child: _buildBody(),
+      footer: const ClassicFooter(
+        loadStyle: LoadStyle.ShowWhenLoading,
+      ),
+      header: const MaterialClassicHeader(
+        backgroundColor: AppColor.secondary,
+        color: AppColor.neutral,
+      ),
+      child: ListView(
+        physics: const BouncingScrollPhysics(
+          parent: AlwaysScrollableScrollPhysics(),
+        ),
+        children: <Widget>[
+          _buildBody(),
+        ],
+      ),
     );
   }
 

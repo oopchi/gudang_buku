@@ -22,9 +22,9 @@ class AppRouter {
         path: AppRoutes.landingPage.path,
         builder: (context, state) => const HomePage(),
         // redirect: (context, state) async =>
-        //     await Provider.of<AuthServiceFS>(context).isLoggedIn()
-        //         ? AppRoutes.home.fullPath
-        //         : null,
+        // await Provider.of<AuthServiceFS>(context).isLoggedIn()
+        //     ? AppRoutes.home.fullPath
+        //     : null,
         routes: <RouteBase>[
           GoRoute(
             name: AppRoutes.landingPageToSignUp.name,

@@ -1,3 +1,4 @@
+import 'package:bookstore/config/constant/colors.dart';
 import 'package:flutter/material.dart';
 
 class AppLoadingView extends StatelessWidget {
@@ -6,7 +7,9 @@ class AppLoadingView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const Center(
-      child: CircularProgressIndicator(),
+      child: CircularProgressIndicator(
+        color: AppColor.red,
+      ),
     );
   }
 }
