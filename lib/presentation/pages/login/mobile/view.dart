@@ -1,16 +1,43 @@
-import 'package:bookstore/presentation/widget/responsive_helper.dart';
+import 'package:bookstore/config/constant/assets.dart';
+import 'package:bookstore/config/constant/colors.dart';
+import 'package:bookstore/config/constant/routes.dart';
+import 'package:bookstore/data/service/auth_service_fs.dart';
+import 'package:bookstore/presentation/pages/login/mobile/state.dart';
+import 'package:bookstore/presentation/widget/appbar_helper.dart';
+import 'package:bookstore/presentation/widget/button_helper.dart';
+import 'package:bookstore/presentation/widget/form_input_helper.dart';
+import 'package:bookstore/presentation/widget/loading_helper.dart';
+import 'package:bookstore/presentation/widget/snackbar_helper.dart';
+import 'package:bookstore/presentation/widget/spacing.dart';
+import 'package:bookstore/util/form_helper.dart';
+import 'package:bookstore/util/text_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 
 import 'cubit.dart';
 
-class LoginMobilePage extends StatelessWidget {
+class LoginMobilePage extends StatefulWidget {
   const LoginMobilePage({super.key});
+
+  @override
+  State<LoginMobilePage> createState() => _LoginMobilePageState();
+}
+
+class _LoginMobilePageState extends State<LoginMobilePage> {
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (BuildContext context) => LoginMobileCubit(),
+      create: (BuildContext context) => LoginMobileCubit(
+        authServiceFS: Provider.of<AuthServiceFS>(
+          context,
+          listen: false,
+        ),
+      ),
       child: Builder(builder: (context) => _buildPage(context)),
     );
   }
@@ -19,10 +46,312 @@ class LoginMobilePage extends StatelessWidget {
     final LoginMobileCubit cubit = BlocProvider.of<LoginMobileCubit>(context);
     cubit.state;
 
-    return ResponsiveLayout(
-      mobileBody: Container(),
-      tabletBody: Container(),
-      desktopBody: Container(),
+    return Scaffold(
+      appBar: AppBarHelper(
+        height: 130,
+        child: _buildTopBar(),
+      ),
+      body: BlocConsumer<LoginMobileCubit, LoginMobileState>(
+        buildWhen: (previous, current) => current is! LoginMobileSuccess,
+        listener: (context, state) {
+          if (state is LoginMobileSuccess) {
+            context.goNamed(AppRoutes.home.name);
+          }
+
+          if (state is LoginMobileFailure) {
+            ScaffoldMessenger.of(context)
+              ..hideCurrentSnackBar()
+              ..showSnackBar(AppSnackBar(
+                content: state.message,
+              ));
+          }
+        },
+        builder: (context, state) {
+          if (state is LoginMobileLoading) return const AppLoadingView();
+
+          if (state is LoginMobileFormState) {
+            return Form(
+              key: _formKey,
+              child: ListView(
+                padding: EdgeInsets.symmetric(
+                  horizontal: 16.0.w,
+                ),
+                children: <Widget>[
+                  Spacing.vertical(12.0.h),
+                  AppTextFormField(
+                    onChanged: (email) => cubit.checkEmail(email),
+                    validator: (String? value) =>
+                        FormValidator.validateEmail(value ?? '')
+                            ? null
+                            : 'Invalid email address',
+                    autofocus: true,
+                    errorText: state.emailErr ? 'Invalid email address' : null,
+                    hintText: 'example@mail.com',
+                    label: 'Email',
+                    suffixIcon: state.emailErr
+                        ? Icon(
+                            Icons.warning,
+                            size: 24.0.sp,
+                            color: AppColor.error,
+                          )
+                        : Icon(
+                            Icons.check,
+                            size: 24.0.sp,
+                            color: Colors.green,
+                          ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(
+                      vertical: 16.0.h,
+                    ),
+                    child: AppTextFormField(
+                      onChanged: (password) => cubit.checkPassword(password),
+                      validator: (String? password) {
+                        if (password == null) return null;
+                        final RegExp numericRegex = RegExp(r'[0-9]');
+
+                        if (password.length < 8) {
+                          return 'Password needs to have 8 or more characters';
+                        }
+
+                        if (!numericRegex.hasMatch(password)) {
+                          return 'Password needs to have at least one number';
+                        }
+
+                        return null;
+                      },
+                      autofocus: true,
+                      errorText: !(state.hasPasswordOneNumber &&
+                              state.isPasswordEightCharacters)
+                          ? 'Invalid password'
+                          : null,
+                      hintText: 'Password123',
+                      label: 'Password',
+                      obscureText: !(state).isVisible,
+                      suffixIcon: IconButton(
+                        iconSize: 20.0.sp,
+                        onPressed: () => cubit.toggleVisible(),
+                        icon: state.isVisible
+                            ? const Icon(
+                                Icons.visibility,
+                                color: Colors.black,
+                              )
+                            : const Icon(
+                                Icons.visibility_off,
+                                color: Colors.grey,
+                              ),
+                      ),
+                    ),
+                  ),
+                  _buildForgotButton(context),
+                  Spacing.vertical(16.0.h),
+                  Row(
+                    children: <Widget>[
+                      AnimatedContainer(
+                        duration: const Duration(
+                          milliseconds: 500,
+                        ),
+                        width: 20.0.sp,
+                        height: 20.0.sp,
+                        decoration: BoxDecoration(
+                            color: state.isPasswordEightCharacters
+                                ? Colors.green
+                                : Colors.transparent,
+                            border: state.isPasswordEightCharacters
+                                ? Border.all(color: Colors.transparent)
+                                : Border.all(color: Colors.grey.shade400),
+                            borderRadius: BorderRadius.circular(50.0.r)),
+                        child: Center(
+                          child: Icon(
+                            Icons.check,
+                            color: Colors.white,
+                            size: 15.0.sp,
+                          ),
+                        ),
+                      ),
+                      Spacing.horizontal(10.0.w),
+                      Text(
+                        'Contains at least 8 characters',
+                        style: CustomTextStyles.regular.size(18.0),
+                      )
+                    ],
+                  ),
+                  Spacing.vertical(16.0.h),
+                  Row(
+                    children: [
+                      AnimatedContainer(
+                        duration: const Duration(milliseconds: 500),
+                        width: 20.0.sp,
+                        height: 20.0.sp,
+                        decoration: BoxDecoration(
+                            color: state.hasPasswordOneNumber
+                                ? Colors.green
+                                : Colors.transparent,
+                            border: state.hasPasswordOneNumber
+                                ? Border.all(color: Colors.transparent)
+                                : Border.all(color: Colors.grey.shade400),
+                            borderRadius: BorderRadius.circular(50.0.r)),
+                        child: Center(
+                          child: Icon(
+                            Icons.check,
+                            color: Colors.white,
+                            size: 15.0.sp,
+                          ),
+                        ),
+                      ),
+                      Spacing.horizontal(10.0.w),
+                      Text(
+                        'Contains at least 1 number',
+                        style: CustomTextStyles.regular.size(18.0),
+                      ),
+                    ],
+                  ),
+                  Spacing.vertical(32.0.h),
+                  _buildLoginButton(
+                    context,
+                    state.email,
+                    state.password,
+                  ),
+                  Spacing.vertical(20.0.h),
+                  _buildGoogleLoginButton(context),
+                ],
+              ),
+            );
+          }
+
+          return const SizedBox.shrink();
+        },
+      ),
+    );
+  }
+
+  Widget _buildTopBar() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        IconButton(
+          onPressed: () => context.pop(),
+          icon: const Icon(Icons.chevron_left),
+          iconSize: 30.0.sp,
+          padding: EdgeInsets.all(8.0.sp),
+          constraints: const BoxConstraints(),
+        ),
+        Spacing.vertical(18.0.h),
+        Padding(
+          padding: EdgeInsets.only(
+            left: 14.0.w,
+          ),
+          child: Text(
+            'Login',
+            style: CustomTextStyles.bold.size(
+              34.0,
+              AppColor.black,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildForgotButton(BuildContext context) {
+    return SizedBox(
+      width: double.infinity,
+      child: Align(
+        alignment: Alignment.centerRight,
+        child: GestureDetector(
+          onTap: () => context.goNamed(AppRoutes.loginToForgotPassword.name),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: <Widget>[
+              Text(
+                'Forgot your password?',
+                style: CustomTextStyles.medium.size(14.0),
+              ),
+              Spacing.horizontal(3.0.w),
+              Icon(
+                Icons.arrow_right_alt,
+                size: 24.0.sp,
+                color: AppColor.red,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildLoginButton(
+    BuildContext context,
+    String email,
+    String password,
+  ) {
+    return SizedBox(
+      width: 343.0.w,
+      child: AppButton(
+        text: 'LOGIN',
+        padding: 34.0.h,
+        textStyle: CustomTextStyles.regular.size(
+          14.0,
+          Colors.white,
+        ),
+        onPressed: () {
+          if (_formKey.currentState!.validate()) {
+            BlocProvider.of<LoginMobileCubit>(context)
+                .loginWithEmailAndPassword(
+              email: email,
+              password: password,
+            );
+          }
+        },
+      ),
+    );
+  }
+
+  Widget _buildGoogleLoginButton(BuildContext context) {
+    return Column(
+      children: <Widget>[
+        Text(
+          'Or login with social account',
+          style: CustomTextStyles.regular.size(14.0),
+        ),
+        Spacing.vertical(12.0.h),
+        Container(
+          decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(24.0.r),
+              boxShadow: <BoxShadow>[
+                BoxShadow(
+                  color: Colors.black.withOpacity(.05),
+                  blurRadius: 8.0.sp,
+                  offset: Offset(
+                    .0,
+                    1.0.sp,
+                  ),
+                ),
+              ]),
+          child: Material(
+            color: Colors.transparent,
+            child: InkWell(
+              onTap: () =>
+                  BlocProvider.of<LoginMobileCubit>(context).loginWithGoogle(),
+              borderRadius: BorderRadius.circular(24.0.r),
+              child: Container(
+                width: 92.0.sp,
+                height: 64.0.sp,
+                alignment: Alignment.center,
+                color: Colors.transparent,
+                child: Image.asset(
+                  AppAssets.google,
+                  width: 24.0.sp,
+                  height: 24.0.sp,
+                  fit: BoxFit.contain,
+                ),
+              ),
+            ),
+          ),
+        ),
+        Spacing.vertical(47.0.h),
+      ],
     );
   }
 }

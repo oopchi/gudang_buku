@@ -32,6 +32,7 @@ enum AuthFailureException {
   wrongPassword,
   invalidVerificationCode,
   invalidVerificationId,
+  weakPassword,
 }
 
 class AuthFailure extends Failure {

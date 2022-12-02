@@ -23,9 +23,64 @@ class LoginMobileFailure extends LoginMobileState {
   final String message;
 
   @override
+  List<Object?> get props => <Object?>[
+        message,
+      ];
+}
+
+class LoginMobileLoading extends LoginMobileState {
+  const LoginMobileLoading();
+  @override
   List<Object?> get props => <Object?>[];
 }
 
-class LoginMobileLoading extends LoginMobileState {}
+class LoginMobileSuccess extends LoginMobileState {}
 
-class LoginMobileLoaded extends LoginMobileState {}
+class LoginMobileFormState extends LoginMobileState {
+  const LoginMobileFormState({
+    this.email = '',
+    this.password = '',
+    this.emailErr = false,
+    this.isPasswordEightCharacters = false,
+    this.hasPasswordOneNumber = false,
+    this.isVisible = false,
+  });
+
+  final String email;
+  final String password;
+
+  final bool emailErr;
+
+  final bool isVisible;
+  final bool isPasswordEightCharacters;
+  final bool hasPasswordOneNumber;
+
+  @override
+  List<Object?> get props => <Object?>[
+        emailErr,
+        isVisible,
+        isPasswordEightCharacters,
+        email,
+        password,
+        hasPasswordOneNumber,
+      ];
+
+  LoginMobileFormState copyWith({
+    String? email,
+    String? password,
+    bool? emailErr,
+    bool? isVisible,
+    bool? isPasswordEightCharacters,
+    bool? hasPasswordOneNumber,
+  }) {
+    return LoginMobileFormState(
+      email: email ?? this.email,
+      password: password ?? this.password,
+      emailErr: emailErr ?? this.emailErr,
+      isVisible: isVisible ?? this.isVisible,
+      isPasswordEightCharacters:
+          isPasswordEightCharacters ?? this.isPasswordEightCharacters,
+      hasPasswordOneNumber: hasPasswordOneNumber ?? this.hasPasswordOneNumber,
+    );
+  }
+}

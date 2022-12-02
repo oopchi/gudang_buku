@@ -15,16 +15,16 @@ class AppRouter {
   static final AppRouter _instance = AppRouter._internal();
 
   final router = GoRouter(
-    initialLocation: AppRoutes.home.fullPath,
+    initialLocation: AppRoutes.landingPageToLogin.fullPath,
     routes: <RouteBase>[
       GoRoute(
         name: AppRoutes.landingPage.name,
         path: AppRoutes.landingPage.path,
         builder: (context, state) => const HomePage(),
-        redirect: (context, state) async =>
-            await Provider.of<AuthServiceFS>(context).isLoggedIn()
-                ? AppRoutes.home.fullPath
-                : null,
+        // redirect: (context, state) async =>
+        //     await Provider.of<AuthServiceFS>(context).isLoggedIn()
+        //         ? AppRoutes.home.fullPath
+        //         : null,
         routes: <RouteBase>[
           GoRoute(
             name: AppRoutes.landingPageToSignUp.name,

@@ -1,80 +1,39 @@
+import 'package:bookstore/config/constant/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 enum CustomTextStyles {
-  text3Xs,
-  text2Xs,
-  textXs,
-  textSm,
-  textBase,
-  textLg,
-  textXl,
-  text2Xl,
-  text3Xl,
+  thin,
+  extraLight,
+  light,
+  regular,
+  medium,
+  semiBold,
+  bold,
+  extraBold,
+  black,
 }
 
 extension CustomTextStylesExtension on CustomTextStyles {
-  static final Map<CustomTextStyles, double> _fontSizes =
-      <CustomTextStyles, double>{
-    CustomTextStyles.text3Xs: 8.0,
-    CustomTextStyles.text2Xs: 10.0,
-    CustomTextStyles.textXs: 12.0,
-    CustomTextStyles.textSm: 14.0,
-    CustomTextStyles.textBase: 16.0,
-    CustomTextStyles.textLg: 20.0,
-    CustomTextStyles.textXl: 24.0,
-    CustomTextStyles.text2Xl: 32.0,
-    CustomTextStyles.text3Xl: 40.0,
+  static final Map<CustomTextStyles, FontWeight> _fontWeights =
+      <CustomTextStyles, FontWeight>{
+    CustomTextStyles.thin: FontWeight.w100,
+    CustomTextStyles.extraLight: FontWeight.w200,
+    CustomTextStyles.light: FontWeight.w300,
+    CustomTextStyles.regular: FontWeight.w400,
+    CustomTextStyles.medium: FontWeight.w500,
+    CustomTextStyles.semiBold: FontWeight.w600,
+    CustomTextStyles.bold: FontWeight.w700,
+    CustomTextStyles.extraBold: FontWeight.w800,
+    CustomTextStyles.black: FontWeight.w900,
   };
 
-  double get _fontSize => _fontSizes[this]!;
+  FontWeight get _fontWeight => _fontWeights[this]!;
 
-  static final Map<CustomTextStyles, double> _lineHeights =
-      <CustomTextStyles, double>{
-    CustomTextStyles.text3Xs: 1.2,
-    CustomTextStyles.text2Xs: 1.2,
-    CustomTextStyles.textXs: 1.2,
-    CustomTextStyles.textSm: 1.4,
-    CustomTextStyles.textBase: 1.4,
-    CustomTextStyles.textLg: 1.4,
-    CustomTextStyles.textXl: 1.2,
-    CustomTextStyles.text2Xl: 1.2,
-    CustomTextStyles.text3Xl: 1.1,
-  };
-
-  double get _lineHeight => _lineHeights[this]!;
-
-  TextStyle get light => TextStyle(
-        fontFamily: 'Poppins',
-        fontSize: _fontSize,
-        height: _lineHeight,
-        fontWeight: FontWeight.w300,
-      );
-
-  TextStyle get regular => TextStyle(
-        fontFamily: 'Poppins',
-        fontSize: _fontSize,
-        height: _lineHeight,
-        fontWeight: FontWeight.w400,
-      );
-
-  TextStyle get medium => TextStyle(
-        fontFamily: 'Poppins',
-        fontSize: _fontSize,
-        height: _lineHeight,
-        fontWeight: FontWeight.w500,
-      );
-
-  TextStyle get semiBold => TextStyle(
-        fontFamily: 'Poppins',
-        fontSize: _fontSize,
-        height: _lineHeight,
-        fontWeight: FontWeight.w600,
-      );
-
-  TextStyle get bold => TextStyle(
-        fontFamily: 'Poppins',
-        fontSize: _fontSize,
-        height: _lineHeight,
-        fontWeight: FontWeight.w700,
+  TextStyle size(double size, [Color? color]) => TextStyle(
+        fontFamily: 'Metropolis',
+        fontSize: size.sp,
+        fontWeight: _fontWeight,
+        color: color ?? AppColor.black,
       );
 }

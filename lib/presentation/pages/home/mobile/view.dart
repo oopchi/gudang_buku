@@ -37,7 +37,10 @@ class HomeMobilePage extends StatelessWidget {
           authorRepository: AuthorRepositoryFS(),
           favoriteRepository: FavoriteRepositoryFS(),
           mediaRepository: MediaRepositoryFS(),
-          authServiceFS: Provider.of<AuthServiceFS>(context),
+          authServiceFS: Provider.of<AuthServiceFS>(
+            context,
+            listen: false,
+          ),
         ),
       )..load(),
       child: Builder(

@@ -2,6 +2,7 @@ import 'package:bookstore/config/constant/colors.dart';
 import 'package:bookstore/config/provider_setup.dart';
 import 'package:bookstore/config/router/router.dart';
 import 'package:bookstore/data/local/local_storage_hive.dart';
+import 'package:bookstore/presentation/widget/scroll_behaviour_helper.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
@@ -68,10 +69,18 @@ class MyApp extends StatelessWidget {
       child: ScreenUtilInit(
         designSize: const Size(375, 812),
         builder: (context, child) => MaterialApp.router(
+          scrollBehavior: AppScrollBehavior(),
           title: 'Gudang Buku',
           theme: ThemeData(
             primarySwatch: Colors.blue,
             scaffoldBackgroundColor: AppColor.background,
+            appBarTheme: const AppBarTheme(
+              backgroundColor: AppColor.background,
+              elevation: .0,
+              iconTheme: IconThemeData(
+                color: AppColor.black,
+              ),
+            ),
           ),
           routerDelegate: AppRouter().router.routerDelegate,
           routeInformationParser: AppRouter().router.routeInformationParser,

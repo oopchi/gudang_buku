@@ -91,22 +91,6 @@ class AuthServiceFS {
     }
   }
 
-  Future<Either<Failure, UserCredential>> loginAnonymously() async {
-    try {
-      final UserCredential userCredential = await _auth.signInAnonymously();
-
-      if (userCredential.credential != null) {
-        await _updateCredentialInStorage(userCredential.credential!);
-      }
-
-      return Right(userCredential);
-    } on ServerException {
-      return const Left(ServerFailure('Server Failure'));
-    } on SocketException {
-      return const Left(ConnectionFailure('Failed to connect to the network'));
-    }
-  }
-
   Future<Either<Failure, UserCredential>> loginWithEmailAndPassword({
     required String email,
     required String password,
@@ -116,20 +100,6 @@ class AuthServiceFS {
         email: email,
         password: password,
       );
-
-      if (await isLoggedIn()) {
-        final UserCredential userCredential =
-            await _auth.currentUser!.linkWithCredential(credential);
-
-        final AuthCredential? newCredential = userCredential.credential;
-
-        // Attemp to update credential
-        if (newCredential != null) {
-          await _updateCredentialInStorage(newCredential);
-        }
-
-        return Right(userCredential);
-      }
 
       final Either<Failure, UserCredential> credentialRes =
           await _loginWithCredential(credential);
@@ -158,7 +128,7 @@ class AuthServiceFS {
   }
 
   // Thread with care as this interrupts with the UI
-  Future<Either<Failure, String>> loginWithGoogle() async {
+  Future<Either<Failure, UserCredential>> loginWithGoogle() async {
     try {
       GoogleSignInAccount? googleUser;
 
@@ -189,26 +159,20 @@ class AuthServiceFS {
       late final UserCredential userCredential;
 
       // Once signed in, return the UserCredential
-      if (await isLoggedIn()) {
-        userCredential =
-            await _auth.currentUser!.linkWithCredential(credential);
-      } else {
-        // new account
-        userCredential = await _auth.signInWithCredential(credential);
+      userCredential = await _auth.signInWithCredential(credential);
 
-        final UserResponse userResponse = UserResponse(
-          id: userCredential.user?.uid,
-          meritAmount: 0,
-        );
+      final UserResponse userResponse = UserResponse(
+        id: userCredential.user?.uid,
+        meritAmount: 0,
+      );
 
-        final Either<Failure, void> userRes =
-            await _userRepository.addOrUpdateUser(
-          userResponse: userResponse,
-        );
+      final Either<Failure, void> userRes =
+          await _userRepository.addOrUpdateUser(
+        userResponse: userResponse,
+      );
 
-        if (userRes.isLeft()) {
-          return Left(userRes.asLeft());
-        }
+      if (userRes.isLeft()) {
+        return Left(userRes.asLeft());
       }
 
       final AuthCredential? newCredential = userCredential.credential;
@@ -232,7 +196,7 @@ class AuthServiceFS {
         }
       }
 
-      return Right(userCredential.user!.uid);
+      return Right(userCredential);
     } on FirebaseAuthException catch (e) {
       return Left(_handleFirebaseAuthFailure(e));
     } on ServerException {
@@ -242,20 +206,35 @@ class AuthServiceFS {
     }
   }
 
-  Future<void> signUpWithEmailAndPassword({
+  Future<Either<Failure, UserCredential>> signUpWithEmailAndPassword({
     required String email,
     required String password,
   }) async {
-    final UserCredential userCredential =
-        await _auth.createUserWithEmailAndPassword(
-      email: email,
-      password: password,
-    );
+    try {
+      final UserCredential userCredential =
+          await _auth.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
 
-    final AuthCredential? newCredential = userCredential.credential;
+      final AuthCredential? newCredential = userCredential.credential;
 
-    if (newCredential != null) {
-      await _updateCredentialInStorage(newCredential);
+      if (newCredential != null) {
+        await _updateCredentialInStorage(newCredential);
+      }
+
+      // ensures logged in
+      if (!await isLoggedIn()) {
+        return const Left(ServerFailure('Failed to login user'));
+      }
+
+      return Right(userCredential);
+    } on FirebaseAuthException catch (e) {
+      return Left(_handleFirebaseAuthFailure(e));
+    } on ServerException {
+      return const Left(ServerFailure('Server Failure'));
+    } on SocketException {
+      return const Left(ConnectionFailure('Failed to connect to the network'));
     }
   }
 
@@ -300,6 +279,9 @@ class AuthServiceFS {
         break;
       case 'wrong-password':
         authFailureException = AuthFailureException.wrongPassword;
+        break;
+      case 'weak-password':
+        authFailureException = AuthFailureException.weakPassword;
         break;
       case 'invalid-verification-code':
         authFailureException = AuthFailureException.invalidVerificationCode;

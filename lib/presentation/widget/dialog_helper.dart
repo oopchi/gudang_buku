@@ -57,14 +57,15 @@ class ErrorAlertDialog extends StatelessWidget {
                       children: <Widget>[
                         Text(
                           'Oops!',
-                          style: CustomTextStyles.textXl.semiBold,
+                          style: CustomTextStyles.semiBold.size(24.0),
                         ),
                         if (subTitle != null && subTitle != '') ...<Widget>[
                           const Spacing.vertical(8.0),
                           Text(
                             subTitle!,
-                            style: CustomTextStyles.textSm.regular.copyWith(
-                              color: Colors.grey,
+                            style: CustomTextStyles.regular.size(
+                              16.0,
+                              Colors.grey,
                             ),
                           ),
                         ],
@@ -107,8 +108,9 @@ class ErrorAlertDialog extends StatelessWidget {
                     child: Center(
                       child: Text(
                         'Confirm',
-                        style: CustomTextStyles.textLg.medium.copyWith(
-                          color: Colors.white,
+                        style: CustomTextStyles.medium.size(
+                          14.0,
+                          Colors.white,
                         ),
                       ),
                     ),
