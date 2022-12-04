@@ -43,12 +43,38 @@ class _RegisterMobilePageState extends State<RegisterMobilePage> {
   }
 
   Widget _buildPage(BuildContext context) {
-    return Scaffold(
-      appBar: AppBarHelper(
-        height: 130.0.h,
-        child: _buildTopBar(),
-      ),
-      body: _buildBody(),
+    return BlocConsumer<RegisterMobileCubit, RegisterMobileState>(
+      buildWhen: (previous, current) =>
+          current is! RegisterMobileSuccess &&
+          current is! RegisterMobileFailure,
+      listener: (context, state) {
+        if (state is RegisterMobileSuccess) {
+          context.goNamed(AppRoutes.home.name);
+        }
+
+        if (state is RegisterMobileFailure) {
+          ScaffoldMessenger.of(context)
+            ..hideCurrentSnackBar()
+            ..showSnackBar(AppSnackBar(
+              content: state.message,
+            ));
+        }
+      },
+      builder: (context, state) {
+        if (state is RegisterMobileLoading) return const AppLoadingView();
+
+        if (state is RegisterMobileFormState) {
+          return Scaffold(
+            appBar: AppBarHelper(
+              height: 130.0.h,
+              child: _buildTopBar(),
+            ),
+            body: _buildForm(context, state),
+          );
+        }
+
+        return const SizedBox.shrink();
+      },
     );
   }
 
@@ -77,36 +103,6 @@ class _RegisterMobilePageState extends State<RegisterMobilePage> {
           ),
         ),
       ],
-    );
-  }
-
-  Widget _buildBody() {
-    return BlocConsumer<RegisterMobileCubit, RegisterMobileState>(
-      buildWhen: (previous, current) =>
-          current is! RegisterMobileSuccess &&
-          current is! RegisterMobileFailure,
-      listener: (context, state) {
-        if (state is RegisterMobileSuccess) {
-          context.goNamed(AppRoutes.home.name);
-        }
-
-        if (state is RegisterMobileFailure) {
-          ScaffoldMessenger.of(context)
-            ..hideCurrentSnackBar()
-            ..showSnackBar(AppSnackBar(
-              content: state.message,
-            ));
-        }
-      },
-      builder: (context, state) {
-        if (state is RegisterMobileLoading) return const AppLoadingView();
-
-        if (state is RegisterMobileFormState) {
-          return _buildForm(context, state);
-        }
-
-        return const SizedBox.shrink();
-      },
     );
   }
 

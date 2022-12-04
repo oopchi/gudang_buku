@@ -1,4 +1,5 @@
 import 'package:bookstore/config/constant/colors.dart';
+import 'package:bookstore/config/constant/dimensions.dart';
 import 'package:bookstore/config/constant/routes.dart';
 import 'package:bookstore/domain/model/promo_model.dart';
 import 'package:bookstore/presentation/pages/home/mobile/components/header.dart';
@@ -47,6 +48,9 @@ class _HomeMobileBodyState extends State<HomeMobileBody> {
         color: AppColor.neutral,
       ),
       child: ListView(
+        padding: EdgeInsets.only(
+          bottom: AppDimensions.bottomNavBarHeight.h,
+        ),
         physics: const BouncingScrollPhysics(
           parent: AlwaysScrollableScrollPhysics(),
         ),

@@ -5,7 +5,7 @@ import 'package:bookstore/presentation/widget/spacing.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class EventBanner extends StatelessWidget {
+class EventBanner extends StatefulWidget {
   const EventBanner({
     super.key,
     required this.eventModel,
@@ -16,12 +16,36 @@ class EventBanner extends StatelessWidget {
   final EventModel eventModel;
 
   @override
+  State<EventBanner> createState() => _EventBannerState();
+}
+
+class _EventBannerState extends State<EventBanner> {
+  late final UniqueKey _uniqueKey;
+
+  late String _url;
+
+  void _reloadImage() {
+    setState(() {
+      _url =
+          '${_url.split('?r')[0]}?r=${DateTime.now().millisecondsSinceEpoch}';
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _uniqueKey = UniqueKey();
+    _url = widget.eventModel.imageUrl;
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Stack(
       fit: StackFit.expand,
       children: <Widget>[
         Image.network(
-          eventModel.imageUrl,
+          key: _uniqueKey,
+          _url,
           fit: BoxFit.cover,
           loadingBuilder: (context, child, loadingProgress) {
             if (loadingProgress?.expectedTotalBytes ==
@@ -36,9 +60,19 @@ class EventBanner extends StatelessWidget {
             );
           },
           errorBuilder: (context, error, stackTrace) => Center(
-            child: Icon(
-              Icons.error,
-              size: 40.0.sp,
+            child: IconButton(
+              onPressed: _reloadImage,
+              icon: const Icon(
+                Icons.refresh_rounded,
+              ),
+              iconSize: 40.0.sp,
+              color: AppColor.error,
+              padding: EdgeInsets.all(8.0.sp),
+              constraints: const BoxConstraints(),
+              visualDensity: const VisualDensity(
+                horizontal: -4.0,
+                vertical: -4.0,
+              ),
             ),
           ),
         ),
@@ -62,7 +96,7 @@ class EventBanner extends StatelessWidget {
           child: SizedBox(
             width: 190.0.w,
             child: Text(
-              eventModel.name,
+              widget.eventModel.name,
               style: TextStyle(
                 fontFamily: 'Metropolis',
                 fontSize: 48.0.sp,
@@ -82,7 +116,7 @@ class EventBanner extends StatelessWidget {
     return SizedBox(
       width: 160.0.w,
       child: AppButton(
-        onPressed: onNavigateTap,
+        onPressed: widget.onNavigateTap,
         text: 'Check',
         padding: 12.0,
         textStyle: const TextStyle(

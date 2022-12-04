@@ -43,12 +43,37 @@ class _LoginMobilePageState extends State<LoginMobilePage> {
   }
 
   Widget _buildPage(BuildContext context) {
-    return Scaffold(
-      appBar: AppBarHelper(
-        height: 130.0.h,
-        child: _buildTopBar(),
-      ),
-      body: _buildBody(),
+    return BlocConsumer<LoginMobileCubit, LoginMobileState>(
+      buildWhen: (previous, current) =>
+          current is! LoginMobileSuccess && current is! LoginMobileFailure,
+      listener: (context, state) {
+        if (state is LoginMobileSuccess) {
+          context.goNamed(AppRoutes.home.name);
+        }
+
+        if (state is LoginMobileFailure) {
+          ScaffoldMessenger.of(context)
+            ..hideCurrentSnackBar()
+            ..showSnackBar(AppSnackBar(
+              content: state.message,
+            ));
+        }
+      },
+      builder: (context, state) {
+        if (state is LoginMobileLoading) return const AppLoadingView();
+
+        if (state is LoginMobileFormState) {
+          return Scaffold(
+            appBar: AppBarHelper(
+              height: 130.0.h,
+              child: _buildTopBar(),
+            ),
+            body: _buildForm(context, state),
+          );
+        }
+
+        return const SizedBox.shrink();
+      },
     );
   }
 
@@ -77,35 +102,6 @@ class _LoginMobilePageState extends State<LoginMobilePage> {
           ),
         ),
       ],
-    );
-  }
-
-  Widget _buildBody() {
-    return BlocConsumer<LoginMobileCubit, LoginMobileState>(
-      buildWhen: (previous, current) =>
-          current is! LoginMobileSuccess && current is! LoginMobileFailure,
-      listener: (context, state) {
-        if (state is LoginMobileSuccess) {
-          context.goNamed(AppRoutes.home.name);
-        }
-
-        if (state is LoginMobileFailure) {
-          ScaffoldMessenger.of(context)
-            ..hideCurrentSnackBar()
-            ..showSnackBar(AppSnackBar(
-              content: state.message,
-            ));
-        }
-      },
-      builder: (context, state) {
-        if (state is LoginMobileLoading) return const AppLoadingView();
-
-        if (state is LoginMobileFormState) {
-          return _buildForm(context, state);
-        }
-
-        return const SizedBox.shrink();
-      },
     );
   }
 

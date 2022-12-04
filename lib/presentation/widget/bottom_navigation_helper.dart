@@ -1,3 +1,4 @@
+import 'package:bookstore/config/constant/dimensions.dart';
 import 'package:bookstore/config/constant/routes.dart';
 import 'package:bookstore/presentation/widget/spacing.dart';
 import 'package:flutter/material.dart';
@@ -44,6 +45,7 @@ class BottomNavigationScaffold extends StatelessWidget {
 
   Widget _buildBottomNavigationBar(BuildContext context) {
     return Container(
+      height: AppDimensions.bottomNavBarHeight.h,
       width: MediaQuery.of(context).size.width,
       decoration: BoxDecoration(
         color: Colors.white,
