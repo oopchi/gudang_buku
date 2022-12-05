@@ -27,15 +27,12 @@ class BottomNavigationScaffold extends StatelessWidget {
       child: Scaffold(
         backgroundColor: Colors.white,
         body: SafeArea(
-          child: Stack(
-            fit: StackFit.expand,
+          child: Column(
             children: <Widget>[
-              child,
-              Positioned(
-                bottom: .0,
-                left: .0,
-                child: _buildBottomNavigationBar(context),
+              Expanded(
+                child: child,
               ),
+              _buildBottomNavigationBar(context),
             ],
           ),
         ),
@@ -45,6 +42,7 @@ class BottomNavigationScaffold extends StatelessWidget {
 
   Widget _buildBottomNavigationBar(BuildContext context) {
     return Container(
+      clipBehavior: Clip.none,
       height: AppDimensions.bottomNavBarHeight.h,
       width: MediaQuery.of(context).size.width,
       decoration: BoxDecoration(

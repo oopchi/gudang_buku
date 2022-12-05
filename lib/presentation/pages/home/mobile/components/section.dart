@@ -37,7 +37,7 @@ class HomeMobileSection extends StatelessWidget {
 
   Widget _buildProductList() {
     return Container(
-      height: 414.0.h,
+      height: 414.0.sp,
       alignment: Alignment.center,
       child: ListView(
         physics: const BouncingScrollPhysics(

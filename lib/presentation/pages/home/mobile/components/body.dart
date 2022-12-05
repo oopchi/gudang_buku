@@ -48,9 +48,6 @@ class _HomeMobileBodyState extends State<HomeMobileBody> {
         color: AppColor.neutral,
       ),
       child: ListView(
-        padding: EdgeInsets.only(
-          bottom: AppDimensions.bottomNavBarHeight.h,
-        ),
         physics: const BouncingScrollPhysics(
           parent: AlwaysScrollableScrollPhysics(),
         ),

@@ -23,13 +23,13 @@ class ProductCard extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         _buildCard(),
-        Spacing.vertical(7.0.h),
+        Spacing.vertical(7.0.sp),
         _buildRatingStars(),
-        Spacing.vertical(6.0.h),
+        Spacing.vertical(6.0.sp),
         _buildAuthor(),
-        Spacing.vertical(5.0.h),
+        Spacing.vertical(5.0.sp),
         _buildTitle(),
-        Spacing.vertical(3.0.h),
+        Spacing.vertical(3.0.sp),
         _buildPrice(),
       ],
     );
@@ -116,10 +116,10 @@ class ProductCard extends StatelessWidget {
           rating: model.rating,
           itemSize: 13.0.sp,
           itemPadding: EdgeInsets.only(
-            right: 1.5.w,
+            right: 1.5.sp,
           ),
         ),
-        Spacing.horizontal(.5.w),
+        Spacing.horizontal(.5.sp),
         Text(
           '(${model.numOfRating})',
           style: TextStyle(
@@ -134,8 +134,8 @@ class ProductCard extends StatelessWidget {
 
   Widget _buildCard() {
     return SizedBox(
-      width: 148.0.w,
-      height: 184.0.w,
+      width: 148.0.sp,
+      height: 184.0.sp,
       child: Stack(
         clipBehavior: Clip.none,
         fit: StackFit.expand,
@@ -173,13 +173,13 @@ class ProductCard extends StatelessWidget {
             ),
           ),
           Positioned(
-            top: 164.0.w,
-            left: 112.0.w,
+            top: 164.0.sp,
+            left: 112.0.sp,
             child: _buildFavoriteButton(),
           ),
           Positioned(
-            top: 8.0.w,
-            left: 9.0.w,
+            top: 8.0.sp,
+            left: 9.0.sp,
             child: _buildTopLeftChip(),
           ),
         ],
@@ -192,12 +192,12 @@ class ProductCard extends StatelessWidget {
 
     return Container(
       constraints: BoxConstraints(
-        minHeight: 24.0.w,
-        minWidth: 40.0.w,
+        minHeight: 24.0.sp,
+        minWidth: 40.0.sp,
       ),
       padding: EdgeInsets.symmetric(
-        vertical: 6.0.w,
-        horizontal: 5.0.w,
+        vertical: 6.0.sp,
+        horizontal: 5.0.sp,
       ),
       decoration: BoxDecoration(
         color: const Color(0xFFDB3022),
@@ -237,8 +237,8 @@ class ProductCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(100.0.r),
           onTap: onFavoriteTap,
           child: SizedBox(
-            width: 36.0.w,
-            height: 36.0.w,
+            width: 36.0.sp,
+            height: 36.0.sp,
             child: Center(
               child: Icon(
                 model.favoriteButtonModel.isFavorite
