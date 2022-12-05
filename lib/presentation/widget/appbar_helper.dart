@@ -6,10 +6,14 @@ class AppBarHelper extends StatelessWidget implements PreferredSizeWidget {
     Key? key,
     this.height = 96.0,
     required this.child,
+    this.color,
+    this.boxShadow,
   }) : super(key: key);
 
   final double height;
   final Widget child;
+  final Color? color;
+  final List<BoxShadow>? boxShadow;
 
   @override
   Size get preferredSize => Size.fromHeight(height);
@@ -18,11 +22,17 @@ class AppBarHelper extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     return PreferredSize(
       preferredSize: Size.fromHeight(height),
-      child: AppBar(
-        automaticallyImplyLeading: false,
-        backgroundColor: AppColor.background,
-        elevation: .0,
-        flexibleSpace: _buildAppBarContent(context),
+      child: Container(
+        decoration: BoxDecoration(
+          color: color,
+          boxShadow: boxShadow,
+        ),
+        child: AppBar(
+          automaticallyImplyLeading: false,
+          backgroundColor: AppColor.background,
+          elevation: .0,
+          flexibleSpace: _buildAppBarContent(context),
+        ),
       ),
     );
   }

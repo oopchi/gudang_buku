@@ -7,10 +7,12 @@ import 'package:bookstore/domain/dto/genre_response.dart';
 import 'package:bookstore/domain/dto/media_response.dart';
 import 'package:bookstore/domain/dto/review_response.dart';
 import 'package:bookstore/domain/model/favorite_button_model.dart';
+import 'package:bookstore/domain/model/filter_model.dart';
 import 'package:bookstore/domain/model/genre_model.dart';
 import 'package:bookstore/domain/model/product_card_model.dart';
 import 'package:bookstore/domain/repository/author_book_repository.dart';
 import 'package:bookstore/domain/repository/author_repository.dart';
+import 'package:bookstore/domain/repository/book_genre_repository.dart';
 import 'package:bookstore/domain/repository/book_repository.dart';
 import 'package:bookstore/domain/repository/favorite_repository.dart';
 import 'package:bookstore/domain/repository/genre_repository.dart';
@@ -19,6 +21,37 @@ import 'package:bookstore/domain/repository/review_repository.dart';
 import 'package:bookstore/util/dartz_helper.dart';
 import 'package:bookstore/util/failure_helper.dart';
 import 'package:dartz/dartz.dart';
+
+enum SortBy {
+  popular,
+  newest,
+  customerReview,
+  priceLowestToHighest,
+  priceHighestToLowest,
+}
+
+extension SortByExt on SortBy {
+  static final Map<SortBy, String> _texts = <SortBy, String>{
+    SortBy.popular: 'Popular',
+    SortBy.newest: 'Newest',
+    SortBy.customerReview: 'Customer Review',
+    SortBy.priceHighestToLowest: 'Price: Highest To Lowest',
+    SortBy.priceLowestToHighest: 'Price: Lowest To Highest',
+  };
+
+  String get text => _texts[this]!;
+
+  static final Map<String, SortBy> _objects = <String, SortBy>{
+    'popular': SortBy.popular,
+    'newest': SortBy.newest,
+    'customer-review': SortBy.customerReview,
+    'price-highest-to-lowest': SortBy.priceHighestToLowest,
+    'price-lowest-to-highest': SortBy.priceLowestToHighest,
+  };
+
+  static SortBy? getObjFromString(String name) =>
+      _objects[name.trim().toLowerCase()];
+}
 
 class ShopViewController {
   const ShopViewController({
@@ -30,7 +63,9 @@ class ShopViewController {
     required AuthorBookRepository authorBookRepository,
     required ReviewRepository reviewRepository,
     required AuthorRepository authorRepository,
+    required BookGenreRepository bookGenreRepository,
   })  : _genreRepository = genreRepository,
+        _bookGenreRepository = bookGenreRepository,
         _mediaRepository = mediaRepository,
         _favoriteRepository = favoriteRepository,
         _authServiceFS = authServiceFS,
@@ -46,6 +81,7 @@ class ShopViewController {
   final AuthorBookRepository _authorBookRepository;
   final ReviewRepository _reviewRepository;
   final AuthorRepository _authorRepository;
+  final BookGenreRepository _bookGenreRepository;
 
   final AuthServiceFS _authServiceFS;
 
@@ -65,15 +101,47 @@ class ShopViewController {
     return Right(genreModel);
   }
 
-  Future<Either<Failure, List<ProductCardModel>>> loadAllProduct() async {
-    final Either<Failure, List<BookResponse>> bookRes =
-        await _bookRepository.fetchAllBooks();
+  Future<Either<Failure, List<ProductCardModel>>> loadAllProductForGenreId(
+    String genreId, {
+    SortBy? sortBy,
+    required List<FilterModel> filterModels,
+  }) async {
+    late final Either<Failure, List<BookResponse>> bookRes;
+    genreId = genreId.trim().toLowerCase();
+    if (genreId == '') {
+      bookRes = await _bookRepository.fetchAllBooks();
+    } else {
+      final Either<Failure, List<String>> bookIdRes =
+          await _bookGenreRepository.fetchAllBookIdWithGenreId(
+        genreId: genreId,
+      );
+
+      if (bookIdRes.isLeft()) {
+        return Left(bookIdRes.asLeft());
+      }
+
+      final List<String> bookIds = bookIdRes.asRight();
+
+      bookRes = await _bookRepository.fetchAllBooksWithIds(
+        ids: bookIds,
+      );
+    }
 
     if (bookRes.isLeft()) {
       return Left(bookRes.asLeft());
     }
 
-    return _productCardModelsFromResponses(bookRes.asRight());
+    final Either<Failure, List<ProductCardModel>> productRes =
+        await _productCardModelsFromResponses(bookRes.asRight());
+
+    if (productRes.isLeft()) {
+      return Left(productRes.asLeft());
+    }
+
+    final List<ProductCardModel> filteredProducts =
+        _filterBy(productRes.asRight(), filterModels);
+
+    return Right(_sortBy(filteredProducts, sortBy));
   }
 
   Future<Either<Failure, List<ProductCardModel>>>
@@ -187,5 +255,63 @@ class ShopViewController {
     }
 
     return genreModels;
+  }
+
+  List<ProductCardModel> _sortBy(
+      List<ProductCardModel> products, SortBy? sortTech) {
+    final List<ProductCardModel> result = List.from(products);
+
+    switch (sortTech) {
+      case SortBy.customerReview:
+        result.sort(
+          (a, b) {
+            if (b.rating == a.rating) {
+              return b.numOfRating - a.numOfRating;
+            }
+
+            return (b.rating - a.rating).toInt();
+          },
+        );
+        break;
+      case SortBy.priceHighestToLowest:
+        result.sort(
+          (a, b) => b.price - a.price,
+        );
+        break;
+      case SortBy.priceLowestToHighest:
+        result.sort(
+          (a, b) => a.price - b.price,
+        );
+        break;
+      case SortBy.popular:
+      case SortBy.newest:
+        break;
+      default:
+    }
+
+    return result;
+  }
+
+  List<ProductCardModel> _filterBy(
+    List<ProductCardModel> products,
+    List<FilterModel> filterModels,
+  ) {
+    final List<ProductCardModel> result = List.from(products);
+
+    for (final FilterModel filterModel in filterModels) {
+      if (filterModel is FilterByPriceRange) {
+        result.retainWhere((element) =>
+            element.price >= filterModel.minimumPrice &&
+            element.price <= filterModel.maximumPrice);
+      }
+
+      if (filterModel is FilterByRatingRange) {
+        result.retainWhere((element) =>
+            element.rating >= filterModel.minimumRating &&
+            element.rating <= filterModel.maximumRating);
+      }
+    }
+
+    return result;
   }
 }

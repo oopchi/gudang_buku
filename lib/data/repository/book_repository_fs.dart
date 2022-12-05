@@ -160,4 +160,32 @@ class BookRepositoryFS implements BookRepository {
       return const Left(ConnectionFailure('Failed to connect to the network'));
     }
   }
+
+  @override
+  Future<Either<Failure, List<BookResponse>>> fetchAllBooksWithIds(
+      {required List<String> ids}) async {
+    try {
+      return await books.get().then(
+        (QuerySnapshot<Object?> result) {
+          final List<BookResponse> bookResponses =
+              result.docs.map((QueryDocumentSnapshot<Object?> e) {
+            final Map<String, dynamic> data = e.data() as Map<String, dynamic>;
+
+            data['id'] = e.reference.id;
+
+            return BookResponse.fromJson(data);
+          }).toList();
+
+          bookResponses.retainWhere((element) => ids.contains(element.id));
+
+          return Right(bookResponses);
+        },
+        onError: (e) => Left(DatabaseFailure(e.toString())),
+      );
+    } on ServerException {
+      return const Left(ServerFailure('Server Failure'));
+    } on SocketException {
+      return const Left(ConnectionFailure('Failed to connect to the network'));
+    }
+  }
 }

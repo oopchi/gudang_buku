@@ -1,7 +1,36 @@
 import 'package:equatable/equatable.dart';
 
+enum FilterType {
+  price,
+  rating,
+  noFilter,
+}
+
 abstract class FilterModel extends Equatable {
   const FilterModel();
+
+  factory FilterModel.fromParam(FilterType filterType, double min, double max) {
+    switch (filterType) {
+      case FilterType.price:
+        return FilterByPriceRange(
+          minimumPrice: min.toInt(),
+          maximumPrice: max.toInt(),
+        );
+      case FilterType.rating:
+        return FilterByRatingRange(
+          minimumRating: min,
+          maximumRating: max,
+        );
+      default:
+    }
+
+    return NoFilter();
+  }
+}
+
+class NoFilter extends FilterModel {
+  @override
+  List<Object?> get props => <Object?>[];
 }
 
 class FilterByPriceRange extends FilterModel {
@@ -32,18 +61,5 @@ class FilterByRatingRange extends FilterModel {
   List<Object?> get props => <Object?>[
         minimumRating,
         maximumRating,
-      ];
-}
-
-class FilterByAuthor extends FilterModel {
-  const FilterByAuthor({
-    required this.authorName,
-  });
-
-  final String authorName;
-
-  @override
-  List<Object?> get props => <Object?>[
-        authorName,
       ];
 }

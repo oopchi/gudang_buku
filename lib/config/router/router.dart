@@ -1,8 +1,12 @@
 import 'package:bookstore/config/constant/routes.dart';
 import 'package:bookstore/data/service/auth_service_fs.dart';
+import 'package:bookstore/domain/controller/shop_view_controller.dart';
+import 'package:bookstore/domain/model/filter_model.dart';
 import 'package:bookstore/presentation/pages/home/home_page.dart';
 import 'package:bookstore/presentation/pages/login/login_page.dart';
 import 'package:bookstore/presentation/pages/register/register_page.dart';
+import 'package:bookstore/presentation/pages/shop/mobile/state.dart';
+import 'package:bookstore/presentation/pages/shop/shop_page.dart';
 import 'package:bookstore/presentation/widget/bottom_navigation_helper.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -21,10 +25,12 @@ class AppRouter {
         name: AppRoutes.landingPage.name,
         path: AppRoutes.landingPage.path,
         builder: (context, state) => const HomePage(),
-        // redirect: (context, state) async =>
-        // await Provider.of<AuthServiceFS>(context).isLoggedIn()
-        //     ? AppRoutes.home.fullPath
-        //     : null,
+        redirect: (context, state) async => await Provider.of<AuthServiceFS>(
+          context,
+          listen: false,
+        ).isLoggedIn()
+            ? AppRoutes.home.fullPath
+            : null,
         routes: <RouteBase>[
           GoRoute(
             name: AppRoutes.landingPageToSignUp.name,
@@ -81,9 +87,13 @@ class AppRouter {
           GoRoute(
             name: AppRoutes.home.name,
             path: AppRoutes.home.path,
-            // redirect: (context, state) => AuthServiceFS().isLoggedIn()
-            //     ? null
-            //     : AppRoutes.landingPageToLogin.fullPath,
+            redirect: (context, state) async =>
+                await Provider.of<AuthServiceFS>(
+              context,
+              listen: false,
+            ).isLoggedIn()
+                    ? null
+                    : AppRoutes.landingPageToLogin.fullPath,
             builder: (context, state) => const HomePage(),
             routes: <RouteBase>[
               GoRoute(
@@ -97,23 +107,86 @@ class AppRouter {
           GoRoute(
             name: AppRoutes.shop.name,
             path: AppRoutes.shop.path,
-            builder: (context, state) => const HomePage(),
+            redirect: (context, state) async =>
+                await Provider.of<AuthServiceFS>(
+              context,
+              listen: false,
+            ).isLoggedIn()
+                    ? null
+                    : AppRoutes.landingPageToLogin.fullPath,
+            builder: (context, state) {
+              final Map<String, String> q = state.queryParams;
+              SortBy? sortBy;
+              final List<FilterModel> filterModels = <FilterModel>[];
+
+              if (q['sortBy'] != null) {
+                sortBy = SortByExt.getObjFromString(q['sortBy']!);
+              }
+
+              if (q['pmax'] != null || q['pmin'] != null) {
+                const FilterType filterType = FilterType.price;
+
+                final double min = double.tryParse(q['pmin'] ?? '0') ?? .0;
+                final double max = double.tryParse(q['pmax'] ?? '0') ?? .0;
+
+                final filterModel = FilterModel.fromParam(filterType, min, max);
+
+                filterModels.add(filterModel);
+              }
+
+              if (q['rmax'] != null || q['rmin'] != null) {
+                const FilterType filterType = FilterType.rating;
+
+                final double min = double.tryParse(q['rmin'] ?? '0') ?? .0;
+                final double max = double.tryParse(q['rmax'] ?? '0') ?? .0;
+
+                final filterModel = FilterModel.fromParam(filterType, min, max);
+
+                filterModels.add(filterModel);
+              }
+
+              final ListType listType =
+                  ListTypeExt.fromString(q['listType']) ?? ListType.list;
+
+              final String genreId = q['genreId'] ?? '';
+
+              return ShopPage(
+                filterModels: filterModels,
+                sortBy: sortBy,
+                listType: listType,
+                genreId: genreId,
+              );
+            },
             routes: <RouteBase>[
               GoRoute(
                 name: AppRoutes.shopToProduct.name,
                 path: AppRoutes.shopToProduct.path,
-                builder: (context, state) => const HomePage(),
+                builder: (context, state) => const ShopPage(),
               ),
             ],
           ),
           GoRoute(
             name: AppRoutes.favorites.name,
             path: AppRoutes.favorites.path,
+            redirect: (context, state) async =>
+                await Provider.of<AuthServiceFS>(
+              context,
+              listen: false,
+            ).isLoggedIn()
+                    ? null
+                    : AppRoutes.landingPageToLogin.fullPath,
             builder: (context, state) => const HomePage(),
           ),
           GoRoute(
             name: AppRoutes.cart.name,
             path: AppRoutes.cart.path,
+            redirect: (context, state) async =>
+                await Provider.of<AuthServiceFS>(
+              context,
+              listen: false,
+            ).isLoggedIn()
+                    ? null
+                    : AppRoutes.landingPageToLogin.fullPath,
             builder: (context, state) => const HomePage(),
             routes: <RouteBase>[
               GoRoute(
@@ -163,6 +236,13 @@ class AppRouter {
           GoRoute(
             name: AppRoutes.profile.name,
             path: AppRoutes.profile.path,
+            redirect: (context, state) async =>
+                await Provider.of<AuthServiceFS>(
+              context,
+              listen: false,
+            ).isLoggedIn()
+                    ? null
+                    : AppRoutes.landingPageToLogin.fullPath,
             builder: (context, state) => const HomePage(),
             routes: <RouteBase>[
               GoRoute(

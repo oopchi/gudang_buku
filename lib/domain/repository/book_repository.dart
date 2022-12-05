@@ -5,6 +5,9 @@ import 'package:dartz/dartz.dart';
 abstract class BookRepository {
   Future<Either<Failure, List<BookResponse>>> fetchAllBooks();
 
+  Future<Either<Failure, List<BookResponse>>> fetchAllBooksWithIds({
+    required List<String> ids,
+  });
   Future<Either<Failure, List<BookResponse>>> fetchAllBooksWithLimit({
     BookResponse? latestBook,
     int limit = 10,
