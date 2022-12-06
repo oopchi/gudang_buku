@@ -1,5 +1,5 @@
 import 'package:bookstore/domain/model/genre_model.dart';
-import 'package:bookstore/domain/model/product_card_model.dart';
+import 'package:bookstore/domain/model/product_model.dart';
 import 'package:equatable/equatable.dart';
 
 enum ListType {
@@ -64,7 +64,7 @@ class ShopMobileLoaded extends ShopMobileState {
   });
 
   final List<GenreModel> genres;
-  final List<ProductCardModel> products;
+  final List<ProductModel> products;
   final GenreModel selectedGenre;
 
   @override
@@ -76,7 +76,7 @@ class ShopMobileLoaded extends ShopMobileState {
 
   ShopMobileLoaded copyWith({
     List<GenreModel>? genres,
-    List<ProductCardModel>? products,
+    List<ProductModel>? products,
     GenreModel? selectedGenre,
   }) =>
       ShopMobileLoaded(

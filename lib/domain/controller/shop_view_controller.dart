@@ -10,7 +10,7 @@ import 'package:bookstore/domain/dto/transaction_detail_response.dart';
 import 'package:bookstore/domain/model/favorite_button_model.dart';
 import 'package:bookstore/domain/model/filter_model.dart';
 import 'package:bookstore/domain/model/genre_model.dart';
-import 'package:bookstore/domain/model/product_card_model.dart';
+import 'package:bookstore/domain/model/product_model.dart';
 import 'package:bookstore/domain/repository/author_book_repository.dart';
 import 'package:bookstore/domain/repository/author_repository.dart';
 import 'package:bookstore/domain/repository/book_genre_repository.dart';
@@ -116,7 +116,7 @@ class ShopViewController {
     return Right(genreModel);
   }
 
-  Future<Either<Failure, List<ProductCardModel>>> loadAllProductForGenreId(
+  Future<Either<Failure, List<ProductModel>>> loadAllProductForGenreId(
     String genreId, {
     SortBy? sortBy,
     required List<FilterModel> filterModels,
@@ -146,22 +146,22 @@ class ShopViewController {
       return Left(bookRes.asLeft());
     }
 
-    final Either<Failure, List<ProductCardModel>> productRes =
+    final Either<Failure, List<ProductModel>> productRes =
         await _productCardModelsFromResponses(bookRes.asRight());
 
     if (productRes.isLeft()) {
       return Left(productRes.asLeft());
     }
 
-    final List<ProductCardModel> filteredProducts =
+    final List<ProductModel> filteredProducts =
         _filterBy(productRes.asRight(), filterModels);
 
     return Right(await _sortBy(filteredProducts, sortBy));
   }
 
-  Future<Either<Failure, List<ProductCardModel>>>
-      _productCardModelsFromResponses(List<BookResponse> bookResponses) async {
-    final List<ProductCardModel> productCardModels = <ProductCardModel>[];
+  Future<Either<Failure, List<ProductModel>>> _productCardModelsFromResponses(
+      List<BookResponse> bookResponses) async {
+    final List<ProductModel> productCardModels = <ProductModel>[];
 
     final Either<Failure, List<FavoriteResponse>> favoriteRes =
         await _favoriteRepository.fetchAllFavoritesForUserId(
@@ -195,6 +195,12 @@ class ShopViewController {
 
       final String imageUrl = mediaResponses[0].url!;
 
+      final List<String> imageUrls = <String>[];
+
+      for (final MediaResponse media in mediaResponses) {
+        imageUrls.add(media.url!);
+      }
+
       final Either<Failure, List<AuthorBookResponse>> authorBookRes =
           await _authorBookRepository.fetchAllAuthorBookWithBookId(
         bookId: bookResponse.id!,
@@ -221,6 +227,12 @@ class ShopViewController {
       final String author = authorResponses.fold(
           '', (previousValue, element) => '$previousValue, ${element.name}');
 
+      final Map<String, String> authorOverviews = <String, String>{
+        for (final AuthorResponse authorResponse in authorResponses)
+          if (authorResponse.description != null)
+            authorResponse.name!: authorResponse.description!
+      };
+
       final Either<Failure, List<ReviewResponse>> reviewRes =
           await _reviewRepository.fetchAllReviewsWithBookId(
         bookId: bookResponse.id!,
@@ -240,7 +252,7 @@ class ShopViewController {
       final double averageRating =
           numOfRating <= 0 ? .0 : (totalRating / numOfRating);
 
-      final ProductCardModel productCardModel = ProductCardModel(
+      final ProductModel productCardModel = ProductModel(
         id: bookResponse.id!,
         favoriteButtonModel: favoriteButtonModel,
         imageUrl: imageUrl,
@@ -249,6 +261,9 @@ class ShopViewController {
         price: bookResponse.price!,
         rating: averageRating,
         title: bookResponse.title!,
+        description: bookResponse.overview,
+        authorOverviews: authorOverviews,
+        imageUrls: imageUrls,
       );
 
       productCardModels.add(productCardModel);
@@ -273,9 +288,9 @@ class ShopViewController {
     return genreModels;
   }
 
-  Future<List<ProductCardModel>> _sortBy(
-      List<ProductCardModel> products, SortBy? sortTech) async {
-    final List<ProductCardModel> result = List.from(products);
+  Future<List<ProductModel>> _sortBy(
+      List<ProductModel> products, SortBy? sortTech) async {
+    final List<ProductModel> result = List.from(products);
 
     switch (sortTech) {
       case SortBy.customerReview:
@@ -312,7 +327,7 @@ class ShopViewController {
             transactionDetailRes.asRight();
 
         final Map<String, int> quantityMap = <String, int>{
-          for (final ProductCardModel res in result) res.id: 0
+          for (final ProductModel res in result) res.id: 0
         };
 
         for (final TransactionDetailResponse res
@@ -332,11 +347,11 @@ class ShopViewController {
     return result;
   }
 
-  List<ProductCardModel> _filterBy(
-    List<ProductCardModel> products,
+  List<ProductModel> _filterBy(
+    List<ProductModel> products,
     List<FilterModel> filterModels,
   ) {
-    final List<ProductCardModel> result = List.from(products);
+    final List<ProductModel> result = List.from(products);
 
     for (final FilterModel filterModel in filterModels) {
       if (filterModel is FilterByPriceRange) {

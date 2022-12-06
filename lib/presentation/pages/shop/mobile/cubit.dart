@@ -1,7 +1,7 @@
 import 'package:bookstore/domain/controller/shop_view_controller.dart';
 import 'package:bookstore/domain/model/filter_model.dart';
 import 'package:bookstore/domain/model/genre_model.dart';
-import 'package:bookstore/domain/model/product_card_model.dart';
+import 'package:bookstore/domain/model/product_model.dart';
 import 'package:bookstore/util/dartz_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -63,7 +63,7 @@ class ShopMobileCubit extends Cubit<ShopMobileState> {
 
     final GenreModel selectedGenre = genreModels[selectedGenreIdx];
 
-    final Either<Failure, List<ProductCardModel>> productsResp =
+    final Either<Failure, List<ProductModel>> productsResp =
         await _shopViewController.loadAllProductForGenreId(
       genreId,
       sortBy: sortBy,
@@ -88,12 +88,12 @@ class ShopMobileCubit extends Cubit<ShopMobileState> {
     ));
   }
 
-  Future<void> refreshPageWithParam({
+  void refreshPageWithParam({
     required ListType listType,
     required String genreId,
     SortBy? sortBy,
     required List<FilterModel> filterModels,
-  }) async {
+  }) {
     final Map<String, dynamic> queryParams = <String, dynamic>{
       'listType': listType.text,
       'genreId': genreId,

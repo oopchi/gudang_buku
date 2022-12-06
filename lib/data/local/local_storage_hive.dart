@@ -1,4 +1,5 @@
 import 'package:bookstore/domain/local/local_storage.dart';
+import 'package:bookstore/domain/model/user_model.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 class LocalStorageHive implements LocalStorage {
@@ -10,6 +11,8 @@ class LocalStorageHive implements LocalStorage {
 
   Future<void> init() async {
     await Hive.initFlutter();
+
+    Hive.registerAdapter(UserModelAdapter());
 
     // Hive.registerAdapter(AddressResponseAdapter());
     // Hive.registerAdapter(AllowedMediaResponseAdapter());
@@ -106,7 +109,9 @@ class LocalStorageHive implements LocalStorage {
   Future<void> delete<T>(LocalStoragePath path, dynamic index) async {
     final Box<T> box = await Hive.openBox<T>(path.text);
 
-    await box.deleteAt(0);
+    if (box.isNotEmpty) {
+      await box.deleteAt(0);
+    }
 
     await box.close();
   }

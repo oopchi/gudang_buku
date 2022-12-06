@@ -1,5 +1,5 @@
 import 'package:bookstore/config/constant/colors.dart';
-import 'package:bookstore/domain/model/product_card_model.dart';
+import 'package:bookstore/domain/model/product_model.dart';
 import 'package:bookstore/presentation/pages/shop/mobile/state.dart';
 import 'package:bookstore/presentation/widget/spacing.dart';
 import 'package:bookstore/util/format_helper.dart';
@@ -15,7 +15,7 @@ class ProductCard extends StatelessWidget {
     this.onProductTap,
     this.listType = ListType.grid,
   });
-  final ProductCardModel model;
+  final ProductModel model;
   final VoidCallback? onFavoriteTap;
   final VoidCallback? onProductTap;
   final ListType listType;
@@ -222,7 +222,7 @@ class ProductCard extends StatelessWidget {
                   borderRadius: BorderRadius.circular(8.0.r),
                   child: Image.network(
                     model.imageUrl,
-                    fit: BoxFit.cover,
+                    fit: BoxFit.contain,
                     loadingBuilder: (context, child, loadingProgress) {
                       if (loadingProgress?.expectedTotalBytes ==
                           loadingProgress?.cumulativeBytesLoaded) {
@@ -269,7 +269,7 @@ class ProductCard extends StatelessWidget {
         ),
         child: Image.network(
           model.imageUrl,
-          fit: BoxFit.cover,
+          fit: BoxFit.contain,
           loadingBuilder: (context, child, loadingProgress) {
             if (loadingProgress?.expectedTotalBytes ==
                 loadingProgress?.cumulativeBytesLoaded) {

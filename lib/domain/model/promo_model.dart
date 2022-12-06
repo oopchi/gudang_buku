@@ -1,4 +1,4 @@
-import 'package:bookstore/domain/model/product_card_model.dart';
+import 'package:bookstore/domain/model/product_model.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 
@@ -16,7 +16,7 @@ class PromoModel extends Equatable {
   final String id;
   final String title;
   final String description;
-  final List<ProductCardModel> productCardModels;
+  final List<ProductModel> productCardModels;
   final DateTimeRange? dateTimeRange;
   final int amount;
   final String amountType;

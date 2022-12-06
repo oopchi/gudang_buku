@@ -2,13 +2,19 @@ import 'package:bookstore/config/constant/colors.dart';
 import 'package:bookstore/config/provider_setup.dart';
 import 'package:bookstore/config/router/router.dart';
 import 'package:bookstore/data/local/local_storage_hive.dart';
+import 'package:bookstore/presentation/bloc/cubit.dart';
+import 'package:bookstore/presentation/bloc/state.dart';
+import 'package:bookstore/presentation/widget/loading_helper.dart';
 import 'package:bookstore/presentation/widget/scroll_behaviour_helper.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/src/router.dart';
 import 'package:provider/provider.dart';
 import 'package:workmanager/workmanager.dart';
 import 'config/background_tasks.dart';
@@ -69,24 +75,47 @@ class MyApp extends StatelessWidget {
       child: ScreenUtilInit(
         minTextAdapt: true,
         designSize: const Size(375, 812),
-        builder: (context, child) => MaterialApp.router(
-          scrollBehavior: AppScrollBehavior(),
-          title: 'Gudang Buku',
-          theme: ThemeData(
-            primarySwatch: Colors.blue,
-            scaffoldBackgroundColor: AppColor.background,
-            appBarTheme: const AppBarTheme(
-              backgroundColor: AppColor.background,
-              elevation: .0,
-              iconTheme: IconThemeData(
-                color: AppColor.black,
-              ),
-            ),
+        builder: (context, child) => BlocProvider(
+          create: (context) => AuthCubit(
+            localStorage: LocalStorageHive(),
           ),
-          routerDelegate: AppRouter().router.routerDelegate,
-          routeInformationParser: AppRouter().router.routeInformationParser,
-          routeInformationProvider: AppRouter().router.routeInformationProvider,
-          debugShowCheckedModeBanner: false,
+          child: Builder(
+            builder: (context) {
+              return BlocBuilder<AuthCubit, AuthState>(
+                builder: (context, state) {
+                  final AppRouter appRouter = AppRouter(state: state);
+
+                  final GoRouter router = appRouter.router();
+
+                  if (state is AuthLoading) {
+                    return const MaterialApp(
+                      home: AppLoadingView(),
+                    );
+                  }
+
+                  return MaterialApp.router(
+                    scrollBehavior: AppScrollBehavior(),
+                    title: 'Gudang Buku',
+                    theme: ThemeData(
+                      primarySwatch: Colors.blue,
+                      scaffoldBackgroundColor: AppColor.background,
+                      appBarTheme: const AppBarTheme(
+                        backgroundColor: AppColor.background,
+                        elevation: .0,
+                        iconTheme: IconThemeData(
+                          color: AppColor.black,
+                        ),
+                      ),
+                    ),
+                    routerDelegate: router.routerDelegate,
+                    routeInformationParser: router.routeInformationParser,
+                    routeInformationProvider: router.routeInformationProvider,
+                    debugShowCheckedModeBanner: false,
+                  );
+                },
+              );
+            },
+          ),
         ),
       ),
     );

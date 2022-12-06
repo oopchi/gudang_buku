@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:bookstore/config/constant/routes.dart';
 import 'package:bookstore/domain/dto/user_response.dart';
 import 'package:bookstore/domain/local/local_storage.dart';
-import 'package:bookstore/domain/model/credential_model.dart';
+import 'package:bookstore/domain/model/user_model.dart';
 import 'package:bookstore/domain/repository/user_repository.dart';
 import 'package:bookstore/util/dartz_helper.dart';
 import 'package:bookstore/util/exception_helper.dart';
@@ -28,24 +28,11 @@ class AuthServiceFS {
     return _auth.currentUser!;
   }
 
-  // This method also ensure that the user is logged in to firebase
   Future<bool> isLoggedIn() async {
-    if (_auth.currentUser != null) return true;
+    final UserModel? userModel =
+        await _localStorage.readAt<UserModel>(LocalStoragePath.user, 0);
 
-    final CredentialModel? credentialModel = await _localStorage
-        .readAt<CredentialModel>(LocalStoragePath.credential, 0);
-
-    if (credentialModel == null) return false;
-
-    final AuthCredential credential = credentialModel.toAuthCredential();
-    final Either<Failure, UserCredential> loginRes =
-        await _loginWithCredential(credential);
-
-    if (loginRes.isLeft()) {
-      // Handle login failure here
-
-      return false;
-    }
+    if (userModel == null) return false;
 
     return true;
   }
@@ -58,28 +45,11 @@ class AuthServiceFS {
     );
   }
 
-  Future<void> _updateCredentialInStorage(AuthCredential newCredential) async {
-    final CredentialModel newCredentialModel =
-        CredentialModel.fromAuthCredential(newCredential);
-
-    await _localStorage.overwrite(
-      LocalStoragePath.credential,
-      newCredentialModel,
-    );
-  }
-
   Future<Either<Failure, UserCredential>> _loginWithCredential(
       AuthCredential credential) async {
     try {
       final UserCredential userCredential =
           await _auth.signInWithCredential(credential);
-
-      final AuthCredential? newCredential = userCredential.credential;
-
-      // Attemp to update credential
-      if (newCredential != null) {
-        await _updateCredentialInStorage(newCredential);
-      }
 
       return Right(userCredential);
     } on FirebaseAuthException catch (e) {
@@ -101,6 +71,8 @@ class AuthServiceFS {
         password: password,
       );
 
+      (credential as EmailAuthCredential).email;
+
       final Either<Failure, UserCredential> credentialRes =
           await _loginWithCredential(credential);
 
@@ -109,13 +81,6 @@ class AuthServiceFS {
       }
 
       final UserCredential userCredential = credentialRes.asRight();
-
-      final AuthCredential? newCredential = userCredential.credential;
-
-      // Attemp to update credential
-      if (newCredential != null) {
-        await _updateCredentialInStorage(newCredential);
-      }
 
       return Right(userCredential);
     } on FirebaseAuthException catch (e) {
@@ -175,13 +140,6 @@ class AuthServiceFS {
         return Left(userRes.asLeft());
       }
 
-      final AuthCredential? newCredential = userCredential.credential;
-
-      // Attemp to update credential
-      if (newCredential != null) {
-        await _updateCredentialInStorage(newCredential);
-      }
-
       final User user = userCredential.user!;
 
       for (final UserInfo userInfo in user.providerData) {
@@ -216,17 +174,6 @@ class AuthServiceFS {
         email: email,
         password: password,
       );
-
-      final AuthCredential? newCredential = userCredential.credential;
-
-      if (newCredential != null) {
-        await _updateCredentialInStorage(newCredential);
-      }
-
-      // ensures logged in
-      if (!await isLoggedIn()) {
-        return const Left(ServerFailure('Failed to login user'));
-      }
 
       return Right(userCredential);
     } on FirebaseAuthException catch (e) {

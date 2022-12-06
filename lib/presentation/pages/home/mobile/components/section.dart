@@ -1,8 +1,10 @@
-import 'package:bookstore/domain/model/product_card_model.dart';
+import 'package:bookstore/config/constant/routes.dart';
+import 'package:bookstore/domain/model/product_model.dart';
 import 'package:bookstore/presentation/widget/card_helper.dart';
 import 'package:bookstore/presentation/widget/spacing.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 
 class HomeMobileSection extends StatelessWidget {
   const HomeMobileSection({
@@ -16,7 +18,7 @@ class HomeMobileSection extends StatelessWidget {
   final String title;
   final String subtitle;
   final VoidCallback onViewAllTap;
-  final List<ProductCardModel> models;
+  final List<ProductModel> models;
 
   @override
   Widget build(BuildContext context) {
@@ -29,13 +31,13 @@ class HomeMobileSection extends StatelessWidget {
         children: <Widget>[
           _buildHeader(),
           Spacing.vertical(22.0.h),
-          _buildProductList(),
+          _buildProductList(context),
         ],
       ),
     );
   }
 
-  Widget _buildProductList() {
+  Widget _buildProductList(BuildContext context) {
     return Container(
       height: 414.0.sp,
       alignment: Alignment.center,
@@ -48,13 +50,19 @@ class HomeMobileSection extends StatelessWidget {
         ),
         scrollDirection: Axis.horizontal,
         children: <Widget>[
-          for (final ProductCardModel model in models)
+          for (final ProductModel model in models)
             Padding(
               padding: EdgeInsets.only(
                 right: 17.0.w,
               ),
               child: ProductCard(
                 model: model,
+                onProductTap: () => context.goNamed(
+                  AppRoutes.shopToProduct.name,
+                  params: <String, String>{
+                    'product': model.id,
+                  },
+                ),
               ),
             ),
         ],

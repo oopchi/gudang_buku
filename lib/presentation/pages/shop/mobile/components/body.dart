@@ -4,7 +4,7 @@ import 'package:bookstore/config/router/router.dart';
 import 'package:bookstore/domain/controller/shop_view_controller.dart';
 import 'package:bookstore/domain/model/filter_model.dart';
 import 'package:bookstore/domain/model/genre_model.dart';
-import 'package:bookstore/domain/model/product_card_model.dart';
+import 'package:bookstore/domain/model/product_model.dart';
 import 'package:bookstore/presentation/pages/shop/mobile/components/bottom_sort_by_sheet.dart';
 import 'package:bookstore/presentation/pages/shop/mobile/components/filter_by_sheet.dart';
 import 'package:bookstore/presentation/pages/shop/mobile/cubit.dart';
@@ -384,11 +384,17 @@ class _ShopMobileBodyState extends State<ShopMobileBody> {
       childAspectRatio: 164 / 260,
       crossAxisCount: 2,
       children: <Widget>[
-        for (final ProductCardModel model in state.products)
+        for (final ProductModel model in state.products)
           FittedBox(
             child: ProductCard(
               model: model,
               listType: ListType.grid,
+              onProductTap: () => context.goNamed(
+                AppRoutes.shopToProduct.name,
+                params: <String, String>{
+                  'product': model.id,
+                },
+              ),
             ),
           ),
       ],
@@ -404,7 +410,7 @@ class _ShopMobileBodyState extends State<ShopMobileBody> {
         parent: AlwaysScrollableScrollPhysics(),
       ),
       children: <Widget>[
-        for (final ProductCardModel model in state.products)
+        for (final ProductModel model in state.products)
           Padding(
             padding: EdgeInsets.only(
               left: 16.0.w,
@@ -414,6 +420,12 @@ class _ShopMobileBodyState extends State<ShopMobileBody> {
             child: ProductCard(
               model: model,
               listType: ListType.list,
+              onProductTap: () => context.goNamed(
+                AppRoutes.shopToProduct.name,
+                params: <String, String>{
+                  'product': model.id,
+                },
+              ),
             ),
           ),
       ],

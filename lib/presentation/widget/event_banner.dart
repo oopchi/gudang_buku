@@ -46,7 +46,7 @@ class _EventBannerState extends State<EventBanner> {
         Image.network(
           key: _uniqueKey,
           _url,
-          fit: BoxFit.cover,
+          fit: BoxFit.contain,
           loadingBuilder: (context, child, loadingProgress) {
             if (loadingProgress?.expectedTotalBytes ==
                 loadingProgress?.cumulativeBytesLoaded) {
@@ -60,18 +60,20 @@ class _EventBannerState extends State<EventBanner> {
             );
           },
           errorBuilder: (context, error, stackTrace) => Center(
-            child: IconButton(
-              onPressed: _reloadImage,
-              icon: const Icon(
-                Icons.refresh_rounded,
-              ),
-              iconSize: 40.0.sp,
-              color: AppColor.error,
-              padding: EdgeInsets.all(8.0.sp),
-              constraints: const BoxConstraints(),
-              visualDensity: const VisualDensity(
-                horizontal: -4.0,
-                vertical: -4.0,
+            child: Material(
+              child: IconButton(
+                onPressed: _reloadImage,
+                icon: const Icon(
+                  Icons.refresh_rounded,
+                ),
+                iconSize: 40.0.sp,
+                color: AppColor.error,
+                padding: EdgeInsets.all(8.0.sp),
+                constraints: const BoxConstraints(),
+                visualDensity: const VisualDensity(
+                  horizontal: -4.0,
+                  vertical: -4.0,
+                ),
               ),
             ),
           ),

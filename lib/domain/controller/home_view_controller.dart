@@ -10,7 +10,7 @@ import 'package:bookstore/domain/dto/review_response.dart';
 import 'package:bookstore/domain/local/local_storage.dart';
 import 'package:bookstore/domain/model/event_model.dart';
 import 'package:bookstore/domain/model/favorite_button_model.dart';
-import 'package:bookstore/domain/model/product_card_model.dart';
+import 'package:bookstore/domain/model/product_model.dart';
 import 'package:bookstore/domain/model/promo_model.dart';
 import 'package:bookstore/domain/dto/promo_response.dart';
 import 'package:bookstore/domain/repository/amount_type_repository.dart';
@@ -141,10 +141,10 @@ class HomeViewController {
         amountTypeResponse.id!: amountTypeResponse.name!,
     };
 
-    final Map<String, List<ProductCardModel>> promoProductMap =
-        <String, List<ProductCardModel>>{
+    final Map<String, List<ProductModel>> promoProductMap =
+        <String, List<ProductModel>>{
       for (final PromoResponse promoResponse in promoResponses)
-        promoResponse.id!: <ProductCardModel>[],
+        promoResponse.id!: <ProductModel>[],
     };
 
     final Map<String, PromoResponse> namePromoMap = <String, PromoResponse>{
@@ -188,6 +188,12 @@ class HomeViewController {
 
       final String imageUrl = mediaResponses[0].url!;
 
+      final List<String> imageUrls = <String>[];
+
+      for (final MediaResponse media in mediaResponses) {
+        imageUrls.add(media.url!);
+      }
+
       final Either<Failure, List<AuthorBookResponse>> authorBookRes =
           await _authorBookRepository.fetchAllAuthorBookWithBookId(
         bookId: bookResponse.id!,
@@ -214,6 +220,12 @@ class HomeViewController {
       final String author = authorResponses.fold(
           '', (previousValue, element) => '$previousValue, ${element.name}');
 
+      final Map<String, String> authorOverviews = <String, String>{
+        for (final AuthorResponse authorResponse in authorResponses)
+          if (authorResponse.description != null)
+            authorResponse.name!: authorResponse.description!
+      };
+
       final Either<Failure, List<ReviewResponse>> reviewRes =
           await _reviewRepository.fetchAllReviewsWithBookId(
         bookId: bookResponse.id!,
@@ -233,7 +245,7 @@ class HomeViewController {
       final double averageRating =
           numOfRating <= 0 ? .0 : (totalRating / numOfRating);
 
-      final ProductCardModel productCardModel = ProductCardModel(
+      final ProductModel productCardModel = ProductModel(
         id: bookResponse.id!,
         favoriteButtonModel: favoriteButtonModel,
         imageUrl: imageUrl,
@@ -242,12 +254,15 @@ class HomeViewController {
         price: bookResponse.price!,
         rating: averageRating,
         title: bookResponse.title!,
+        description: bookResponse.overview,
+        authorOverviews: authorOverviews,
+        imageUrls: imageUrls,
       );
 
       promoProductMap[bookResponse.promoId]!.add(productCardModel);
     }
 
-    for (final MapEntry<String, List<ProductCardModel>> mapEntry
+    for (final MapEntry<String, List<ProductModel>> mapEntry
         in promoProductMap.entries) {
       final PromoResponse currentPromoResponse = namePromoMap[mapEntry.key]!;
 
@@ -261,7 +276,7 @@ class HomeViewController {
         );
       }
 
-      final List<ProductCardModel> productCardModels = mapEntry.value;
+      final List<ProductModel> productCardModels = mapEntry.value;
 
       final PromoModel promo = PromoModel(
         id: currentPromoResponse.id!,

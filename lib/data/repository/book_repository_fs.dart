@@ -97,8 +97,12 @@ class BookRepositoryFS implements BookRepository {
     try {
       return await books.doc(id).get().then(
         (DocumentSnapshot<Object?> result) {
-          return Right(
-              BookResponse.fromJson(result.data() as Map<String, dynamic>));
+          final Map<String, dynamic> data =
+              result.data() as Map<String, dynamic>;
+
+          data['id'] = result.reference.id;
+
+          return Right(BookResponse.fromJson(data));
         },
         onError: (e) => Left(DatabaseFailure(e.toString())),
       );

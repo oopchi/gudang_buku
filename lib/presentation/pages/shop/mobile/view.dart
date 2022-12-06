@@ -6,6 +6,7 @@ import 'package:bookstore/data/repository/favorite_repository_fs.dart';
 import 'package:bookstore/data/repository/genre_repository_fs.dart';
 import 'package:bookstore/data/repository/media_repository_fs.dart';
 import 'package:bookstore/data/repository/review_repository_fs.dart';
+import 'package:bookstore/data/repository/transaction_detail_repository_fs.dart';
 import 'package:bookstore/data/service/auth_service_fs.dart';
 import 'package:bookstore/domain/controller/shop_view_controller.dart';
 import 'package:bookstore/domain/model/filter_model.dart';
@@ -51,6 +52,7 @@ class _ShopMobilePageState extends State<ShopMobilePage> {
             mediaRepository: MediaRepositoryFS(),
             reviewRepository: ReviewRepositoryFS(),
             bookGenreRepository: BookGenreRepositoryFS(),
+            transactionDetailRepository: TransactionDetailRepositoryFS(),
           ),
         )..load(
             genreId: widget.genreId,
