@@ -6,6 +6,7 @@ import 'package:bookstore/domain/dto/favorite_response.dart';
 import 'package:bookstore/domain/dto/genre_response.dart';
 import 'package:bookstore/domain/dto/media_response.dart';
 import 'package:bookstore/domain/dto/review_response.dart';
+import 'package:bookstore/domain/dto/transaction_detail_response.dart';
 import 'package:bookstore/domain/model/favorite_button_model.dart';
 import 'package:bookstore/domain/model/filter_model.dart';
 import 'package:bookstore/domain/model/genre_model.dart';
@@ -18,6 +19,7 @@ import 'package:bookstore/domain/repository/favorite_repository.dart';
 import 'package:bookstore/domain/repository/genre_repository.dart';
 import 'package:bookstore/domain/repository/media_repository.dart';
 import 'package:bookstore/domain/repository/review_repository.dart';
+import 'package:bookstore/domain/repository/transaction_detail_repository.dart';
 import 'package:bookstore/util/dartz_helper.dart';
 import 'package:bookstore/util/failure_helper.dart';
 import 'package:dartz/dartz.dart';
@@ -74,6 +76,7 @@ class ShopViewController {
     required ReviewRepository reviewRepository,
     required AuthorRepository authorRepository,
     required BookGenreRepository bookGenreRepository,
+    required TransactionDetailRepository transactionDetailRepository,
   })  : _genreRepository = genreRepository,
         _bookGenreRepository = bookGenreRepository,
         _mediaRepository = mediaRepository,
@@ -82,6 +85,7 @@ class ShopViewController {
         _authorBookRepository = authorBookRepository,
         _reviewRepository = reviewRepository,
         _authorRepository = authorRepository,
+        _transactionDetailRepository = transactionDetailRepository,
         _bookRepository = bookRepository;
 
   final GenreRepository _genreRepository;
@@ -92,6 +96,7 @@ class ShopViewController {
   final ReviewRepository _reviewRepository;
   final AuthorRepository _authorRepository;
   final BookGenreRepository _bookGenreRepository;
+  final TransactionDetailRepository _transactionDetailRepository;
 
   final AuthServiceFS _authServiceFS;
 
@@ -151,7 +156,7 @@ class ShopViewController {
     final List<ProductCardModel> filteredProducts =
         _filterBy(productRes.asRight(), filterModels);
 
-    return Right(_sortBy(filteredProducts, sortBy));
+    return Right(await _sortBy(filteredProducts, sortBy));
   }
 
   Future<Either<Failure, List<ProductCardModel>>>
@@ -236,6 +241,7 @@ class ShopViewController {
           numOfRating <= 0 ? .0 : (totalRating / numOfRating);
 
       final ProductCardModel productCardModel = ProductCardModel(
+        id: bookResponse.id!,
         favoriteButtonModel: favoriteButtonModel,
         imageUrl: imageUrl,
         author: author,
@@ -267,8 +273,8 @@ class ShopViewController {
     return genreModels;
   }
 
-  List<ProductCardModel> _sortBy(
-      List<ProductCardModel> products, SortBy? sortTech) {
+  Future<List<ProductCardModel>> _sortBy(
+      List<ProductCardModel> products, SortBy? sortTech) async {
     final List<ProductCardModel> result = List.from(products);
 
     switch (sortTech) {
@@ -294,6 +300,30 @@ class ShopViewController {
         );
         break;
       case SortBy.popular:
+        final Either<Failure, List<TransactionDetailResponse>>
+            transactionDetailRes =
+            await _transactionDetailRepository.fetchAllTransactionDetail();
+
+        if (transactionDetailRes.isLeft()) {
+          return result;
+        }
+
+        final List<TransactionDetailResponse> transactionDetailResponses =
+            transactionDetailRes.asRight();
+
+        final Map<String, int> quantityMap = <String, int>{
+          for (final ProductCardModel res in result) res.id: 0
+        };
+
+        for (final TransactionDetailResponse res
+            in transactionDetailResponses) {
+          quantityMap[res.bookId!] = quantityMap[res.bookId!]! + res.quantity!;
+        }
+
+        result.sort(
+          (a, b) => quantityMap[b.id]! - quantityMap[a.id]!,
+        );
+        break;
       case SortBy.newest:
         break;
       default:

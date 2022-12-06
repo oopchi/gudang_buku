@@ -3,6 +3,7 @@ import 'package:equatable/equatable.dart';
 
 class ProductCardModel extends Equatable {
   const ProductCardModel({
+    required this.id,
     required this.favoriteButtonModel,
     required this.imageUrl,
     required this.author,
@@ -13,6 +14,7 @@ class ProductCardModel extends Equatable {
     required this.rating,
     required this.title,
   });
+  final String id;
   final String? discountString;
   final FavoriteButtonModel favoriteButtonModel;
   final String imageUrl;
@@ -25,6 +27,7 @@ class ProductCardModel extends Equatable {
 
   @override
   List<Object?> get props => <Object?>[
+        id,
         favoriteButtonModel,
         imageUrl,
         author,

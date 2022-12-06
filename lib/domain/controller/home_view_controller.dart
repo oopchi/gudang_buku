@@ -234,6 +234,7 @@ class HomeViewController {
           numOfRating <= 0 ? .0 : (totalRating / numOfRating);
 
       final ProductCardModel productCardModel = ProductCardModel(
+        id: bookResponse.id!,
         favoriteButtonModel: favoriteButtonModel,
         imageUrl: imageUrl,
         author: author,
