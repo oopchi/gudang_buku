@@ -57,3 +57,17 @@ class ProductMobileRefresh extends ProductMobileState {
         params,
       ];
 }
+
+class ProductAddToCartSuccess extends ProductMobileState {
+  const ProductAddToCartSuccess({
+    required DateTime dateTime,
+  }) : _dateTime = dateTime;
+
+  // To bypass equatable behavior
+  final DateTime _dateTime;
+
+  @override
+  List<Object?> get props => <Object?>[
+        _dateTime,
+      ];
+}

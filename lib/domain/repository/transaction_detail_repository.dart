@@ -5,4 +5,10 @@ import 'package:dartz/dartz.dart';
 abstract class TransactionDetailRepository {
   Future<Either<Failure, List<TransactionDetailResponse>>>
       fetchAllTransactionDetail();
+
+  Future<Either<Failure, String>> addCartTransactionDetail({
+    required String transactionId,
+    required String bookId,
+    required int quantity,
+  });
 }

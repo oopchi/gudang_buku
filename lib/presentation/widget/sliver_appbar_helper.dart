@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 
-class SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
-  SliverAppBarDelegate({
-    required this.child,
+class AppSliverPersistentHeaderDelegate extends SliverPersistentHeaderDelegate {
+  AppSliverPersistentHeaderDelegate({
+    required this.builder,
     required this.height,
   });
 
-  final Widget child;
+  final Widget Function(
+    BuildContext context,
+    double shrinkOffset,
+    bool overlapsContent,
+  ) builder;
   final double height;
 
   @override
@@ -17,9 +21,9 @@ class SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
   @override
   Widget build(
       BuildContext context, double shrinkOffset, bool overlapsContent) {
-    return child;
+    return builder(context, shrinkOffset, overlapsContent);
   }
 
   @override
-  bool shouldRebuild(SliverAppBarDelegate oldDelegate) => false;
+  bool shouldRebuild(AppSliverPersistentHeaderDelegate oldDelegate) => true;
 }

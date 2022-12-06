@@ -10,7 +10,7 @@ class AppButton extends StatelessWidget {
     this.buttonColor = const Color(0xFFDB3022),
     this.onPressed,
     this.icon,
-    required this.padding,
+    this.padding,
     this.borderRadius = 100.0,
     required this.textStyle,
     this.width,
@@ -21,7 +21,7 @@ class AppButton extends StatelessWidget {
   final Widget? icon;
   final Color borderColor;
   final Color buttonColor;
-  final double padding;
+  final double? padding;
   final double borderRadius;
   final TextStyle textStyle;
   final double? width;
@@ -60,9 +60,11 @@ class AppButton extends StatelessWidget {
             child: Container(
               width: double.infinity,
               alignment: Alignment.center,
-              padding: EdgeInsets.symmetric(
-                vertical: padding.h,
-              ),
+              padding: padding != null
+                  ? EdgeInsets.symmetric(
+                      vertical: padding!.h,
+                    )
+                  : null,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[

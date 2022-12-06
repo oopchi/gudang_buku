@@ -8,19 +8,21 @@ class AppSnackBar extends SnackBar {
     Key? key,
     required String content,
     Color backgroundColor = AppColor.error,
+    Color textColor = Colors.white,
+    Duration duration = const Duration(
+      seconds: 2,
+    ),
   }) : super(
           key: key,
           content: Text(
             content,
             style: CustomTextStyles.regular.size(
               16.0,
-              AppColor.neutral,
+              textColor,
             ),
           ),
           backgroundColor: backgroundColor,
-          duration: const Duration(
-            seconds: 2,
-          ),
+          duration: duration,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.vertical(
               top: Radius.circular(8.0.r),

@@ -40,4 +40,32 @@ class TransactionDetailRepositoryFS implements TransactionDetailRepository {
       return const Left(ConnectionFailure('Failed to connect to the network'));
     }
   }
+
+  @override
+  Future<Either<Failure, String>> addCartTransactionDetail({
+    required String transactionId,
+    required String bookId,
+    required int quantity,
+  }) async {
+    try {
+      final TransactionDetailResponse transactionDetailResponse =
+          TransactionDetailResponse(
+        bookId: bookId,
+        quantity: quantity,
+        transactionId: transactionId,
+      );
+      return await transactionDetails
+          .add(transactionDetailResponse.toJson())
+          .then(
+        (DocumentReference<Object?> result) {
+          return Right(result.id);
+        },
+        onError: (e) => Left(DatabaseFailure(e.toString())),
+      );
+    } on ServerException {
+      return const Left(ServerFailure('Server Failure'));
+    } on SocketException {
+      return const Left(ConnectionFailure('Failed to connect to the network'));
+    }
+  }
 }

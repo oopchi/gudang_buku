@@ -8,7 +8,7 @@ abstract class TransactionRepository {
     required String uid,
   });
 
-  Future<Either<Failure, void>> addTransaction({
-    required TransactionResponse userResponse,
+  Future<Either<Failure, String>> getCartTransactionId({
+    required String uid,
   });
 }

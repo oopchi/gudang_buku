@@ -42,16 +42,40 @@ class TransactionRepositoryFS implements TransactionRepository {
   }
 
   @override
-  Future<Either<Failure, void>> addTransaction(
-      {required TransactionResponse userResponse}) {
-    // TODO: implement addTransaction
-    throw UnimplementedError();
-  }
-
-  @override
   Future<Either<Failure, TransactionResponse>> fetchTransactionForUserId(
       {required String uid}) {
     // TODO: implement fetchTransactionForUserId
     throw UnimplementedError();
+  }
+
+  @override
+  Future<Either<Failure, String>> getCartTransactionId(
+      {required String uid}) async {
+    try {
+      return await transactions.where('userId', isEqualTo: uid).get().then(
+        (QuerySnapshot<Object?> result) async {
+          final List<QueryDocumentSnapshot<Object?>> docs = result.docs;
+
+          for (int i = 0; i < docs.length; i++) {
+            if (!((docs[i].data() as Map<String, dynamic>)
+                .containsKey('checkedOutAt'))) {
+              return Right(docs[i].id);
+            }
+          }
+
+          final TransactionResponse transactionResponse = TransactionResponse(
+            userId: uid,
+          );
+          return await transactions
+              .add(transactionResponse.toJson())
+              .then((DocumentReference<Object?> value) => Right(value.id));
+        },
+        onError: (e) => Left(DatabaseFailure(e.toString())),
+      );
+    } on ServerException {
+      return const Left(ServerFailure('Server Failure'));
+    } on SocketException {
+      return const Left(ConnectionFailure('Failed to connect to the network'));
+    }
   }
 }

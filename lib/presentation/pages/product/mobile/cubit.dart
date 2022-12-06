@@ -40,6 +40,27 @@ class ProductMobileCubit extends Cubit<ProductMobileState> {
     ));
   }
 
+  Future<void> addToCart({
+    required String productId,
+  }) async {
+    final Either<Failure, String> res = await _productViewController.addToCart(
+      productId: productId,
+    );
+
+    if (res.isLeft()) {
+      if (!isMounted()) return;
+
+      emit(ProductMobileFailure(message: res.asLeft().message));
+      return;
+    }
+
+    if (!isMounted()) return;
+
+    emit(ProductAddToCartSuccess(
+      dateTime: DateTime.now(),
+    ));
+  }
+
   Future<void> refreshPageWithParam({
     required String bookId,
   }) async {

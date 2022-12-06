@@ -16,6 +16,7 @@ import 'package:bookstore/domain/repository/genre_repository.dart';
 import 'package:bookstore/domain/repository/media_repository.dart';
 import 'package:bookstore/domain/repository/review_repository.dart';
 import 'package:bookstore/domain/repository/transaction_detail_repository.dart';
+import 'package:bookstore/domain/repository/transaction_repository.dart';
 import 'package:bookstore/util/dartz_helper.dart';
 import 'package:bookstore/util/failure_helper.dart';
 import 'package:dartz/dartz.dart';
@@ -32,10 +33,13 @@ class ProductViewController {
     required AuthorRepository authorRepository,
     required BookGenreRepository bookGenreRepository,
     required TransactionDetailRepository transactionDetailRepository,
+    required TransactionRepository transactionRepository,
   })  : _mediaRepository = mediaRepository,
         _favoriteRepository = favoriteRepository,
         _authServiceFS = authServiceFS,
         _authorBookRepository = authorBookRepository,
+        _transactionDetailRepository = transactionDetailRepository,
+        _transactionRepository = transactionRepository,
         _reviewRepository = reviewRepository,
         _authorRepository = authorRepository,
         _bookRepository = bookRepository;
@@ -46,8 +50,38 @@ class ProductViewController {
   final AuthorBookRepository _authorBookRepository;
   final ReviewRepository _reviewRepository;
   final AuthorRepository _authorRepository;
+  final TransactionDetailRepository _transactionDetailRepository;
+  final TransactionRepository _transactionRepository;
 
   final AuthServiceFS _authServiceFS;
+
+  Future<Either<Failure, String>> addToCart({
+    required String productId,
+  }) async {
+    final Either<Failure, String> cartIdRes =
+        await _transactionRepository.getCartTransactionId(
+      uid: _authServiceFS.getUser().uid,
+    );
+
+    if (cartIdRes.isLeft()) {
+      return Left(cartIdRes.asLeft());
+    }
+
+    final String cartId = cartIdRes.asRight();
+
+    final Either<Failure, String> cartDetailIdRes =
+        await _transactionDetailRepository.addCartTransactionDetail(
+      transactionId: cartId,
+      bookId: productId,
+      quantity: 1,
+    );
+
+    if (cartDetailIdRes.isLeft()) {
+      return Left(cartDetailIdRes.asLeft());
+    }
+
+    return Right(cartDetailIdRes.asRight());
+  }
 
   Future<Either<Failure, ProductModel>> getProductModelForId(
       String productId) async {
