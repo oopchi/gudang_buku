@@ -26,15 +26,9 @@ class BottomNavigationScaffold extends StatelessWidget {
       },
       child: Scaffold(
         backgroundColor: Colors.white,
+        bottomNavigationBar: _buildBottomNavigationBar(context),
         body: SafeArea(
-          child: Column(
-            children: <Widget>[
-              Expanded(
-                child: child,
-              ),
-              _buildBottomNavigationBar(context),
-            ],
-          ),
+          child: child,
         ),
       ),
     );

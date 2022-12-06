@@ -49,6 +49,16 @@ extension SortByExt on SortBy {
     'price-lowest-to-highest': SortBy.priceLowestToHighest,
   };
 
+  static final Map<SortBy, String> _objectNames = <SortBy, String>{
+    SortBy.popular: 'popular',
+    SortBy.newest: 'newest',
+    SortBy.customerReview: 'customer-review',
+    SortBy.priceHighestToLowest: 'price-highest-to-lowest',
+    SortBy.priceLowestToHighest: 'price-lowest-to-highest',
+  };
+
+  String get objectName => _objectNames[this]!;
+
   static SortBy? getObjFromString(String name) =>
       _objects[name.trim().toLowerCase()];
 }

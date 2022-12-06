@@ -183,7 +183,7 @@ class ProductCard extends StatelessWidget {
         RatingBarIndicator(
           itemBuilder: (context, index) => const Icon(
             Icons.star,
-            color: Color(0xFFFFBA49),
+            color: AppColor.amber,
           ),
           rating: model.rating,
           itemSize: 13.0.sp,

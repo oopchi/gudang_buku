@@ -8,6 +8,7 @@ import 'package:bookstore/presentation/pages/register/register_page.dart';
 import 'package:bookstore/presentation/pages/shop/mobile/state.dart';
 import 'package:bookstore/presentation/pages/shop/shop_page.dart';
 import 'package:bookstore/presentation/widget/bottom_navigation_helper.dart';
+import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
@@ -19,7 +20,7 @@ class AppRouter {
   static final AppRouter _instance = AppRouter._internal();
 
   final router = GoRouter(
-    initialLocation: AppRoutes.landingPageToLogin.fullPath,
+    initialLocation: AppRoutes.home.fullPath,
     routes: <RouteBase>[
       GoRoute(
         name: AppRoutes.landingPage.name,
@@ -36,11 +37,25 @@ class AppRouter {
             name: AppRoutes.landingPageToSignUp.name,
             path: AppRoutes.landingPageToSignUp.path,
             builder: (context, state) => const RegisterPage(),
+            redirect: (context, state) async =>
+                await Provider.of<AuthServiceFS>(
+              context,
+              listen: false,
+            ).isLoggedIn()
+                    ? AppRoutes.home.fullPath
+                    : null,
           ),
           GoRoute(
             name: AppRoutes.landingPageToLogin.name,
             path: AppRoutes.landingPageToLogin.path,
             builder: (context, state) => const LoginPage(),
+            redirect: (context, state) async =>
+                await Provider.of<AuthServiceFS>(
+              context,
+              listen: false,
+            ).isLoggedIn()
+                    ? AppRoutes.home.fullPath
+                    : null,
             routes: <RouteBase>[
               GoRoute(
                 name: AppRoutes.loginToForgotPassword.name,
@@ -151,6 +166,7 @@ class AppRouter {
               final String genreId = q['genreId'] ?? '';
 
               return ShopPage(
+                key: UniqueKey(),
                 filterModels: filterModels,
                 sortBy: sortBy,
                 listType: listType,

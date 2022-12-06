@@ -8,6 +8,13 @@ enum ListType {
 }
 
 extension ListTypeExt on ListType {
+  static final Map<ListType, String> _texts = <ListType, String>{
+    ListType.list: 'list',
+    ListType.grid: 'grid',
+  };
+
+  String get text => _texts[this]!;
+
   static final Map<String, ListType> _objs = <String, ListType>{
     'list': ListType.list,
     'grid': ListType.grid,
@@ -44,39 +51,49 @@ class ShopMobileFailure extends ShopMobileState {
   final String message;
 
   @override
-  List<Object?> get props => <Object?>[];
+  List<Object?> get props => <Object?>[
+        message,
+      ];
 }
 
 class ShopMobileLoaded extends ShopMobileState {
   const ShopMobileLoaded({
     required this.genres,
     required this.products,
-    required this.listType,
     required this.selectedGenre,
   });
 
   final List<GenreModel> genres;
   final List<ProductCardModel> products;
-  final ListType listType;
   final GenreModel selectedGenre;
 
   @override
   List<Object?> get props => <Object?>[
         genres,
         products,
-        listType,
+        selectedGenre,
       ];
 
   ShopMobileLoaded copyWith({
     List<GenreModel>? genres,
     List<ProductCardModel>? products,
-    ListType? listType,
     GenreModel? selectedGenre,
   }) =>
       ShopMobileLoaded(
         genres: genres ?? this.genres,
         products: products ?? this.products,
-        listType: listType ?? this.listType,
         selectedGenre: selectedGenre ?? this.selectedGenre,
       );
+}
+
+class ShopMobileRefresh extends ShopMobileState {
+  const ShopMobileRefresh({
+    required this.params,
+  });
+  final Map<String, dynamic> params;
+
+  @override
+  List<Object?> get props => <Object?>[
+        params,
+      ];
 }
