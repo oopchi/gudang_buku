@@ -352,6 +352,8 @@ class _ProductMobileBodyState extends State<ProductMobileBody> {
     BuildContext context,
     ProductMobileLoaded state,
   ) {
+    final ProductMobileCubit cubit =
+        BlocProvider.of<ProductMobileCubit>(context);
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(100.0.r),
@@ -371,7 +373,9 @@ class _ProductMobileBodyState extends State<ProductMobileBody> {
         borderRadius: BorderRadius.circular(100.0.r),
         child: InkWell(
           borderRadius: BorderRadius.circular(100.0.r),
-          onTap: () {},
+          onTap: () => cubit.toggleFavorite(
+            productModel: state.product,
+          ),
           child: SizedBox(
             width: 36.0.sp,
             height: 36.0.sp,

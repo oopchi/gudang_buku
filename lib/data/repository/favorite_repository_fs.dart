@@ -47,4 +47,62 @@ class FavoriteRepositoryFS implements FavoriteRepository {
       return const Left(ConnectionFailure('Failed to connect to the network'));
     }
   }
+
+  @override
+  Future<Either<Failure, String>> addFavorite({
+    required String userId,
+    required String bookId,
+  }) async {
+    try {
+      final FavoriteResponse favoriteResponse = FavoriteResponse(
+        bookId: bookId,
+        userId: userId,
+      );
+      return await favorites.add(favoriteResponse.toJson()).then(
+        (DocumentReference<Object?> result) {
+          return Right(result.id);
+        },
+        onError: (e) => Left(DatabaseFailure(e.toString())),
+      );
+    } on ServerException {
+      return const Left(ServerFailure('Server Failure'));
+    } on SocketException {
+      return const Left(ConnectionFailure('Failed to connect to the network'));
+    }
+  }
+
+  @override
+  Future<Either<Failure, void>> removeFavorite({
+    required String userId,
+    required String bookId,
+  }) async {
+    try {
+      return await favorites
+          .where(
+            'userId',
+            isEqualTo: userId,
+          )
+          .where(
+            'bookId',
+            isEqualTo: bookId,
+          )
+          .get()
+          .then(
+        (QuerySnapshot<Object?> result) async {
+          if (result.docs.isEmpty) return const Right(null);
+
+          for (final QueryDocumentSnapshot<Object?> doc in result.docs) {
+            await doc.reference.delete();
+          }
+
+          return const Right(null);
+        },
+        onError: (e) => Left(DatabaseFailure(e.toString())),
+      );
+    } on ServerException {
+      return const Left(ServerFailure('Server Failure'));
+    } on SocketException {
+      return const Left(ConnectionFailure('Failed to connect to the network'));
+    }
+  }
 }

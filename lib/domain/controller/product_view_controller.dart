@@ -55,6 +55,24 @@ class ProductViewController {
 
   final AuthServiceFS _authServiceFS;
 
+  Future<Either<Failure, String>> addToFavorite({
+    required String bookId,
+  }) async {
+    return _favoriteRepository.addFavorite(
+      userId: _authServiceFS.getUser().uid,
+      bookId: bookId,
+    );
+  }
+
+  Future<Either<Failure, void>> removeFromFavorite({
+    required String bookId,
+  }) async {
+    return _favoriteRepository.removeFavorite(
+      userId: _authServiceFS.getUser().uid,
+      bookId: bookId,
+    );
+  }
+
   Future<Either<Failure, String>> addToCart({
     required String productId,
   }) async {

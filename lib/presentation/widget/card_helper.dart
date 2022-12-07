@@ -23,55 +23,56 @@ class ProductCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (listType == ListType.grid) {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          _buildCard(),
-          Spacing.vertical(7.0.sp),
-          _buildRatingStars(),
-          Spacing.vertical(6.0.sp),
-          _buildAuthor(),
-          Spacing.vertical(5.0.sp),
-          _buildTitle(),
-          Spacing.vertical(3.0.sp),
-          _buildPrice(),
-        ],
+      return Material(
+        color: Colors.transparent,
+        borderRadius: BorderRadius.circular(8.0.r),
+        child: InkWell(
+          borderRadius: BorderRadius.circular(8.0.r),
+          onTap: onProductTap,
+          child: _buildCard(),
+        ),
       );
     }
 
     return Stack(
       clipBehavior: Clip.none,
       children: <Widget>[
-        Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(8.0.r),
-            color: Colors.white,
-            boxShadow: <BoxShadow>[
-              BoxShadow(
-                offset: Offset(
-                  .0,
-                  1.0.sp,
-                ),
-                blurRadius: 25.0.sp,
-                color: Colors.black.withOpacity(.08),
-              ),
-            ],
-          ),
-          child: Material(
-            color: Colors.transparent,
-            borderRadius: BorderRadius.circular(8.0.r),
-            child: InkWell(
-              onTap: onProductTap,
-              borderRadius: BorderRadius.circular(8.0.r),
-              child: Row(
-                children: <Widget>[
-                  _buildCard(),
-                  Spacing.horizontal(11.0.w),
-                  _buildDetail(),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(8.0.r),
+                color: Colors.white,
+                boxShadow: <BoxShadow>[
+                  BoxShadow(
+                    offset: Offset(
+                      .0,
+                      1.0.sp,
+                    ),
+                    blurRadius: 25.0.sp,
+                    color: Colors.black.withOpacity(.08),
+                  ),
                 ],
               ),
+              child: Material(
+                color: Colors.transparent,
+                borderRadius: BorderRadius.circular(8.0.r),
+                child: InkWell(
+                  onTap: onProductTap,
+                  borderRadius: BorderRadius.circular(8.0.r),
+                  child: Row(
+                    children: <Widget>[
+                      _buildCard(),
+                      Spacing.horizontal(11.0.w),
+                      _buildDetail(),
+                    ],
+                  ),
+                ),
+              ),
             ),
-          ),
+            Spacing.vertical(35.0.sp),
+          ],
         ),
         Positioned(
           top: 78.0.sp,
@@ -206,18 +207,15 @@ class ProductCard extends StatelessWidget {
 
   Widget _buildCard() {
     if (listType == ListType.grid) {
-      return SizedBox(
-        width: 148.0.sp,
-        height: 184.0.sp,
-        child: Stack(
-          clipBehavior: Clip.none,
-          fit: StackFit.expand,
-          children: <Widget>[
-            Material(
-              color: Colors.transparent,
-              child: InkWell(
-                borderRadius: BorderRadius.circular(8.0.r),
-                onTap: onProductTap,
+      return Stack(
+        clipBehavior: Clip.none,
+        children: <Widget>[
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              SizedBox(
+                height: 184.0.sp,
+                width: 148.0.sp,
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(8.0.r),
                   child: Image.network(
@@ -244,19 +242,27 @@ class ProductCard extends StatelessWidget {
                   ),
                 ),
               ),
-            ),
-            Positioned(
-              top: 164.0.sp,
-              right: .0,
-              child: _buildFavoriteButton(),
-            ),
-            Positioned(
-              top: 8.0.sp,
-              left: 9.0.sp,
-              child: _buildDiscountChip(),
-            ),
-          ],
-        ),
+              Spacing.vertical(7.0.sp),
+              _buildRatingStars(),
+              Spacing.vertical(6.0.sp),
+              _buildAuthor(),
+              Spacing.vertical(5.0.sp),
+              _buildTitle(),
+              Spacing.vertical(3.0.sp),
+              _buildPrice(),
+            ],
+          ),
+          Positioned(
+            top: 164.0.sp,
+            right: .0,
+            child: _buildFavoriteButton(),
+          ),
+          Positioned(
+            top: 8.0.sp,
+            left: 9.0.sp,
+            child: _buildDiscountChip(),
+          ),
+        ],
       );
     }
 

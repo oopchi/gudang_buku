@@ -371,6 +371,7 @@ class _ShopMobileBodyState extends State<ShopMobileBody> {
   }
 
   Widget _buildGridBody(BuildContext context, ShopMobileLoaded state) {
+    final ShopMobileCubit cubit = BlocProvider.of<ShopMobileCubit>(context);
     return GridView.count(
       physics: const BouncingScrollPhysics(
         parent: AlwaysScrollableScrollPhysics(),
@@ -395,6 +396,12 @@ class _ShopMobileBodyState extends State<ShopMobileBody> {
                   'product': model.id,
                 },
               ),
+              onFavoriteTap: () => cubit.toggleFavorite(
+                genres: state.genres,
+                products: state.products,
+                selectedGenre: state.selectedGenre,
+                productModel: model,
+              ),
             ),
           ),
       ],
@@ -402,6 +409,7 @@ class _ShopMobileBodyState extends State<ShopMobileBody> {
   }
 
   Widget _buildListBody(BuildContext context, ShopMobileLoaded state) {
+    final ShopMobileCubit cubit = BlocProvider.of<ShopMobileCubit>(context);
     return ListView(
       padding: EdgeInsets.symmetric(
         vertical: 16.0.h,
@@ -425,6 +433,12 @@ class _ShopMobileBodyState extends State<ShopMobileBody> {
                 params: <String, String>{
                   'product': model.id,
                 },
+              ),
+              onFavoriteTap: () => cubit.toggleFavorite(
+                genres: state.genres,
+                products: state.products,
+                selectedGenre: state.selectedGenre,
+                productModel: model,
               ),
             ),
           ),

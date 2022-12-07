@@ -6,4 +6,14 @@ abstract class FavoriteRepository {
   Future<Either<Failure, List<FavoriteResponse>>> fetchAllFavoritesForUserId({
     required String userId,
   });
+
+  Future<Either<Failure, String>> addFavorite({
+    required String userId,
+    required String bookId,
+  });
+
+  Future<Either<Failure, void>> removeFavorite({
+    required String userId,
+    required String bookId,
+  });
 }

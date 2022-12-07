@@ -47,4 +47,35 @@ class ProductModel extends Equatable {
         description,
         imageUrls,
       ];
+
+  ProductModel copyWith({
+    String? id,
+    String? discountString,
+    FavoriteButtonModel? favoriteButtonModel,
+    String? imageUrl,
+    double? rating,
+    int? numOfRating,
+    String? author,
+    String? title,
+    int? price,
+    int? discountedPrice,
+    String? description,
+    Map<String, String>? authorOverviews,
+    List<String>? imageUrls,
+  }) =>
+      ProductModel(
+        id: id ?? this.id,
+        favoriteButtonModel: favoriteButtonModel ?? this.favoriteButtonModel,
+        imageUrl: imageUrl ?? this.imageUrl,
+        author: author ?? this.author,
+        numOfRating: numOfRating ?? this.numOfRating,
+        price: price ?? this.price,
+        rating: rating ?? this.rating,
+        title: title ?? this.title,
+        imageUrls: imageUrls ?? this.imageUrls,
+        discountString: discountString ?? this.discountString,
+        discountedPrice: discountedPrice ?? this.discountedPrice,
+        description: description ?? this.description,
+        authorOverviews: authorOverviews ?? this.authorOverviews,
+      );
 }

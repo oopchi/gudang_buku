@@ -1,4 +1,5 @@
 import 'package:bookstore/domain/controller/shop_view_controller.dart';
+import 'package:bookstore/domain/model/favorite_button_model.dart';
 import 'package:bookstore/domain/model/filter_model.dart';
 import 'package:bookstore/domain/model/genre_model.dart';
 import 'package:bookstore/domain/model/product_model.dart';
@@ -139,5 +140,116 @@ class ShopMobileCubit extends Cubit<ShopMobileState> {
     );
 
     onComplete();
+  }
+
+  Future<void> toggleFavorite({
+    required List<GenreModel> genres,
+    required List<ProductModel> products,
+    required GenreModel selectedGenre,
+    required ProductModel productModel,
+  }) async {
+    final List<GenreModel> genreC = List.from(genres);
+    final List<ProductModel> productC =
+        products.map((ProductModel e) => e.copyWith()).toList();
+
+    if (productModel.favoriteButtonModel.isFavorite) {
+      await _removeFromFavorites(
+        genres: genreC,
+        products: productC,
+        selectedGenre: selectedGenre,
+        productModel: productModel,
+      );
+
+      return;
+    }
+
+    await _addToFavorites(
+      genres: genreC,
+      products: productC,
+      selectedGenre: selectedGenre,
+      productModel: productModel,
+    );
+  }
+
+  Future<void> _removeFromFavorites({
+    required List<GenreModel> genres,
+    required List<ProductModel> products,
+    required GenreModel selectedGenre,
+    required ProductModel productModel,
+  }) async {
+    final Either<Failure, void> removeFromFavRes =
+        await _shopViewController.removeFromFavorite(
+      bookId: productModel.id,
+    );
+
+    if (removeFromFavRes.isLeft()) {
+      if (!isMounted()) return;
+      emit(ShopMobileFailure(message: removeFromFavRes.asLeft().message));
+      return;
+    }
+
+    final int productIdx = products.indexWhere(
+      (ProductModel element) => element == productModel,
+    );
+
+    const FavoriteButtonModel favModel = FavoriteButtonModel(
+      showButton: true,
+      isFavorite: false,
+    );
+
+    final ProductModel newModel = productModel.copyWith(
+      favoriteButtonModel: favModel,
+    );
+
+    products.removeAt(productIdx);
+    products.insert(productIdx, newModel);
+    if (!isMounted()) return;
+
+    emit(ShopMobileLoaded(
+      genres: genres,
+      products: products,
+      selectedGenre: selectedGenre,
+    ));
+  }
+
+  Future<void> _addToFavorites({
+    required List<GenreModel> genres,
+    required List<ProductModel> products,
+    required GenreModel selectedGenre,
+    required ProductModel productModel,
+  }) async {
+    final Either<Failure, String> addToFavRes =
+        await _shopViewController.addToFavorite(
+      bookId: productModel.id,
+    );
+
+    if (addToFavRes.isLeft()) {
+      if (!isMounted()) return;
+      emit(ShopMobileFailure(message: addToFavRes.asLeft().message));
+      return;
+    }
+
+    final int productIdx = products.indexWhere(
+      (ProductModel element) => element == productModel,
+    );
+
+    const FavoriteButtonModel favModel = FavoriteButtonModel(
+      showButton: true,
+      isFavorite: true,
+    );
+
+    final ProductModel newModel = productModel.copyWith(
+      favoriteButtonModel: favModel,
+    );
+
+    products.removeAt(productIdx);
+    products.insert(productIdx, newModel);
+    if (!isMounted()) return;
+
+    emit(ShopMobileLoaded(
+      genres: genres,
+      products: products,
+      selectedGenre: selectedGenre,
+    ));
   }
 }

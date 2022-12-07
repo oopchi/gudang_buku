@@ -21,6 +21,24 @@ class PromoModel extends Equatable {
   final int amount;
   final String amountType;
 
+  PromoModel copyWith({
+    String? id,
+    String? title,
+    String? description,
+    List<ProductModel>? productCardModels,
+    DateTimeRange? dateTimeRange,
+    int? amount,
+    String? amountType,
+  }) =>
+      PromoModel(
+        id: id ?? this.id,
+        title: title ?? this.title,
+        description: description ?? this.description,
+        productCardModels: productCardModels ?? this.productCardModels,
+        amount: amount ?? this.amount,
+        amountType: amountType ?? this.amountType,
+      );
+
   @override
   List<Object?> get props => <Object?>[
         id,
