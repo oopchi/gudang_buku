@@ -1,5 +1,7 @@
+import 'package:bookstore/config/router/router.dart';
 import 'package:bookstore/domain/model/user_model.dart';
 import 'package:equatable/equatable.dart';
+import 'package:go_router/go_router.dart';
 
 class AuthState extends Equatable {
   const AuthState();

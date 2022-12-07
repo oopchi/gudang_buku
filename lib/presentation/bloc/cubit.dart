@@ -1,3 +1,4 @@
+import 'package:bookstore/config/router/router.dart';
 import 'package:bookstore/domain/local/local_storage.dart';
 import 'package:bookstore/domain/model/user_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -19,6 +20,7 @@ class AuthCubit extends Cubit<AuthState> {
   Future<void> authenticate(User? user) async {
     if (user == null) {
       await _localStorage.delete(LocalStoragePath.user, 0);
+
       emit(const AuthSignedOut());
       return;
     }
@@ -27,6 +29,8 @@ class AuthCubit extends Cubit<AuthState> {
 
     await _localStorage.overwrite(LocalStoragePath.user, userModel);
 
-    emit(AuthSignedIn(userModel: userModel));
+    emit(AuthSignedIn(
+      userModel: userModel,
+    ));
   }
 }

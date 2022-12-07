@@ -130,14 +130,6 @@ class HomeMobileCubit extends Cubit<HomeMobileState> {
     ));
   }
 
-  Future<void> onRefresh({
-    required VoidCallback onComplete,
-  }) async {
-    await load();
-
-    if (isMounted()) onComplete();
-  }
-
   Future<void> _addToFavorites({
     required List<EventModel> events,
     required List<PromoModel> promos,
@@ -180,5 +172,13 @@ class HomeMobileCubit extends Cubit<HomeMobileState> {
       promos: promos,
       events: events,
     ));
+  }
+
+  Future<void> onRefresh({
+    required VoidCallback onComplete,
+  }) async {
+    await load();
+
+    if (isMounted()) onComplete();
   }
 }

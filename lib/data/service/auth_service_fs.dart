@@ -28,14 +28,7 @@ class AuthServiceFS {
     return _auth.currentUser!;
   }
 
-  Future<bool> isLoggedIn() async {
-    final UserModel? userModel =
-        await _localStorage.readAt<UserModel>(LocalStoragePath.user, 0);
-
-    if (userModel == null) return false;
-
-    return true;
-  }
+  bool isLoggedIn() => _auth.currentUser != null;
 
   Future<void> verify(AppRoutes currentRoute) async {
     await _auth.currentUser?.sendEmailVerification(
@@ -186,7 +179,7 @@ class AuthServiceFS {
   }
 
   Future<void> logout() async {
-    if (await isLoggedIn()) {
+    if (isLoggedIn()) {
       await _auth.signOut();
 
       await _localStorage.delete(LocalStoragePath.credential, 0);

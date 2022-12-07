@@ -1,4 +1,5 @@
 import 'package:bookstore/config/constant/colors.dart';
+import 'package:bookstore/config/constant/routes.dart';
 import 'package:bookstore/config/provider_setup.dart';
 import 'package:bookstore/config/router/router.dart';
 import 'package:bookstore/data/local/local_storage_hive.dart';
@@ -14,6 +15,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 import 'package:go_router/src/router.dart';
 import 'package:provider/provider.dart';
 import 'package:workmanager/workmanager.dart';
@@ -81,12 +83,13 @@ class MyApp extends StatelessWidget {
           ),
           child: Builder(
             builder: (context) {
-              return BlocBuilder<AuthCubit, AuthState>(
+              return BlocConsumer<AuthCubit, AuthState>(
+                listener: (context, state) {
+                  if (state is AuthSignedOut) {
+                    AppRouter().router.goNamed(AppRoutes.landingPageToLogin.name);
+                  }
+                },
                 builder: (context, state) {
-                  final AppRouter appRouter = AppRouter(state: state);
-
-                  final GoRouter router = appRouter.router();
-
                   if (state is AuthLoading) {
                     return const MaterialApp(
                       home: AppLoadingView(),
@@ -107,9 +110,11 @@ class MyApp extends StatelessWidget {
                         ),
                       ),
                     ),
-                    routerDelegate: router.routerDelegate,
-                    routeInformationParser: router.routeInformationParser,
-                    routeInformationProvider: router.routeInformationProvider,
+                    routerDelegate: AppRouter().router.routerDelegate,
+                    routeInformationParser:
+                        AppRouter().router.routeInformationParser,
+                    routeInformationProvider:
+                        AppRouter().router.routeInformationProvider,
                     debugShowCheckedModeBanner: false,
                   );
                 },
