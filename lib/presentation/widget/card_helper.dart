@@ -1,11 +1,20 @@
 import 'package:bookstore/config/constant/colors.dart';
 import 'package:bookstore/domain/model/product_model.dart';
-import 'package:bookstore/presentation/pages/shop/mobile/state.dart';
 import 'package:bookstore/presentation/widget/spacing.dart';
 import 'package:bookstore/util/format_helper.dart';
+import 'package:bookstore/util/list_type_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+
+enum _ProductType {
+  normal,
+  favorite,
+}
+
+extension _ProductTypeExt on _ProductType {
+  bool get isFavorite => this == _ProductType.favorite;
+}
 
 class ProductCard extends StatelessWidget {
   const ProductCard({
@@ -14,11 +23,27 @@ class ProductCard extends StatelessWidget {
     this.onFavoriteTap,
     this.onProductTap,
     this.listType = ListType.grid,
-  });
+  })  : onCartTap = null,
+        onDeleteButtonTap = null,
+        _productType = _ProductType.normal;
+
+  const ProductCard.favorite({
+    super.key,
+    required this.model,
+    this.onProductTap,
+    this.onCartTap,
+    this.listType = ListType.grid,
+    this.onDeleteButtonTap,
+  })  : onFavoriteTap = null,
+        _productType = _ProductType.favorite;
+
   final ProductModel model;
   final VoidCallback? onFavoriteTap;
+  final VoidCallback? onCartTap;
   final VoidCallback? onProductTap;
   final ListType listType;
+  final _ProductType _productType;
+  final VoidCallback? onDeleteButtonTap;
 
   @override
   Widget build(BuildContext context) {
@@ -71,16 +96,27 @@ class ProductCard extends StatelessWidget {
                 ),
               ),
             ),
-            Spacing.vertical(35.0.sp),
+            Spacing.vertical(10.0.sp),
           ],
         ),
         Positioned(
           top: 78.0.sp,
           right: .0,
-          child: _buildFavoriteButton(),
+          child: _buildIconButton(),
         ),
+        if (_productType.isFavorite)
+          Positioned(
+            top: .0,
+            right: .0,
+            child: _buildDeleteButton(),
+          ),
       ],
     );
+  }
+
+  Widget _buildIconButton() {
+    if (_productType.isFavorite) return _buildCartButton();
+    return _buildFavoriteButton();
   }
 
   Widget _buildDetail() {
@@ -255,12 +291,17 @@ class ProductCard extends StatelessWidget {
           Positioned(
             top: 164.0.sp,
             right: .0,
-            child: _buildFavoriteButton(),
+            child: _buildIconButton(),
           ),
           Positioned(
             top: 8.0.sp,
             left: 9.0.sp,
             child: _buildDiscountChip(),
+          ),
+          Positioned(
+            top: 2.0.sp,
+            right: 3.0.sp,
+            child: _buildDeleteButton(),
           ),
         ],
       );
@@ -299,6 +340,23 @@ class ProductCard extends StatelessWidget {
     );
   }
 
+  Widget _buildDeleteButton() {
+    return Material(
+      borderRadius: BorderRadius.circular(100.0.r),
+      color: Colors.transparent,
+      child: IconButton(
+        onPressed: onDeleteButtonTap,
+        icon: const Icon(Icons.clear),
+        constraints: const BoxConstraints(),
+        padding: listType == ListType.grid
+            ? EdgeInsets.zero
+            : EdgeInsets.all(8.0.sp),
+        iconSize: 30.0.sp,
+        color: AppColor.gray,
+      ),
+    );
+  }
+
   Widget _buildDiscountChip() {
     if (model.discountString == null) return const SizedBox.shrink();
 
@@ -322,6 +380,43 @@ class ProductCard extends StatelessWidget {
           fontSize: 11.0.sp,
           color: Colors.white,
           fontWeight: FontWeight.w600,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCartButton() {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(100.0.r),
+        boxShadow: <BoxShadow>[
+          BoxShadow(
+            offset: Offset(
+              .0,
+              4.0.sp,
+            ),
+            blurRadius: 4.0.sp,
+            color: Colors.black.withOpacity(.08),
+          ),
+        ],
+      ),
+      child: Material(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(100.0.r),
+        child: InkWell(
+          borderRadius: BorderRadius.circular(100.0.r),
+          onTap: onCartTap,
+          child: SizedBox(
+            width: 36.0.sp,
+            height: 36.0.sp,
+            child: Center(
+              child: Icon(
+                Icons.shopping_bag_sharp,
+                size: 24.0.sp,
+                color: AppColor.red,
+              ),
+            ),
+          ),
         ),
       ),
     );
@@ -358,8 +453,8 @@ class ProductCard extends StatelessWidget {
                     : Icons.favorite_border,
                 size: 24.0.sp,
                 color: model.favoriteButtonModel.isFavorite
-                    ? const Color(0xFFDB3022)
-                    : const Color(0xFF9B9B9B),
+                    ? AppColor.red
+                    : AppColor.gray,
               ),
             ),
           ),

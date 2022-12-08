@@ -214,6 +214,7 @@ class ProductViewController {
       description: bookResponse.overview,
       authorOverviews: authorOverviews,
       imageUrls: imageUrls,
+      stock: bookResponse.stock ?? 0,
     );
 
     return Right(productCardModel);

@@ -7,11 +7,11 @@ import 'package:bookstore/data/repository/genre_repository_fs.dart';
 import 'package:bookstore/data/repository/media_repository_fs.dart';
 import 'package:bookstore/data/repository/review_repository_fs.dart';
 import 'package:bookstore/data/repository/transaction_detail_repository_fs.dart';
+import 'package:bookstore/data/repository/transaction_repository_fs.dart';
 import 'package:bookstore/data/service/auth_service_fs.dart';
-import 'package:bookstore/domain/controller/shop_view_controller.dart';
+import 'package:bookstore/domain/controller/favorites_view_controller.dart';
 import 'package:bookstore/domain/model/filter_model.dart';
-import 'package:bookstore/presentation/pages/shop/mobile/components/body.dart';
-import 'package:bookstore/presentation/pages/shop/mobile/state.dart';
+import 'package:bookstore/presentation/pages/favorites/mobile/components/body.dart';
 import 'package:bookstore/util/list_type_helper.dart';
 import 'package:bookstore/util/sort_helper.dart';
 import 'package:flutter/material.dart';
@@ -20,8 +20,8 @@ import 'package:provider/provider.dart';
 
 import 'cubit.dart';
 
-class ShopMobilePage extends StatefulWidget {
-  const ShopMobilePage({
+class FavoritesMobilePage extends StatefulWidget {
+  const FavoritesMobilePage({
     super.key,
     this.filterModels = const <FilterModel>[],
     this.sortBy,
@@ -34,17 +34,17 @@ class ShopMobilePage extends StatefulWidget {
   final String genreId;
 
   @override
-  State<ShopMobilePage> createState() => _ShopMobilePageState();
+  State<FavoritesMobilePage> createState() => _FavoritesMobilePageState();
 }
 
-class _ShopMobilePageState extends State<ShopMobilePage> {
+class _FavoritesMobilePageState extends State<FavoritesMobilePage> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (BuildContext context) {
-        return ShopMobileCubit(
+        return FavoritesMobileCubit(
           isMounted: () => mounted,
-          shopViewController: ShopViewController(
+          favoritesViewController: FavoritesViewController(
             genreRepository: GenreRepositoryFS(),
             authServiceFS: Provider.of<AuthServiceFS>(context, listen: false),
             authorBookRepository: AuthorBookRepositoryFS(),
@@ -55,6 +55,7 @@ class _ShopMobilePageState extends State<ShopMobilePage> {
             reviewRepository: ReviewRepositoryFS(),
             bookGenreRepository: BookGenreRepositoryFS(),
             transactionDetailRepository: TransactionDetailRepositoryFS(),
+            transactionRepository: TransactionRepositoryFS(),
           ),
         )..load(
             genreId: widget.genreId,
@@ -64,7 +65,7 @@ class _ShopMobilePageState extends State<ShopMobilePage> {
           );
       },
       child: Builder(
-        builder: (context) => ShopMobileBody(
+        builder: (context) => FavoritesMobileBody(
           listType: widget.listType,
           filterModels: widget.filterModels,
           genreId: widget.genreId,

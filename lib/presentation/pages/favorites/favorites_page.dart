@@ -1,12 +1,12 @@
 import 'package:bookstore/domain/model/filter_model.dart';
-import 'package:bookstore/presentation/pages/shop/mobile/view.dart';
+import 'package:bookstore/presentation/pages/favorites/mobile/view.dart';
 import 'package:bookstore/presentation/widget/responsive_helper.dart';
 import 'package:bookstore/util/list_type_helper.dart';
 import 'package:bookstore/util/sort_helper.dart';
 import 'package:flutter/material.dart';
 
-class ShopPage extends StatelessWidget {
-  const ShopPage({
+class FavoritesPage extends StatelessWidget {
+  const FavoritesPage({
     super.key,
     this.sortBy,
     this.filterModels = const <FilterModel>[],
@@ -21,19 +21,19 @@ class ShopPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ResponsiveLayout(
-      mobileBody: ShopMobilePage(
+      mobileBody: FavoritesMobilePage(
         listType: listType,
         sortBy: sortBy,
         filterModels: filterModels,
         genreId: genreId,
       ),
-      tabletBody: ShopMobilePage(
+      tabletBody: FavoritesMobilePage(
         listType: listType,
         sortBy: sortBy,
         filterModels: filterModels,
         genreId: genreId,
       ),
-      desktopBody: ShopMobilePage(
+      desktopBody: FavoritesMobilePage(
         listType: listType,
         sortBy: sortBy,
         filterModels: filterModels,

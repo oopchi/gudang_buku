@@ -3,8 +3,8 @@ import 'package:bookstore/config/constant/routes.dart';
 import 'package:bookstore/domain/model/filter_model.dart';
 import 'package:bookstore/domain/model/genre_model.dart';
 import 'package:bookstore/domain/model/product_model.dart';
-import 'package:bookstore/presentation/pages/shop/mobile/cubit.dart';
-import 'package:bookstore/presentation/pages/shop/mobile/state.dart';
+import 'package:bookstore/presentation/pages/favorites/mobile/cubit.dart';
+import 'package:bookstore/presentation/pages/favorites/mobile/state.dart';
 import 'package:bookstore/presentation/widget/appbar_helper.dart';
 import 'package:bookstore/presentation/widget/card_helper.dart';
 import 'package:bookstore/presentation/widget/loading_helper.dart';
@@ -20,8 +20,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
-class ShopMobileBody extends StatefulWidget {
-  const ShopMobileBody({
+class FavoritesMobileBody extends StatefulWidget {
+  const FavoritesMobileBody({
     super.key,
     this.filterModels = const <FilterModel>[],
     this.sortBy,
@@ -34,10 +34,10 @@ class ShopMobileBody extends StatefulWidget {
   final String genreId;
 
   @override
-  State<ShopMobileBody> createState() => _ShopMobileBodyState();
+  State<FavoritesMobileBody> createState() => _FavoritesMobileBodyState();
 }
 
-class _ShopMobileBodyState extends State<ShopMobileBody> {
+class _FavoritesMobileBodyState extends State<FavoritesMobileBody> {
   final RefreshController _refreshController = RefreshController();
 
   @override
@@ -52,9 +52,9 @@ class _ShopMobileBodyState extends State<ShopMobileBody> {
   }
 
   Widget _buildPage(BuildContext context) {
-    return BlocConsumer<ShopMobileCubit, ShopMobileState>(
+    return BlocConsumer<FavoritesMobileCubit, FavoritesMobileState>(
       listener: (context, state) {
-        if (state is ShopMobileFailure) {
+        if (state is FavoritesMobileFailure) {
           ScaffoldMessenger.of(context)
             ..hideCurrentSnackBar()
             ..showSnackBar(AppSnackBar(
@@ -62,17 +62,17 @@ class _ShopMobileBodyState extends State<ShopMobileBody> {
             ));
         }
 
-        if (state is ShopMobileRefresh) {
+        if (state is FavoritesMobileRefresh) {
           context.goNamed(
-            AppRoutes.shop.name,
+            AppRoutes.favorites.name,
             queryParams: state.params,
           );
         }
       },
       buildWhen: (previous, current) =>
-          current is ShopMobileLoaded || current is ShopMobileLoading,
+          current is FavoritesMobileLoaded || current is FavoritesMobileLoading,
       builder: (context, state) {
-        if (state is ShopMobileLoaded) {
+        if (state is FavoritesMobileLoaded) {
           return _buildScaffold(context, state);
         }
 
@@ -81,8 +81,9 @@ class _ShopMobileBodyState extends State<ShopMobileBody> {
     );
   }
 
-  Widget _buildScaffold(BuildContext context, ShopMobileLoaded state) {
-    final ShopMobileCubit cubit = BlocProvider.of<ShopMobileCubit>(context);
+  Widget _buildScaffold(BuildContext context, FavoritesMobileLoaded state) {
+    final FavoritesMobileCubit cubit =
+        BlocProvider.of<FavoritesMobileCubit>(context);
     return Scaffold(
       appBar: AppBarHelper(
         height: 234.0.h,
@@ -125,7 +126,7 @@ class _ShopMobileBodyState extends State<ShopMobileBody> {
     );
   }
 
-  Widget _buildSearchButton(BuildContext context, ShopMobileLoaded state) {
+  Widget _buildSearchButton(BuildContext context, FavoritesMobileLoaded state) {
     return IconButton(
       onPressed: () {},
       icon: const Icon(Icons.search_rounded),
@@ -135,7 +136,7 @@ class _ShopMobileBodyState extends State<ShopMobileBody> {
     );
   }
 
-  Widget _buildTopBar(BuildContext context, ShopMobileLoaded state) {
+  Widget _buildTopBar(BuildContext context, FavoritesMobileLoaded state) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
@@ -149,7 +150,7 @@ class _ShopMobileBodyState extends State<ShopMobileBody> {
             horizontal: 14.0.w,
           ),
           child: Text(
-            state.selectedGenre.name,
+            'Favorites',
             style: CustomTextStyles.bold.size(
               34.0,
               AppColor.black,
@@ -164,7 +165,7 @@ class _ShopMobileBodyState extends State<ShopMobileBody> {
     );
   }
 
-  Widget _buildTopOptions(BuildContext context, ShopMobileLoaded state) {
+  Widget _buildTopOptions(BuildContext context, FavoritesMobileLoaded state) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget>[
@@ -175,8 +176,9 @@ class _ShopMobileBodyState extends State<ShopMobileBody> {
     );
   }
 
-  Widget _buildListButton(BuildContext context, ShopMobileLoaded state) {
-    final ShopMobileCubit cubit = BlocProvider.of<ShopMobileCubit>(context);
+  Widget _buildListButton(BuildContext context, FavoritesMobileLoaded state) {
+    final FavoritesMobileCubit cubit =
+        BlocProvider.of<FavoritesMobileCubit>(context);
     return IconButton(
       onPressed: () => cubit.refreshPageWithParam(
         listType:
@@ -197,7 +199,7 @@ class _ShopMobileBodyState extends State<ShopMobileBody> {
     );
   }
 
-  Widget _buildSortButton(BuildContext context, ShopMobileLoaded state) {
+  Widget _buildSortButton(BuildContext context, FavoritesMobileLoaded state) {
     return Material(
       color: Colors.transparent,
       borderRadius: BorderRadius.circular(100.0.r),
@@ -220,7 +222,7 @@ class _ShopMobileBodyState extends State<ShopMobileBody> {
           },
         ).then((SortBy? value) {
           if (value != null) {
-            BlocProvider.of<ShopMobileCubit>(context).refreshPageWithParam(
+            BlocProvider.of<FavoritesMobileCubit>(context).refreshPageWithParam(
               listType: widget.listType,
               genreId: widget.genreId,
               filterModels: widget.filterModels,
@@ -255,7 +257,7 @@ class _ShopMobileBodyState extends State<ShopMobileBody> {
     );
   }
 
-  Widget _buildFilterButton(BuildContext context, ShopMobileLoaded state) {
+  Widget _buildFilterButton(BuildContext context, FavoritesMobileLoaded state) {
     return Material(
       color: Colors.transparent,
       borderRadius: BorderRadius.circular(100.0.r),
@@ -273,7 +275,7 @@ class _ShopMobileBodyState extends State<ShopMobileBody> {
           },
         ).then((List<FilterModel>? value) {
           if (value == null) return;
-          BlocProvider.of<ShopMobileCubit>(context).refreshPageWithParam(
+          BlocProvider.of<FavoritesMobileCubit>(context).refreshPageWithParam(
             listType: widget.listType,
             genreId: widget.genreId,
             sortBy: widget.sortBy,
@@ -307,7 +309,7 @@ class _ShopMobileBodyState extends State<ShopMobileBody> {
     );
   }
 
-  Widget _buildTopChips(BuildContext context, ShopMobileLoaded state) {
+  Widget _buildTopChips(BuildContext context, FavoritesMobileLoaded state) {
     return Container(
       height: 60.0.sp,
       alignment: Alignment.center,
@@ -331,7 +333,7 @@ class _ShopMobileBodyState extends State<ShopMobileBody> {
     );
   }
 
-  Widget _buildGenreButton(GenreModel model, ShopMobileLoaded state) {
+  Widget _buildGenreButton(GenreModel model, FavoritesMobileLoaded state) {
     final bool isSelected = state.selectedGenre == model;
     return Center(
       child: Container(
@@ -352,7 +354,7 @@ class _ShopMobileBodyState extends State<ShopMobileBody> {
             borderRadius: BorderRadius.circular(100.0.r),
             onTap: isSelected
                 ? null
-                : () => BlocProvider.of<ShopMobileCubit>(context)
+                : () => BlocProvider.of<FavoritesMobileCubit>(context)
                         .refreshPageWithParam(
                       listType: widget.listType,
                       genreId: model.id,
@@ -378,8 +380,9 @@ class _ShopMobileBodyState extends State<ShopMobileBody> {
     );
   }
 
-  Widget _buildGridBody(BuildContext context, ShopMobileLoaded state) {
-    final ShopMobileCubit cubit = BlocProvider.of<ShopMobileCubit>(context);
+  Widget _buildGridBody(BuildContext context, FavoritesMobileLoaded state) {
+    final FavoritesMobileCubit cubit =
+        BlocProvider.of<FavoritesMobileCubit>(context);
     return GridView.count(
       physics: const BouncingScrollPhysics(
         parent: AlwaysScrollableScrollPhysics(),
@@ -395,7 +398,7 @@ class _ShopMobileBodyState extends State<ShopMobileBody> {
       children: <Widget>[
         for (final ProductModel model in state.products)
           FittedBox(
-            child: ProductCard(
+            child: ProductCard.favorite(
               model: model,
               listType: ListType.grid,
               onProductTap: () => context.goNamed(
@@ -404,11 +407,14 @@ class _ShopMobileBodyState extends State<ShopMobileBody> {
                   'product': model.id,
                 },
               ),
-              onFavoriteTap: () => cubit.toggleFavorite(
+              onDeleteButtonTap: () => cubit.removeFromFavorites(
                 genres: state.genres,
                 products: state.products,
                 selectedGenre: state.selectedGenre,
                 productModel: model,
+              ),
+              onCartTap: () => cubit.addToCart(
+                productId: model.id,
               ),
             ),
           ),
@@ -416,8 +422,9 @@ class _ShopMobileBodyState extends State<ShopMobileBody> {
     );
   }
 
-  Widget _buildListBody(BuildContext context, ShopMobileLoaded state) {
-    final ShopMobileCubit cubit = BlocProvider.of<ShopMobileCubit>(context);
+  Widget _buildListBody(BuildContext context, FavoritesMobileLoaded state) {
+    final FavoritesMobileCubit cubit =
+        BlocProvider.of<FavoritesMobileCubit>(context);
     return ListView(
       padding: EdgeInsets.symmetric(
         vertical: 16.0.h,
@@ -433,7 +440,7 @@ class _ShopMobileBodyState extends State<ShopMobileBody> {
               right: 16.0.w,
               bottom: 26.0.h,
             ),
-            child: ProductCard(
+            child: ProductCard.favorite(
               model: model,
               listType: ListType.list,
               onProductTap: () => context.goNamed(
@@ -442,11 +449,14 @@ class _ShopMobileBodyState extends State<ShopMobileBody> {
                   'product': model.id,
                 },
               ),
-              onFavoriteTap: () => cubit.toggleFavorite(
+              onDeleteButtonTap: () => cubit.removeFromFavorites(
                 genres: state.genres,
                 products: state.products,
                 selectedGenre: state.selectedGenre,
                 productModel: model,
+              ),
+              onCartTap: () => cubit.addToCart(
+                productId: model.id,
               ),
             ),
           ),

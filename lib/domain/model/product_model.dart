@@ -16,6 +16,7 @@ class ProductModel extends Equatable {
     this.authorOverviews,
     this.description,
     required this.imageUrls,
+    required this.stock,
   });
   final String id;
   final String? discountString;
@@ -30,6 +31,7 @@ class ProductModel extends Equatable {
   final String? description;
   final Map<String, String>? authorOverviews;
   final List<String> imageUrls;
+  final int stock;
 
   @override
   List<Object?> get props => <Object?>[
@@ -46,6 +48,7 @@ class ProductModel extends Equatable {
         authorOverviews,
         description,
         imageUrls,
+        stock,
       ];
 
   ProductModel copyWith({
@@ -62,6 +65,7 @@ class ProductModel extends Equatable {
     String? description,
     Map<String, String>? authorOverviews,
     List<String>? imageUrls,
+    int? stock,
   }) =>
       ProductModel(
         id: id ?? this.id,
@@ -77,5 +81,6 @@ class ProductModel extends Equatable {
         discountedPrice: discountedPrice ?? this.discountedPrice,
         description: description ?? this.description,
         authorOverviews: authorOverviews ?? this.authorOverviews,
+        stock: stock ?? this.stock,
       );
 }

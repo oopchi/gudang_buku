@@ -1,3 +1,4 @@
+import 'package:bookstore/domain/controller/favorites_view_controller.dart';
 import 'package:bookstore/domain/controller/shop_view_controller.dart';
 import 'package:bookstore/domain/model/favorite_button_model.dart';
 import 'package:bookstore/domain/model/filter_model.dart';
@@ -13,14 +14,14 @@ import 'package:bookstore/util/failure_helper.dart';
 
 import 'state.dart';
 
-class ShopMobileCubit extends Cubit<ShopMobileState> {
-  ShopMobileCubit({
-    required ShopViewController shopViewController,
+class FavoritesMobileCubit extends Cubit<FavoritesMobileState> {
+  FavoritesMobileCubit({
+    required FavoritesViewController favoritesViewController,
     required this.isMounted,
-  })  : _shopViewController = shopViewController,
-        super(const ShopMobileLoading());
+  })  : _favoritesViewController = favoritesViewController,
+        super(const FavoritesMobileLoading());
 
-  final ShopViewController _shopViewController;
+  final FavoritesViewController _favoritesViewController;
   final bool Function() isMounted;
 
   Future<void> load({
@@ -30,12 +31,12 @@ class ShopMobileCubit extends Cubit<ShopMobileState> {
     SortBy? sortBy,
   }) async {
     final Either<Failure, List<GenreModel>> genresResp =
-        await _shopViewController.loadAllGenre();
+        await _favoritesViewController.loadAllGenre();
 
     if (genresResp.isLeft()) {
       if (!isMounted()) return;
 
-      emit(ShopMobileFailure(
+      emit(FavoritesMobileFailure(
         message: genresResp.asLeft().message,
       ));
 
@@ -57,7 +58,7 @@ class ShopMobileCubit extends Cubit<ShopMobileState> {
     if (genreId != '' && selectedGenreIdx == -1) {
       if (!isMounted()) return;
 
-      emit(const ShopMobileFailure(
+      emit(const FavoritesMobileFailure(
         message: 'Genre Not Found',
       ));
 
@@ -67,7 +68,7 @@ class ShopMobileCubit extends Cubit<ShopMobileState> {
     final GenreModel selectedGenre = genreModels[selectedGenreIdx];
 
     final Either<Failure, List<ProductModel>> productsResp =
-        await _shopViewController.loadAllProductForGenreId(
+        await _favoritesViewController.loadAllFavoriteProductForGenreId(
       genreId,
       sortBy: sortBy,
       filterModels: filterModels,
@@ -76,7 +77,7 @@ class ShopMobileCubit extends Cubit<ShopMobileState> {
     if (productsResp.isLeft()) {
       if (!isMounted()) return;
 
-      emit(ShopMobileFailure(
+      emit(FavoritesMobileFailure(
         message: productsResp.asLeft().message,
       ));
       return;
@@ -84,7 +85,7 @@ class ShopMobileCubit extends Cubit<ShopMobileState> {
 
     if (!isMounted()) return;
 
-    emit(ShopMobileLoaded(
+    emit(FavoritesMobileLoaded(
       genres: genresResp.asRight(),
       products: productsResp.asRight(),
       selectedGenre: selectedGenre,
@@ -104,7 +105,7 @@ class ShopMobileCubit extends Cubit<ShopMobileState> {
       ..._filterMap(filterModels),
     };
 
-    emit(ShopMobileRefresh(
+    emit(FavoritesMobileRefresh(
       params: queryParams,
     ));
   }
@@ -144,49 +145,42 @@ class ShopMobileCubit extends Cubit<ShopMobileState> {
     onComplete();
   }
 
-  Future<void> toggleFavorite({
-    required List<GenreModel> genres,
-    required List<ProductModel> products,
-    required GenreModel selectedGenre,
-    required ProductModel productModel,
+  Future<void> addToCart({
+    required String productId,
   }) async {
-    final List<GenreModel> genreC = List.from(genres);
-    final List<ProductModel> productC =
-        products.map((ProductModel e) => e.copyWith()).toList();
+    final Either<Failure, String> res =
+        await _favoritesViewController.addToCart(
+      productId: productId,
+    );
 
-    if (productModel.favoriteButtonModel.isFavorite) {
-      await _removeFromFavorites(
-        genres: genreC,
-        products: productC,
-        selectedGenre: selectedGenre,
-        productModel: productModel,
-      );
+    if (res.isLeft()) {
+      if (!isMounted()) return;
 
+      emit(FavoritesMobileFailure(message: res.asLeft().message));
       return;
     }
 
-    await _addToFavorites(
-      genres: genreC,
-      products: productC,
-      selectedGenre: selectedGenre,
-      productModel: productModel,
-    );
+    if (!isMounted()) return;
+
+    emit(FavoritesAddToCartSuccess(
+      dateTime: DateTime.now(),
+    ));
   }
 
-  Future<void> _removeFromFavorites({
+  Future<void> removeFromFavorites({
     required List<GenreModel> genres,
     required List<ProductModel> products,
     required GenreModel selectedGenre,
     required ProductModel productModel,
   }) async {
     final Either<Failure, void> removeFromFavRes =
-        await _shopViewController.removeFromFavorite(
+        await _favoritesViewController.removeFromFavorite(
       bookId: productModel.id,
     );
 
     if (removeFromFavRes.isLeft()) {
       if (!isMounted()) return;
-      emit(ShopMobileFailure(message: removeFromFavRes.asLeft().message));
+      emit(FavoritesMobileFailure(message: removeFromFavRes.asLeft().message));
       return;
     }
 
@@ -194,61 +188,11 @@ class ShopMobileCubit extends Cubit<ShopMobileState> {
       (ProductModel element) => element == productModel,
     );
 
-    const FavoriteButtonModel favModel = FavoriteButtonModel(
-      showButton: true,
-      isFavorite: false,
-    );
-
-    final ProductModel newModel = productModel.copyWith(
-      favoriteButtonModel: favModel,
-    );
-
     products.removeAt(productIdx);
-    products.insert(productIdx, newModel);
+
     if (!isMounted()) return;
 
-    emit(ShopMobileLoaded(
-      genres: genres,
-      products: products,
-      selectedGenre: selectedGenre,
-    ));
-  }
-
-  Future<void> _addToFavorites({
-    required List<GenreModel> genres,
-    required List<ProductModel> products,
-    required GenreModel selectedGenre,
-    required ProductModel productModel,
-  }) async {
-    final Either<Failure, String> addToFavRes =
-        await _shopViewController.addToFavorite(
-      bookId: productModel.id,
-    );
-
-    if (addToFavRes.isLeft()) {
-      if (!isMounted()) return;
-      emit(ShopMobileFailure(message: addToFavRes.asLeft().message));
-      return;
-    }
-
-    final int productIdx = products.indexWhere(
-      (ProductModel element) => element == productModel,
-    );
-
-    const FavoriteButtonModel favModel = FavoriteButtonModel(
-      showButton: true,
-      isFavorite: true,
-    );
-
-    final ProductModel newModel = productModel.copyWith(
-      favoriteButtonModel: favModel,
-    );
-
-    products.removeAt(productIdx);
-    products.insert(productIdx, newModel);
-    if (!isMounted()) return;
-
-    emit(ShopMobileLoaded(
+    emit(FavoritesMobileLoaded(
       genres: genres,
       products: products,
       selectedGenre: selectedGenre,

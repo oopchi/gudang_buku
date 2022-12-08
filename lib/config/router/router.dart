@@ -1,18 +1,16 @@
 import 'package:bookstore/config/constant/routes.dart';
-import 'package:bookstore/data/local/local_storage_hive.dart';
 import 'package:bookstore/data/service/auth_service_fs.dart';
-import 'package:bookstore/domain/controller/shop_view_controller.dart';
-import 'package:bookstore/domain/local/local_storage.dart';
 import 'package:bookstore/domain/model/filter_model.dart';
-import 'package:bookstore/domain/model/user_model.dart';
-import 'package:bookstore/presentation/bloc/state.dart';
+import 'package:bookstore/presentation/pages/favorites/favorites_page.dart';
 import 'package:bookstore/presentation/pages/home/home_page.dart';
 import 'package:bookstore/presentation/pages/login/login_page.dart';
 import 'package:bookstore/presentation/pages/product/product_page.dart';
 import 'package:bookstore/presentation/pages/register/register_page.dart';
-import 'package:bookstore/presentation/pages/shop/mobile/state.dart';
 import 'package:bookstore/presentation/pages/shop/shop_page.dart';
 import 'package:bookstore/presentation/widget/bottom_navigation_helper.dart';
+import 'package:bookstore/presentation/widget/error_helper.dart';
+import 'package:bookstore/util/list_type_helper.dart';
+import 'package:bookstore/util/sort_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -26,11 +24,7 @@ class AppRouter {
 
   final GoRouter router = GoRouter(
     initialLocation: AppRoutes.home.fullPath,
-    errorBuilder: (context, state) => Scaffold(
-      body: Center(
-        child: Text('Not Found'),
-      ),
-    ),
+    errorBuilder: (context, state) => const NotFoundView(),
     redirect: (context, state) async {
       final bool isLoggedIn = Provider.of<AuthServiceFS>(
         context,
@@ -154,7 +148,48 @@ class AppRouter {
           GoRoute(
             name: AppRoutes.favorites.name,
             path: AppRoutes.favorites.path,
-            builder: (context, state) => const HomePage(),
+            builder: (context, state) {
+              final Map<String, String> q = state.queryParams;
+              SortBy? sortBy;
+              final List<FilterModel> filterModels = <FilterModel>[];
+
+              if (q['sortBy'] != null) {
+                sortBy = SortByExt.getObjFromString(q['sortBy']!);
+              }
+
+              if (q['pmax'] != null || q['pmin'] != null) {
+                const FilterType filterType = FilterType.price;
+
+                final double min = double.tryParse(q['pmin'] ?? '0') ?? .0;
+                final double max = double.tryParse(q['pmax'] ?? '0') ?? .0;
+
+                final filterModel = FilterModel.fromParam(filterType, min, max);
+
+                filterModels.add(filterModel);
+              }
+
+              if (q['rmax'] != null || q['rmin'] != null) {
+                const FilterType filterType = FilterType.rating;
+
+                final double min = double.tryParse(q['rmin'] ?? '0') ?? .0;
+                final double max = double.tryParse(q['rmax'] ?? '0') ?? .0;
+
+                final filterModel = FilterModel.fromParam(filterType, min, max);
+
+                filterModels.add(filterModel);
+              }
+
+              final ListType listType =
+                  ListTypeExt.fromString(q['listType']) ?? ListType.list;
+
+              final String genreId = q['genreId'] ?? '';
+              return FavoritesPage(
+                filterModels: filterModels,
+                genreId: genreId,
+                listType: listType,
+                sortBy: sortBy,
+              );
+            },
           ),
           GoRoute(
             name: AppRoutes.cart.name,

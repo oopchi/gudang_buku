@@ -14,6 +14,7 @@ class BookResponse extends Equatable {
     this.deletedAt,
     this.releasedDate,
     this.promoId,
+    this.stock,
   });
 
   factory BookResponse.fromJson(Map<String, dynamic> json) =>
@@ -26,6 +27,8 @@ class BookResponse extends Equatable {
   final String? overview;
 
   final int? price;
+
+  final int? stock;
 
   @JsonKey(
     fromJson: JsonHelper.fromTimestamp,
@@ -51,5 +54,7 @@ class BookResponse extends Equatable {
         price,
         deletedAt,
         releasedDate,
+        stock,
+        promoId,
       ];
 }

@@ -14,24 +14,9 @@ class LocalStorageHive implements LocalStorage {
 
     Hive.registerAdapter(UserModelAdapter());
 
-    await Hive.openBox(LocalStoragePath.user.name);
-
-    // Hive.registerAdapter(AddressResponseAdapter());
-    // Hive.registerAdapter(AllowedMediaResponseAdapter());
-    // Hive.registerAdapter(AuthorResponseAdapter());
-    // Hive.registerAdapter(BookResponseAdapter());
-    // Hive.registerAdapter(ChatResponseAdapter());
-    // Hive.registerAdapter(CourierResponseAdapter());
-    // Hive.registerAdapter(DiscountResponseAdapter());
-    // Hive.registerAdapter(GenreResponseAdapter());
-    // Hive.registerAdapter(MediaResponseAdapter());
-    // Hive.registerAdapter(PaymentMethodResponseAdapter());
-    // Hive.registerAdapter(RestockResponseAdapter());
-    // Hive.registerAdapter(RoleResponseAdapter());
-    // Hive.registerAdapter(TransactionDetailResponseAdapter());
-    // Hive.registerAdapter(TransactionResponseAdapter());
-    // Hive.registerAdapter(UserDiscountResponseAdapter());
-    // Hive.registerAdapter(UserResponseAdapter());
+    if (!Hive.isBoxOpen(LocalStoragePath.user.name)) {
+      await Hive.openBox(LocalStoragePath.user.name);
+    }
   }
 
   @override

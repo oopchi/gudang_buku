@@ -275,6 +275,7 @@ class HomeViewController {
         description: bookResponse.overview,
         authorOverviews: authorOverviews,
         imageUrls: imageUrls,
+        stock: bookResponse.stock ?? 0,
       );
 
       promoProductMap[bookResponse.promoId]!.add(productCardModel);

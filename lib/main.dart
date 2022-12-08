@@ -83,41 +83,35 @@ class MyApp extends StatelessWidget {
           ),
           child: Builder(
             builder: (context) {
-              return BlocConsumer<AuthCubit, AuthState>(
+              return BlocListener<AuthCubit, AuthState>(
                 listener: (context, state) {
                   if (state is AuthSignedOut) {
-                    AppRouter().router.goNamed(AppRoutes.landingPageToLogin.name);
+                    AppRouter()
+                        .router
+                        .goNamed(AppRoutes.landingPageToLogin.name);
                   }
                 },
-                builder: (context, state) {
-                  if (state is AuthLoading) {
-                    return const MaterialApp(
-                      home: AppLoadingView(),
-                    );
-                  }
-
-                  return MaterialApp.router(
-                    scrollBehavior: AppScrollBehavior(),
-                    title: 'Gudang Buku',
-                    theme: ThemeData(
-                      primarySwatch: Colors.blue,
-                      scaffoldBackgroundColor: AppColor.background,
-                      appBarTheme: const AppBarTheme(
-                        backgroundColor: AppColor.background,
-                        elevation: .0,
-                        iconTheme: IconThemeData(
-                          color: AppColor.black,
-                        ),
+                child: MaterialApp.router(
+                  scrollBehavior: AppScrollBehavior(),
+                  title: 'Gudang Buku',
+                  theme: ThemeData(
+                    primarySwatch: Colors.blue,
+                    scaffoldBackgroundColor: AppColor.background,
+                    appBarTheme: const AppBarTheme(
+                      backgroundColor: AppColor.background,
+                      elevation: .0,
+                      iconTheme: IconThemeData(
+                        color: AppColor.black,
                       ),
                     ),
-                    routerDelegate: AppRouter().router.routerDelegate,
-                    routeInformationParser:
-                        AppRouter().router.routeInformationParser,
-                    routeInformationProvider:
-                        AppRouter().router.routeInformationProvider,
-                    debugShowCheckedModeBanner: false,
-                  );
-                },
+                  ),
+                  routerDelegate: AppRouter().router.routerDelegate,
+                  routeInformationParser:
+                      AppRouter().router.routeInformationParser,
+                  routeInformationProvider:
+                      AppRouter().router.routeInformationProvider,
+                  debugShowCheckedModeBanner: false,
+                ),
               );
             },
           ),

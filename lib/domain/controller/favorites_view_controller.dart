@@ -20,13 +20,14 @@ import 'package:bookstore/domain/repository/genre_repository.dart';
 import 'package:bookstore/domain/repository/media_repository.dart';
 import 'package:bookstore/domain/repository/review_repository.dart';
 import 'package:bookstore/domain/repository/transaction_detail_repository.dart';
+import 'package:bookstore/domain/repository/transaction_repository.dart';
 import 'package:bookstore/util/dartz_helper.dart';
 import 'package:bookstore/util/failure_helper.dart';
 import 'package:bookstore/util/sort_helper.dart';
 import 'package:dartz/dartz.dart';
 
-class ShopViewController {
-  const ShopViewController({
+class FavoritesViewController {
+  const FavoritesViewController({
     required GenreRepository genreRepository,
     required BookRepository bookRepository,
     required FavoriteRepository favoriteRepository,
@@ -37,6 +38,7 @@ class ShopViewController {
     required AuthorRepository authorRepository,
     required BookGenreRepository bookGenreRepository,
     required TransactionDetailRepository transactionDetailRepository,
+    required TransactionRepository transactionRepository,
   })  : _genreRepository = genreRepository,
         _bookGenreRepository = bookGenreRepository,
         _mediaRepository = mediaRepository,
@@ -46,6 +48,7 @@ class ShopViewController {
         _reviewRepository = reviewRepository,
         _authorRepository = authorRepository,
         _transactionDetailRepository = transactionDetailRepository,
+        _transactionRepository = transactionRepository,
         _bookRepository = bookRepository;
 
   final GenreRepository _genreRepository;
@@ -57,17 +60,9 @@ class ShopViewController {
   final AuthorRepository _authorRepository;
   final BookGenreRepository _bookGenreRepository;
   final TransactionDetailRepository _transactionDetailRepository;
+  final TransactionRepository _transactionRepository;
 
   final AuthServiceFS _authServiceFS;
-
-  Future<Either<Failure, String>> addToFavorite({
-    required String bookId,
-  }) async {
-    return _favoriteRepository.addFavorite(
-      userId: _authServiceFS.getUser().uid,
-      bookId: bookId,
-    );
-  }
 
   Future<Either<Failure, void>> removeFromFavorite({
     required String bookId,
@@ -76,6 +71,34 @@ class ShopViewController {
       userId: _authServiceFS.getUser().uid,
       bookId: bookId,
     );
+  }
+
+  Future<Either<Failure, String>> addToCart({
+    required String productId,
+  }) async {
+    final Either<Failure, String> cartIdRes =
+        await _transactionRepository.getCartTransactionId(
+      uid: _authServiceFS.getUser().uid,
+    );
+
+    if (cartIdRes.isLeft()) {
+      return Left(cartIdRes.asLeft());
+    }
+
+    final String cartId = cartIdRes.asRight();
+
+    final Either<Failure, String> cartDetailIdRes =
+        await _transactionDetailRepository.addCartTransactionDetail(
+      transactionId: cartId,
+      bookId: productId,
+      quantity: 1,
+    );
+
+    if (cartDetailIdRes.isLeft()) {
+      return Left(cartDetailIdRes.asLeft());
+    }
+
+    return Right(cartDetailIdRes.asRight());
   }
 
   Future<Either<Failure, List<GenreModel>>> loadAllGenre() async {
@@ -94,7 +117,7 @@ class ShopViewController {
     return Right(genreModel);
   }
 
-  Future<Either<Failure, List<ProductModel>>> loadAllProductForGenreId(
+  Future<Either<Failure, List<ProductModel>>> loadAllFavoriteProductForGenreId(
     String genreId, {
     SortBy? sortBy,
     required List<FilterModel> filterModels,
@@ -131,8 +154,11 @@ class ShopViewController {
       return Left(productRes.asLeft());
     }
 
+    final List<ProductModel> favProducts = productRes.asRight()
+      ..removeWhere((element) => !element.favoriteButtonModel.isFavorite);
+
     final List<ProductModel> filteredProducts =
-        _filterBy(productRes.asRight(), filterModels);
+        _filterBy(favProducts, filterModels);
 
     return Right(await _sortBy(filteredProducts, sortBy));
   }

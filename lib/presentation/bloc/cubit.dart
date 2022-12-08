@@ -1,4 +1,5 @@
-import 'package:bookstore/config/router/router.dart';
+import 'dart:async';
+
 import 'package:bookstore/domain/local/local_storage.dart';
 import 'package:bookstore/domain/model/user_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -11,8 +12,17 @@ class AuthCubit extends Cubit<AuthState> {
     required LocalStorage localStorage,
   })  : _localStorage = localStorage,
         super(const AuthLoading()) {
-    authStream.listen(authenticate);
+    streamSubscription = authStream.listen(authenticate);
   }
+
+  @override
+  Future<void> close() async {
+    await streamSubscription.cancel();
+    super.close();
+  }
+
+  late final StreamSubscription<User?> streamSubscription;
+
   final Stream<User?> authStream = FirebaseAuth.instance.authStateChanges();
 
   final LocalStorage _localStorage;

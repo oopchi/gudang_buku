@@ -2,27 +2,27 @@ import 'package:bookstore/domain/model/genre_model.dart';
 import 'package:bookstore/domain/model/product_model.dart';
 import 'package:equatable/equatable.dart';
 
-class ShopMobileState extends Equatable {
-  const ShopMobileState();
+class FavoritesMobileState extends Equatable {
+  const FavoritesMobileState();
 
-  ShopMobileState init() {
-    return const ShopMobileState();
+  FavoritesMobileState init() {
+    return const FavoritesMobileState();
   }
 
-  ShopMobileState clone() {
-    return const ShopMobileState();
+  FavoritesMobileState clone() {
+    return const FavoritesMobileState();
   }
 
   @override
   List<Object?> get props => <Object?>[];
 }
 
-class ShopMobileLoading extends ShopMobileState {
-  const ShopMobileLoading();
+class FavoritesMobileLoading extends FavoritesMobileState {
+  const FavoritesMobileLoading();
 }
 
-class ShopMobileFailure extends ShopMobileState {
-  const ShopMobileFailure({
+class FavoritesMobileFailure extends FavoritesMobileState {
+  const FavoritesMobileFailure({
     required this.message,
   });
 
@@ -34,8 +34,8 @@ class ShopMobileFailure extends ShopMobileState {
       ];
 }
 
-class ShopMobileLoaded extends ShopMobileState {
-  const ShopMobileLoaded({
+class FavoritesMobileLoaded extends FavoritesMobileState {
+  const FavoritesMobileLoaded({
     required this.genres,
     required this.products,
     required this.selectedGenre,
@@ -52,20 +52,20 @@ class ShopMobileLoaded extends ShopMobileState {
         selectedGenre,
       ];
 
-  ShopMobileLoaded copyWith({
+  FavoritesMobileLoaded copyWith({
     List<GenreModel>? genres,
     List<ProductModel>? products,
     GenreModel? selectedGenre,
   }) =>
-      ShopMobileLoaded(
+      FavoritesMobileLoaded(
         genres: genres ?? this.genres,
         products: products ?? this.products,
         selectedGenre: selectedGenre ?? this.selectedGenre,
       );
 }
 
-class ShopMobileRefresh extends ShopMobileState {
-  const ShopMobileRefresh({
+class FavoritesMobileRefresh extends FavoritesMobileState {
+  const FavoritesMobileRefresh({
     required this.params,
   });
   final Map<String, dynamic> params;
@@ -73,5 +73,19 @@ class ShopMobileRefresh extends ShopMobileState {
   @override
   List<Object?> get props => <Object?>[
         params,
+      ];
+}
+
+class FavoritesAddToCartSuccess extends FavoritesMobileState {
+  const FavoritesAddToCartSuccess({
+    required DateTime dateTime,
+  }) : _dateTime = dateTime;
+
+  // To bypass equatable behavior
+  final DateTime _dateTime;
+
+  @override
+  List<Object?> get props => <Object?>[
+        _dateTime,
       ];
 }
