@@ -3,11 +3,11 @@ import 'dart:io';
 import 'package:bookstore/config/constant/routes.dart';
 import 'package:bookstore/domain/dto/user_response.dart';
 import 'package:bookstore/domain/local/local_storage.dart';
-import 'package:bookstore/domain/model/user_model.dart';
 import 'package:bookstore/domain/repository/user_repository.dart';
 import 'package:bookstore/util/dartz_helper.dart';
 import 'package:bookstore/util/exception_helper.dart';
 import 'package:bookstore/util/failure_helper.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dartz/dartz.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -29,6 +29,31 @@ class AuthServiceFS {
   }
 
   bool isLoggedIn() => _auth.currentUser != null;
+
+  Future<bool> isAdmin() async {
+    if (!isLoggedIn()) return false;
+
+    try {
+      final CollectionReference users =
+          FirebaseFirestore.instance.collection('users');
+
+      return await users.doc(getUser().uid).get().then(
+        (DocumentSnapshot<Object?> result) async {
+          if (!result.exists) return false;
+
+          final UserResponse userResponse =
+              UserResponse.fromJson(result.data() as Map<String, dynamic>);
+
+          return userResponse.role != null && userResponse.role == 'admin';
+        },
+        onError: (e) => Left(DatabaseFailure(e.toString())),
+      );
+    } on ServerException {
+      return false;
+    } on SocketException {
+      return false;
+    }
+  }
 
   Future<void> verify(AppRoutes currentRoute) async {
     await _auth.currentUser?.sendEmailVerification(

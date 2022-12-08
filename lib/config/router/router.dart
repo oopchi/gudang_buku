@@ -1,6 +1,7 @@
 import 'package:bookstore/config/constant/routes.dart';
 import 'package:bookstore/data/service/auth_service_fs.dart';
 import 'package:bookstore/domain/model/filter_model.dart';
+import 'package:bookstore/presentation/pages/add_product/add_product_page.dart';
 import 'package:bookstore/presentation/pages/favorites/favorites_page.dart';
 import 'package:bookstore/presentation/pages/home/home_page.dart';
 import 'package:bookstore/presentation/pages/login/login_page.dart';
@@ -26,10 +27,12 @@ class AppRouter {
     initialLocation: AppRoutes.home.fullPath,
     errorBuilder: (context, state) => const NotFoundView(),
     redirect: (context, state) async {
-      final bool isLoggedIn = Provider.of<AuthServiceFS>(
+      final AuthServiceFS _authServiceFS = Provider.of<AuthServiceFS>(
         context,
         listen: false,
-      ).isLoggedIn();
+      );
+
+      final bool isLoggedIn = _authServiceFS.isLoggedIn();
 
       final RegExp regExp =
           RegExp(r'(home)|(shop)|(cart)|(favorites)|(profile)');
@@ -38,6 +41,8 @@ class AppRouter {
         return isLoggedIn ? null : AppRoutes.landingPageToLogin.fullPath;
       } else if (state.location == '/login' || state.location == '/sign-up') {
         return isLoggedIn ? AppRoutes.home.fullPath : null;
+      } else if (state.location == 'add-product') {
+        return await _authServiceFS.isAdmin() ? null : AppRoutes.home.name;
       }
 
       return null;
@@ -326,6 +331,16 @@ class AppRouter {
                 builder: (context, state) => const HomePage(),
               ),
             ],
+          ),
+        ],
+      ),
+      ShellRoute(
+        builder: (context, state, child) => child,
+        routes: <RouteBase>[
+          GoRoute(
+            name: AppRoutes.addProduct.name,
+            path: AppRoutes.addProduct.path,
+            builder: (context, state) => const AddProductPage(),
           ),
         ],
       ),

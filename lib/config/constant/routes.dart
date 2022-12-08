@@ -1,4 +1,5 @@
 enum AppRoutes {
+  addProduct,
   landingPage,
   landingPageToSignUp,
   landingPageToLogin,
@@ -30,6 +31,7 @@ enum AppRoutes {
 
 extension AppRoutesExt on AppRoutes {
   static final Map<AppRoutes, String> _names = <AppRoutes, String>{
+    AppRoutes.addProduct: 'add-product',
     AppRoutes.landingPage: 'landingPage',
     AppRoutes.landingPageToSignUp: 'landingPageToSignUp',
     AppRoutes.landingPageToLogin: 'landingPageToLogin',
@@ -66,6 +68,7 @@ extension AppRoutesExt on AppRoutes {
   String get name => _names[this]!;
 
   static final Map<AppRoutes, String> _paths = <AppRoutes, String>{
+    AppRoutes.addProduct: '/add-product',
     AppRoutes.landingPage: '/',
     AppRoutes.landingPageToSignUp: 'sign-up',
     AppRoutes.landingPageToLogin: 'login',
@@ -98,6 +101,7 @@ extension AppRoutesExt on AppRoutes {
   String get path => _paths[this]!;
 
   static final Map<AppRoutes, String> _fullPaths = <AppRoutes, String>{
+    AppRoutes.addProduct: '/add-product',
     AppRoutes.landingPage: '/',
     AppRoutes.landingPageToSignUp: '/sign-up',
     AppRoutes.landingPageToLogin: '/login',

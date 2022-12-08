@@ -26,4 +26,8 @@ abstract class BookRepository {
   Future<Either<Failure, BookResponse>> fetchBook({
     required String id,
   });
+
+  Future<Either<Failure, String>> addBook({
+    required BookResponse bookResponse,
+  });
 }

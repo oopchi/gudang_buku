@@ -8,14 +8,14 @@ class UserResponse extends Equatable {
   const UserResponse({
     this.id,
     this.meritAmount,
-    this.roleId,
+    this.role,
   });
 
   factory UserResponse.fromJson(Map<String, dynamic> json) =>
       _$UserResponseFromJson(json);
   final String? id;
   final int? meritAmount;
-  final String? roleId;
+  final String? role;
 
   Map<String, dynamic> toJson() => _$UserResponseToJson(this);
 
@@ -23,29 +23,29 @@ class UserResponse extends Equatable {
   List<Object?> get props => <Object?>[
         id,
         meritAmount,
-        roleId,
+        role,
       ];
 
   UserResponse copyWith({
     int? meritAmount,
-    String? roleId,
+    String? role,
   }) {
     return UserResponse(
       id: id,
       meritAmount: meritAmount,
-      roleId: roleId,
+      role: role,
     );
   }
 
   static UserResponse newUserResponse({
     required String id,
     int? meritAmount,
-    String? roleId,
+    String? role,
   }) {
     return UserResponse(
       id: id,
       meritAmount: meritAmount,
-      roleId: roleId,
+      role: role,
     );
   }
 }
