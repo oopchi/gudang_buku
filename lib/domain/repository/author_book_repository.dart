@@ -7,4 +7,9 @@ abstract class AuthorBookRepository {
       fetchAllAuthorBookWithBookId({
     required String bookId,
   });
+
+  Future<Either<Failure, String>> addAuthorBook({
+    required String bookId,
+    required String authorId,
+  });
 }

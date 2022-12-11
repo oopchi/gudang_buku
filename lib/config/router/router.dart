@@ -24,7 +24,7 @@ class AppRouter {
   factory AppRouter() => _instance;
 
   final GoRouter router = GoRouter(
-    initialLocation: AppRoutes.home.fullPath,
+    initialLocation: AppRoutes.addProduct.fullPath,
     errorBuilder: (context, state) => const NotFoundView(),
     redirect: (context, state) async {
       final AuthServiceFS _authServiceFS = Provider.of<AuthServiceFS>(
@@ -41,10 +41,10 @@ class AppRouter {
         return isLoggedIn ? null : AppRoutes.landingPageToLogin.fullPath;
       } else if (state.location == '/login' || state.location == '/sign-up') {
         return isLoggedIn ? AppRoutes.home.fullPath : null;
-      } else if (state.location == 'add-product') {
-        return await _authServiceFS.isAdmin() ? null : AppRoutes.home.name;
       }
-
+// else if (state.location == 'add-product') {
+//         return await _authServiceFS.isAdmin() ? null : AppRoutes.home.name;
+//       }
       return null;
     },
     routes: <RouteBase>[

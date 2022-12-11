@@ -1,4 +1,6 @@
+import 'package:bookstore/domain/model/author_model.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/foundation.dart';
 
 class AddProductMobileState extends Equatable {
   const AddProductMobileState();
@@ -38,49 +40,34 @@ class AddProductMobileSuccess extends AddProductMobileState {}
 
 class AddProductMobileFormState extends AddProductMobileState {
   const AddProductMobileFormState({
-    this.email = '',
-    this.password = '',
-    this.emailErr = false,
-    this.isPasswordEightCharacters = false,
-    this.hasPasswordOneNumber = false,
-    this.isVisible = false,
+    required this.title,
+    this.overview,
+    required this.authors,
+    required this.selectedAuthors,
+    required this.images,
+    required this.videos,
+    required this.price,
+    this.stock,
   });
+  final String title;
+  final String? overview;
+  final List<AuthorModel> authors;
+  final List<AuthorModel> selectedAuthors;
+  final int price;
+  final int? stock;
 
-  final String email;
-  final String password;
-
-  final bool emailErr;
-
-  final bool isVisible;
-  final bool isPasswordEightCharacters;
-  final bool hasPasswordOneNumber;
+  final List<Uint8List> images;
+  final List<Uint8List> videos;
 
   @override
   List<Object?> get props => <Object?>[
-        emailErr,
-        isVisible,
-        isPasswordEightCharacters,
-        email,
-        password,
-        hasPasswordOneNumber,
+        title,
+        overview,
+        authors,
+        selectedAuthors,
+        images,
+        videos,
+        price,
+        stock,
       ];
-
-  AddProductMobileFormState copyWith({
-    String? email,
-    String? password,
-    bool? emailErr,
-    bool? isVisible,
-    bool? isPasswordEightCharacters,
-    bool? hasPasswordOneNumber,
-  }) {
-    return AddProductMobileFormState(
-      email: email ?? this.email,
-      password: password ?? this.password,
-      emailErr: emailErr ?? this.emailErr,
-      isVisible: isVisible ?? this.isVisible,
-      isPasswordEightCharacters:
-          isPasswordEightCharacters ?? this.isPasswordEightCharacters,
-      hasPasswordOneNumber: hasPasswordOneNumber ?? this.hasPasswordOneNumber,
-    );
-  }
 }

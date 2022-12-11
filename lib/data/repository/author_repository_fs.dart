@@ -22,21 +22,50 @@ class AuthorRepositoryFS implements AuthorRepository {
     required List<String> authorIds,
   }) async {
     try {
-      return await authors
-          .where(
-            'id',
-            whereIn: authorIds,
-          )
-          .get()
-          .then(
+      return await authors.get().then(
         (QuerySnapshot<Object?> result) {
-          return Right(result.docs.map((QueryDocumentSnapshot<Object?> e) {
-            final Map<String, dynamic> data = e.data() as Map<String, dynamic>;
+          final List<AuthorResponse> authors = <AuthorResponse>[];
+          for (final QueryDocumentSnapshot<Object?> doc in result.docs) {
+            if (doc.data() != null && authorIds.contains(doc.reference.id)) {
+              final Map<String, dynamic> data =
+                  doc.data() as Map<String, dynamic>;
 
-            data['id'] = e.reference.id;
+              data['id'] = doc.reference.id;
 
-            return AuthorResponse.fromJson(data);
-          }).toList());
+              final AuthorResponse authorResponse =
+                  AuthorResponse.fromJson(data);
+              authors.add(authorResponse);
+            }
+          }
+
+          return Right(authors);
+        },
+        onError: (e) => Left(DatabaseFailure(e.toString())),
+      );
+    } on ServerException {
+      return const Left(ServerFailure('Server Failure'));
+    } on SocketException {
+      return const Left(ConnectionFailure('Failed to connect to the network'));
+    }
+  }
+
+  @override
+  Future<Either<Failure, List<AuthorResponse>>> fetchAllAuthor() async {
+    try {
+      return await authors.get().then(
+        (QuerySnapshot<Object?> result) {
+          final List<AuthorResponse> authors = <AuthorResponse>[];
+          for (final QueryDocumentSnapshot<Object?> doc in result.docs) {
+            final Map<String, dynamic> data =
+                doc.data() as Map<String, dynamic>;
+
+            data['id'] = doc.reference.id;
+
+            final AuthorResponse authorResponse = AuthorResponse.fromJson(data);
+            authors.add(authorResponse);
+          }
+
+          return Right(authors);
         },
         onError: (e) => Left(DatabaseFailure(e.toString())),
       );

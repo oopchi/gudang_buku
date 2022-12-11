@@ -311,7 +311,7 @@ class _ProductMobileBodyState extends State<ProductMobileBody> {
       ],
       options: CarouselOptions(
         padEnds: false,
-        aspectRatio: 376.0.w / 413.0.h,
+        aspectRatio: 376.0.w / 413.0.w,
         viewportFraction: 1,
         autoPlay: true,
         autoPlayInterval: const Duration(

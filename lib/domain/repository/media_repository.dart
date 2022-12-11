@@ -7,4 +7,7 @@ abstract class MediaRepository {
   Future<Either<Failure, List<MediaResponse>>> fetchAllMediasWithBookId({
     required String bookId,
   });
+  Future<Either<Failure, String>> addMedia({
+    required MediaResponse mediaResponse,
+  });
 }

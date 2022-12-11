@@ -8,7 +8,7 @@ class MediaResponse extends Equatable {
   const MediaResponse({
     this.id,
     this.url,
-    this.allowedMediaId,
+    this.mediaType,
     this.bookId,
   });
 
@@ -21,7 +21,7 @@ class MediaResponse extends Equatable {
 
   final String? bookId;
 
-  final String? allowedMediaId;
+  final String? mediaType;
 
   Map<String, dynamic> toJson() => _$MediaResponseToJson(this);
 
@@ -29,7 +29,7 @@ class MediaResponse extends Equatable {
   List<Object?> get props => <Object?>[
         id,
         url,
-        allowedMediaId,
+        mediaType,
         bookId,
       ];
 }

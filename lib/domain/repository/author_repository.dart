@@ -6,4 +6,6 @@ abstract class AuthorRepository {
   Future<Either<Failure, List<AuthorResponse>>> fetchAllAuthorWithId({
     required List<String> authorIds,
   });
+
+  Future<Either<Failure, List<AuthorResponse>>> fetchAllAuthor();
 }

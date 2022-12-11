@@ -1,6 +1,7 @@
 import 'package:bookstore/config/constant/colors.dart';
 import 'package:bookstore/util/text_helper.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class AppTextFormField extends StatefulWidget {
@@ -16,6 +17,9 @@ class AppTextFormField extends StatefulWidget {
     this.obscureText = false,
     this.suffix,
     this.suffixIcon,
+    this.keyboardType,
+    this.inputFormatters,
+    this.autovalidateMode = false,
   });
 
   final ValueChanged<String>? onChanged;
@@ -28,6 +32,9 @@ class AppTextFormField extends StatefulWidget {
   final bool obscureText;
   final Widget? suffix;
   final Widget? suffixIcon;
+  final TextInputType? keyboardType;
+  final List<TextInputFormatter>? inputFormatters;
+  final bool autovalidateMode;
 
   @override
   State<AppTextFormField> createState() => _AppTextFormFieldState();
@@ -51,6 +58,11 @@ class _AppTextFormFieldState extends State<AppTextFormField> {
         ],
       ),
       child: TextFormField(
+        autovalidateMode: widget.autovalidateMode
+            ? AutovalidateMode.always
+            : AutovalidateMode.disabled,
+        inputFormatters: widget.inputFormatters,
+        keyboardType: widget.keyboardType,
         obscureText: widget.obscureText,
         controller: widget.controller,
         onChanged: widget.onChanged,
