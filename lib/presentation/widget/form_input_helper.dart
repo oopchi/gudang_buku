@@ -20,6 +20,8 @@ class AppTextFormField extends StatefulWidget {
     this.keyboardType,
     this.inputFormatters,
     this.autovalidateMode = false,
+    this.prefixText,
+    this.suffixText,
   });
 
   final ValueChanged<String>? onChanged;
@@ -35,6 +37,8 @@ class AppTextFormField extends StatefulWidget {
   final TextInputType? keyboardType;
   final List<TextInputFormatter>? inputFormatters;
   final bool autovalidateMode;
+  final String? prefixText;
+  final String? suffixText;
 
   @override
   State<AppTextFormField> createState() => _AppTextFormFieldState();
@@ -69,6 +73,10 @@ class _AppTextFormFieldState extends State<AppTextFormField> {
         validator: widget.validator,
         autofocus: widget.autofocus,
         decoration: InputDecoration(
+          prefixText: widget.prefixText,
+          suffixText: widget.suffixText,
+          suffixStyle: CustomTextStyles.medium.size(14.0, AppColor.gray),
+          prefixStyle: CustomTextStyles.medium.size(14.0, AppColor.gray),
           errorStyle: CustomTextStyles.regular.size(
             11.0,
             AppColor.error,

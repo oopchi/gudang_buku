@@ -35,6 +35,7 @@ class _EventBannerState extends State<EventBanner> {
   void initState() {
     super.initState();
     _uniqueKey = UniqueKey();
+    final Uri uri = Uri.parse(widget.eventModel.imageUrl);
     _url = widget.eventModel.imageUrl;
   }
 

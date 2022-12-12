@@ -47,14 +47,14 @@ class AddProductMobileFormState extends AddProductMobileState {
     required this.images,
     required this.videos,
     required this.price,
-    this.stock,
+    required this.stock,
   });
   final String title;
   final String? overview;
   final List<AuthorModel> authors;
   final List<AuthorModel> selectedAuthors;
   final int price;
-  final int? stock;
+  final int stock;
 
   final List<Uint8List> images;
   final List<Uint8List> videos;

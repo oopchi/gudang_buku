@@ -142,11 +142,11 @@ class FormatHelper {
     return dateFormat.format(dateTime);
   }
 
-  static String formatCurrency(String text) {
+  static String formatCurrency(String text, {String? prefix = 'Rp'}) {
     final NumberFormat f = NumberFormat(' #,###', 'id_ID');
     final double num = double.parse(text.replaceAll(f.symbols.GROUP_SEP, ''));
     final String newString = f.format(num);
-    return 'Rp$newString';
+    return '$prefix$newString';
   }
 
   static String formatShortCurrency(double amount) {

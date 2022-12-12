@@ -48,4 +48,25 @@ class AuthorBookRepositoryFS implements AuthorBookRepository {
       return const Left(ConnectionFailure('Failed to connect to the network'));
     }
   }
+
+  @override
+  Future<Either<Failure, String>> addAuthorBook(
+      {required String bookId, required String authorId}) async {
+    try {
+      final AuthorBookResponse authorBookResponse = AuthorBookResponse(
+        bookId: bookId,
+        authorId: authorId,
+      );
+      return authorBook.add(authorBookResponse.toJson()).then(
+        (DocumentReference<Object?> result) {
+          return Right(result.id);
+        },
+        onError: (e) => Left(DatabaseFailure(e.toString())),
+      );
+    } on ServerException {
+      return const Left(ServerFailure('Server Failure'));
+    } on SocketException {
+      return const Left(ConnectionFailure('Failed to connect to the network'));
+    }
+  }
 }

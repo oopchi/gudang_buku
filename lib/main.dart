@@ -1,22 +1,14 @@
 import 'package:bookstore/config/constant/colors.dart';
-import 'package:bookstore/config/constant/routes.dart';
 import 'package:bookstore/config/provider_setup.dart';
 import 'package:bookstore/config/router/router.dart';
 import 'package:bookstore/data/local/local_storage_hive.dart';
-import 'package:bookstore/presentation/bloc/cubit.dart';
-import 'package:bookstore/presentation/bloc/state.dart';
-import 'package:bookstore/presentation/widget/loading_helper.dart';
 import 'package:bookstore/presentation/widget/scroll_behaviour_helper.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:go_router/go_router.dart';
-import 'package:go_router/src/router.dart';
 import 'package:provider/provider.dart';
 import 'package:workmanager/workmanager.dart';
 import 'config/background_tasks.dart';
@@ -43,11 +35,11 @@ Future<void> main() async {
       ),
     );
 
-    // FirebaseFirestore.instance.enablePersistence(
-    //   const PersistenceSettings(
-    //     synchronizeTabs: true,
-    //   ),
-    // );
+    await FirebaseFirestore.instance.enablePersistence(
+      const PersistenceSettings(
+        synchronizeTabs: true,
+      ),
+    );
   } else {
     final FirebaseFirestore db = FirebaseFirestore.instance;
     db.settings = const Settings(
@@ -77,44 +69,24 @@ class MyApp extends StatelessWidget {
       child: ScreenUtilInit(
         minTextAdapt: true,
         designSize: const Size(375, 812),
-        builder: (context, child) => BlocProvider(
-          create: (context) => AuthCubit(
-            localStorage: LocalStorageHive(),
+        builder: (context, child) => MaterialApp.router(
+          scrollBehavior: AppScrollBehavior(),
+          title: 'Gudang Buku',
+          theme: ThemeData(
+            primarySwatch: Colors.blue,
+            scaffoldBackgroundColor: AppColor.background,
+            appBarTheme: const AppBarTheme(
+              backgroundColor: AppColor.background,
+              elevation: .0,
+              iconTheme: IconThemeData(
+                color: AppColor.black,
+              ),
+            ),
           ),
-          child: Builder(
-            builder: (context) {
-              return BlocListener<AuthCubit, AuthState>(
-                listener: (context, state) {
-                  if (state is AuthSignedOut) {
-                    AppRouter()
-                        .router
-                        .goNamed(AppRoutes.landingPageToLogin.name);
-                  }
-                },
-                child: MaterialApp.router(
-                  scrollBehavior: AppScrollBehavior(),
-                  title: 'Gudang Buku',
-                  theme: ThemeData(
-                    primarySwatch: Colors.blue,
-                    scaffoldBackgroundColor: AppColor.background,
-                    appBarTheme: const AppBarTheme(
-                      backgroundColor: AppColor.background,
-                      elevation: .0,
-                      iconTheme: IconThemeData(
-                        color: AppColor.black,
-                      ),
-                    ),
-                  ),
-                  routerDelegate: AppRouter().router.routerDelegate,
-                  routeInformationParser:
-                      AppRouter().router.routeInformationParser,
-                  routeInformationProvider:
-                      AppRouter().router.routeInformationProvider,
-                  debugShowCheckedModeBanner: false,
-                ),
-              );
-            },
-          ),
+          routerDelegate: AppRouter().router.routerDelegate,
+          routeInformationParser: AppRouter().router.routeInformationParser,
+          routeInformationProvider: AppRouter().router.routeInformationProvider,
+          debugShowCheckedModeBanner: false,
         ),
       ),
     );

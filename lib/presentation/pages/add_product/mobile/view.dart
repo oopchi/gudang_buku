@@ -4,6 +4,7 @@ import 'package:bookstore/data/repository/author_book_repository_fs.dart';
 import 'package:bookstore/data/repository/author_repository_fs.dart';
 import 'package:bookstore/data/repository/book_repository_fs.dart';
 import 'package:bookstore/data/repository/media_repository_fs.dart';
+import 'package:bookstore/domain/model/author_model.dart';
 import 'package:bookstore/presentation/pages/add_product/mobile/state.dart';
 import 'package:bookstore/presentation/widget/appbar_helper.dart';
 import 'package:bookstore/presentation/widget/button_helper.dart';
@@ -12,6 +13,7 @@ import 'package:bookstore/presentation/widget/form_input_helper.dart';
 import 'package:bookstore/presentation/widget/loading_helper.dart';
 import 'package:bookstore/presentation/widget/snackbar_helper.dart';
 import 'package:bookstore/presentation/widget/spacing.dart';
+import 'package:bookstore/util/form_helper.dart';
 import 'package:bookstore/util/text_helper.dart';
 import 'package:drag_and_drop_lists/drag_and_drop_list_interface.dart';
 import 'package:drag_and_drop_lists/drag_and_drop_lists.dart';
@@ -32,8 +34,15 @@ class AddProductMobilePage extends StatefulWidget {
 
 class _AddProductMobilePageState extends State<AddProductMobilePage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final TextEditingController _priceController = TextEditingController();
 
   bool _isMounted() => mounted;
+
+  @override
+  void dispose() {
+    _priceController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -122,7 +131,11 @@ class _AddProductMobilePageState extends State<AddProductMobilePage> {
           Spacing.horizontal(23.0.w),
           Expanded(
             child: AppButton(
-              onPressed: () => cubit.addBook(state),
+              onPressed: () {
+                if (_formKey.currentState?.validate() ?? false) {
+                  cubit.addBook(state);
+                }
+              },
               text: 'Add Book',
               padding: 8.0,
               textStyle: CustomTextStyles.medium.size(
@@ -171,12 +184,143 @@ class _AddProductMobilePageState extends State<AddProductMobilePage> {
           vertical: 20.0.h,
         ),
         children: <Widget>[
-          _buildImageAndVideoPrompt(context, state),
-          _buildTitlePrompt(context, state),
-          _buildOverviewPrompt(context, state),
-          _buildAuthorsPrompt(context, state),
-          _buildPricePrompt(context, state),
-          _buildStockPrompt(context, state),
+          Padding(
+            padding: EdgeInsets.only(
+              bottom: 18.0.h,
+            ),
+            child: _buildImageAndVideoPrompt(context, state),
+          ),
+          Padding(
+            padding: EdgeInsets.only(
+              bottom: 18.0.h,
+            ),
+            child: _buildTitlePrompt(context, state),
+          ),
+          Padding(
+            padding: EdgeInsets.only(
+              bottom: 18.0.h,
+            ),
+            child: _buildOverviewPrompt(context, state),
+          ),
+          _buildAuthorsPrompts(context, state),
+          Padding(
+            padding: EdgeInsets.only(
+              bottom: 18.0.h,
+            ),
+            child: _buildPricePrompt(context, state),
+          ),
+          Padding(
+            padding: EdgeInsets.only(
+              bottom: 18.0.h,
+            ),
+            child: _buildStockPrompt(context, state),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildAuthorsPrompts(
+      BuildContext context, AddProductMobileFormState state) {
+    return Column(
+      children: <Widget>[
+        for (int i = 0; i < state.selectedAuthors.length; i++)
+          _buildAuthorsPrompt(context, state, i),
+        _buildAuthorsPrompt(context, state, -1),
+      ],
+    );
+  }
+
+  Widget _buildAuthorsPrompt(
+    BuildContext context,
+    AddProductMobileFormState state,
+    int index,
+  ) {
+    final AddProductMobileCubit cubit =
+        BlocProvider.of<AddProductMobileCubit>(context);
+    return Padding(
+      padding: EdgeInsets.only(
+        bottom: 18.0.h,
+      ),
+      child: Row(
+        children: <Widget>[
+          Expanded(
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.transparent,
+                borderRadius: BorderRadius.circular(4.0.r),
+                boxShadow: <BoxShadow>[
+                  BoxShadow(
+                    color: Colors.black.withOpacity(.05),
+                    blurRadius: 8.0.sp,
+                    offset: Offset(
+                      .0,
+                      1.0.sp,
+                    ),
+                  ),
+                ],
+              ),
+              child: DropdownButtonFormField<AuthorModel>(
+                key: ValueKey(index),
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(4.0.r),
+                    borderSide: BorderSide.none,
+                  ),
+                  filled: true,
+                  fillColor: Colors.white,
+                  errorStyle: CustomTextStyles.regular.size(
+                    11.0,
+                    AppColor.error,
+                  ),
+                ),
+                validator: (value) => state.selectedAuthors.isEmpty
+                    ? 'There must at least be one author'
+                    : null,
+                dropdownColor: Colors.white,
+                hint: Text(
+                  'Author',
+                  style: CustomTextStyles.regular.size(14.0, AppColor.gray),
+                ),
+                value: index == -1 ? null : state.selectedAuthors[index],
+                borderRadius: BorderRadius.circular(8.0.r),
+                isDense: true,
+                focusColor: Colors.white,
+                onChanged: (value) => cubit.selectAuthor(state, value!,
+                    index == -1 ? state.selectedAuthors.length : index),
+                items: state.authors
+                    .where((element) =>
+                        (index != -1 &&
+                            element == state.selectedAuthors[index]) ||
+                        !state.selectedAuthors.contains(element))
+                    .map(
+                  (
+                    AuthorModel value,
+                  ) {
+                    return DropdownMenuItem<AuthorModel>(
+                      value: value,
+                      child: Text(
+                        value.name,
+                        style: CustomTextStyles.medium.size(14.0),
+                      ),
+                    );
+                  },
+                ).toList(),
+              ),
+            ),
+          ),
+          if (index != -1)
+            IconButton(
+              onPressed: () => cubit.deleteSelectedAuthor(
+                state,
+                index,
+              ),
+              icon: const Icon(Icons.clear),
+              iconSize: 30.0.sp,
+              color: AppColor.error,
+              padding: EdgeInsets.all(4.0.sp),
+              constraints: const BoxConstraints(),
+            ),
         ],
       ),
     );
@@ -185,23 +329,35 @@ class _AddProductMobilePageState extends State<AddProductMobilePage> {
   Widget _buildImageAndVideoPrompt(
       BuildContext context, AddProductMobileFormState state) {
     final cubit = BlocProvider.of<AddProductMobileCubit>(context);
-    return DragAndDropLists(
-      axis: Axis.horizontal,
-      listWidth: 275.0.sp,
-      listDraggingWidth: 275.0.sp,
-      listPadding: EdgeInsets.zero,
-      disableScrolling: true,
-      onItemReorder:
-          (oldItemIndex, oldListIndex, newItemIndex, newListIndex) {},
-      onListReorder: (oldListIndex, newListIndex) {
-        cubit.changeLocImages(state, oldListIndex, newListIndex);
-      },
-      children: <DragAndDropListInterface>[
-        for (int i = 0; i < state.images.length; i++)
-          _buildImageHolder(context, state, i),
-        if (state.images.isEmpty) _buildImageHolder(context, state, -1),
-        _buildAddImageButton(context, state),
-      ],
+    return SizedBox(
+      height: 450.0.sp,
+      child: ListView(
+        physics: const BouncingScrollPhysics(
+          parent: AlwaysScrollableScrollPhysics(),
+        ),
+        scrollDirection: Axis.horizontal,
+        children: [
+          DragAndDropLists(
+            horizontalAlignment: MainAxisAlignment.center,
+            verticalAlignment: CrossAxisAlignment.center,
+            axis: Axis.horizontal,
+            listWidth: 275.0.sp,
+            listDraggingWidth: 275.0.sp,
+            listPadding: EdgeInsets.zero,
+            disableScrolling: true,
+            onItemReorder:
+                (oldItemIndex, oldListIndex, newItemIndex, newListIndex) {},
+            onListReorder: (oldListIndex, newListIndex) {
+              cubit.changeLocImages(state, oldListIndex, newListIndex);
+            },
+            children: <DragAndDropListInterface>[
+              for (int i = 0; i < state.images.length; i++)
+                _buildImageHolder(context, state, i),
+              _buildAddImageButton(context, state),
+            ],
+          ),
+        ],
+      ),
     );
   }
 
@@ -214,23 +370,39 @@ class _AddProductMobilePageState extends State<AddProductMobilePage> {
         DragAndDropItem(
           canDrag: false,
           child: Container(
-            color: AppColor.gray,
+            margin: EdgeInsets.only(
+              right: 18.0.w,
+            ),
+            width: 275.0.sp,
+            height: 413.0.sp,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20.0.r),
+              color: AppColor.gray,
+            ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                IconButton(
-                  onPressed: () => cubit.pickImages(state),
-                  icon: const Icon(Icons.add_a_photo),
-                  iconSize: 30.0.sp,
-                  padding: EdgeInsets.zero,
-                  constraints: const BoxConstraints(),
+                Material(
+                  color: Colors.transparent,
+                  child: IconButton(
+                    onPressed: () => cubit.pickImages(state),
+                    icon: const Icon(Icons.add_a_photo),
+                    iconSize: 30.0.sp,
+                    padding: EdgeInsets.all(18.0.sp),
+                    constraints: const BoxConstraints(),
+                  ),
                 ),
-                IconButton(
-                  onPressed: () => cubit.pickVideo(state),
-                  icon: const Icon(Icons.video_call_rounded),
-                  iconSize: 30.0.sp,
-                  padding: EdgeInsets.zero,
-                  constraints: const BoxConstraints(),
+                Spacing.vertical(18.0.h),
+                Material(
+                  color: Colors.transparent,
+                  borderRadius: BorderRadius.circular(100.0.r),
+                  child: IconButton(
+                    onPressed: () => cubit.pickVideo(state),
+                    icon: const Icon(Icons.video_call_rounded),
+                    iconSize: 30.0.sp,
+                    padding: EdgeInsets.all(18.0.sp),
+                    constraints: const BoxConstraints(),
+                  ),
                 ),
               ],
             ),
@@ -245,7 +417,15 @@ class _AddProductMobilePageState extends State<AddProductMobilePage> {
     final cubit = BlocProvider.of<AddProductMobileCubit>(context);
     return DragAndDropList(
       contentsWhenEmpty: Container(
-        color: AppColor.gray,
+        margin: EdgeInsets.only(
+          right: 18.0.w,
+        ),
+        width: 275.0.sp,
+        height: 413.0.sp,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(20.0.r),
+          color: AppColor.gray,
+        ),
         child: GestureDetector(
           onTap: index == -1
               ? null
@@ -268,14 +448,7 @@ class _AddProductMobilePageState extends State<AddProductMobilePage> {
                     size: 40.0.sp,
                   ),
                 )
-              : Container(
-                  width: 275.0.sp,
-                  height: 413.0.sp,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20.0.r),
-                  ),
-                  child: Image.memory(state.images[index]),
-                ),
+              : Image.memory(state.images[index]),
         ),
       ),
       children: <DragAndDropItem>[],
@@ -322,29 +495,33 @@ class _AddProductMobilePageState extends State<AddProductMobilePage> {
     final AddProductMobileCubit cubit =
         BlocProvider.of<AddProductMobileCubit>(context);
     return AppTextFormField(
+      controller: _priceController,
       keyboardType: TextInputType.number,
-      onChanged: (value) => cubit.checkPrice(state, int.tryParse(value) ?? -1),
+      onChanged: (value) {
+        setState(() {
+          _priceController.selection = TextSelection.fromPosition(
+            TextPosition(offset: _priceController.text.length),
+          );
+        });
+        cubit.checkPrice(state, int.tryParse(value) ?? -1);
+      },
+      label: 'Price',
+      hintText: '100000',
       validator: (String? value) {
         if (value == null) return 'Value ';
 
-        int realValue = int.tryParse(value) ?? -1;
-        return;
-      },
-    );
-  }
+        final String parsedValue = value.replaceAll(r'\.', '');
 
-  Widget _buildStockPrompt(
-      BuildContext context, AddProductMobileFormState state) {
-    final AddProductMobileCubit cubit =
-        BlocProvider.of<AddProductMobileCubit>(context);
-    return AppTextFormField(
-      onChanged: (title) => cubit.checkTitle(state, title),
-      validator: (String? value) =>
-          value?.trim() != '' ? null : 'Invalid title',
-      errorText: state.title.trim() == '' ? 'Invalid title' : null,
-      hintText: 'Harry Potter',
-      label: 'Judul Buku',
-      suffixIcon: state.title.trim() == ''
+        if (int.tryParse(parsedValue) == null) {
+          return 'Price can only consists of numbers';
+        }
+
+        int realValue = int.tryParse(parsedValue) ?? -1;
+        if (realValue < 0) return 'Price cannot be negative';
+
+        return null;
+      },
+      suffixIcon: state.price < 0
           ? Icon(
               Icons.warning,
               size: 24.0.sp,
@@ -355,6 +532,46 @@ class _AddProductMobilePageState extends State<AddProductMobilePage> {
               size: 24.0.sp,
               color: Colors.green,
             ),
+      prefixText: 'Rp',
+      inputFormatters: [
+        FilteringTextInputFormatter.digitsOnly,
+        FormValidator.formatCurrency(),
+      ],
+    );
+  }
+
+  Widget _buildStockPrompt(
+      BuildContext context, AddProductMobileFormState state) {
+    final AddProductMobileCubit cubit =
+        BlocProvider.of<AddProductMobileCubit>(context);
+    return AppTextFormField(
+      onChanged: (stock) => cubit.checkStock(state, int.tryParse(stock) ?? -1),
+      keyboardType: TextInputType.number,
+      validator: (String? value) {
+        if (value == null) return 'Stock cannot be empty';
+
+        if (int.tryParse(value) == null) return 'Stock must be numbers';
+
+        if (int.tryParse(value)! < 0) return 'Stock cannot be negative';
+        return null;
+      },
+      hintText: '0',
+      label: 'Stock',
+      suffixIcon: state.stock < 0
+          ? Icon(
+              Icons.warning,
+              size: 24.0.sp,
+              color: AppColor.error,
+            )
+          : Icon(
+              Icons.check,
+              size: 24.0.sp,
+              color: Colors.green,
+            ),
+      suffixText: 'books',
+      inputFormatters: [
+        FilteringTextInputFormatter.digitsOnly,
+      ],
     );
   }
 }

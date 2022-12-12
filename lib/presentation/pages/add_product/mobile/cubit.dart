@@ -63,10 +63,13 @@ class AddProductMobileCubit extends Cubit<AddProductMobileState> {
       videos: const <Uint8List>[],
       title: '',
       price: -1,
+      stock: -1,
     ));
   }
 
   Future<void> addBook(AddProductMobileFormState oldState) async {
+    _emit(const AddProductMobileLoading());
+
     final BookResponse bookResponse = BookResponse(
       title: oldState.title,
       overview: oldState.overview,
@@ -82,6 +85,8 @@ class AddProductMobileCubit extends Cubit<AddProductMobileState> {
       _emit(AddProductMobileFailure(
         message: bookRes.asLeft().message,
       ));
+
+      _emit(oldState);
 
       return;
     }
@@ -100,6 +105,8 @@ class AddProductMobileCubit extends Cubit<AddProductMobileState> {
           message: authorBookRes.asLeft().message,
         ));
 
+        _emit(oldState);
+
         return;
       }
     }
@@ -114,6 +121,8 @@ class AddProductMobileCubit extends Cubit<AddProductMobileState> {
         _emit(AddProductMobileFailure(
           message: pathRes.asLeft().message,
         ));
+
+        _emit(oldState);
         return;
       }
 
@@ -136,6 +145,8 @@ class AddProductMobileCubit extends Cubit<AddProductMobileState> {
         _emit(AddProductMobileFailure(
           message: pathRes.asLeft().message,
         ));
+
+        _emit(oldState);
         return;
       }
 
@@ -149,6 +160,8 @@ class AddProductMobileCubit extends Cubit<AddProductMobileState> {
     }
 
     _emit(AddProductMobileSuccess());
+
+    _emit(oldState);
   }
 
   void deleteImage(
@@ -161,6 +174,48 @@ class AddProductMobileCubit extends Cubit<AddProductMobileState> {
       authors: oldState.authors,
       selectedAuthors: oldState.selectedAuthors,
       images: newList,
+      videos: oldState.videos,
+      title: oldState.title,
+      overview: oldState.overview,
+      price: oldState.price,
+      stock: oldState.stock,
+    ));
+  }
+
+  void deleteSelectedAuthor(AddProductMobileFormState oldState, int index) {
+    final List<AuthorModel> newSelectedAuthors =
+        oldState.selectedAuthors.toList();
+
+    newSelectedAuthors.removeAt(index);
+
+    _emit(AddProductMobileFormState(
+      authors: oldState.authors,
+      selectedAuthors: newSelectedAuthors,
+      images: oldState.images,
+      videos: oldState.videos,
+      title: oldState.title,
+      overview: oldState.overview,
+      price: oldState.price,
+      stock: oldState.stock,
+    ));
+  }
+
+  void selectAuthor(
+      AddProductMobileFormState oldState, AuthorModel author, int index) {
+    final List<AuthorModel> newSelectedAuthors =
+        oldState.selectedAuthors.toList();
+    if (index >= oldState.selectedAuthors.length) {
+      newSelectedAuthors.add(author);
+    } else {
+      newSelectedAuthors.removeAt(index);
+
+      newSelectedAuthors.insert(index, author);
+    }
+
+    _emit(AddProductMobileFormState(
+      authors: oldState.authors,
+      selectedAuthors: newSelectedAuthors,
+      images: oldState.images,
       videos: oldState.videos,
       title: oldState.title,
       overview: oldState.overview,
@@ -188,6 +243,8 @@ class AddProductMobileCubit extends Cubit<AddProductMobileState> {
   }
 
   Future<void> pickImages(AddProductMobileFormState oldState) async {
+    _emit(const AddProductMobileLoading());
+
     try {
       final List<Uint8List> pickedImages = [];
       if (kIsWeb) {
@@ -217,10 +274,13 @@ class AddProductMobileCubit extends Cubit<AddProductMobileState> {
       ));
     } catch (e) {
       _emit(const AddProductMobileFailure(message: 'Error fetching images'));
+      _emit(oldState);
     }
   }
 
   Future<void> pickVideo(AddProductMobileFormState oldState) async {
+    _emit(const AddProductMobileLoading());
+
     try {
       late final Uint8List? pickedVideo;
       if (kIsWeb) {
@@ -252,6 +312,7 @@ class AddProductMobileCubit extends Cubit<AddProductMobileState> {
       ));
     } catch (e) {
       _emit(const AddProductMobileFailure(message: 'Error fetching video'));
+      _emit(oldState);
     }
   }
 

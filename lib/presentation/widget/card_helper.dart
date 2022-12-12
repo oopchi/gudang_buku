@@ -47,6 +47,8 @@ class ProductCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final Uri uri = Uri.parse(model.imageUrl);
+    final String uris = uri.toString();
     if (listType == ListType.grid) {
       return Material(
         color: Colors.transparent,

@@ -68,4 +68,21 @@ class MediaRepositoryFS implements MediaRepository {
       return const Left(ConnectionFailure('Failed to connect to the network'));
     }
   }
+
+  @override
+  Future<Either<Failure, String>> addMedia(
+      {required MediaResponse mediaResponse}) async {
+    try {
+      return await medias.add(mediaResponse.toJson()).then(
+        (DocumentReference<Object?> result) {
+          return Right(result.id);
+        },
+        onError: (e) => Left(DatabaseFailure(e.toString())),
+      );
+    } on ServerException {
+      return const Left(ServerFailure('Server Failure'));
+    } on SocketException {
+      return const Left(ConnectionFailure('Failed to connect to the network'));
+    }
+  }
 }
