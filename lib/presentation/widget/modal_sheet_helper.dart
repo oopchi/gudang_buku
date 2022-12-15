@@ -1,13 +1,127 @@
-import 'package:bookstore/config/constant/colors.dart';
-import 'package:bookstore/domain/model/filter_model.dart';
-import 'package:bookstore/presentation/widget/appbar_helper.dart';
-import 'package:bookstore/presentation/widget/button_helper.dart';
-import 'package:bookstore/presentation/widget/spacing.dart';
-import 'package:bookstore/util/format_helper.dart';
-import 'package:bookstore/util/sort_helper.dart';
-import 'package:bookstore/util/text_helper.dart';
+import 'package:gudangBuku/config/constant/colors.dart';
+import 'package:gudangBuku/domain/model/filter_model.dart';
+import 'package:gudangBuku/presentation/widget/appbar_helper.dart';
+import 'package:gudangBuku/presentation/widget/button_helper.dart';
+import 'package:gudangBuku/presentation/widget/spacing.dart';
+import 'package:gudangBuku/util/format_helper.dart';
+import 'package:gudangBuku/util/sort_helper.dart';
+import 'package:gudangBuku/util/text_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+
+class DiscountSheet extends StatefulWidget {
+  const DiscountSheet({super.key});
+
+  @override
+  State<DiscountSheet> createState() => _DiscountSheetState();
+}
+
+class _DiscountSheetState extends State<DiscountSheet> {
+  final TextEditingController _textEditingController = TextEditingController();
+  final FocusNode _focusNode = FocusNode();
+
+  @override
+  void dispose() {
+    _textEditingController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: <Widget>[
+        Spacing.vertical(14.0.h),
+        _buildHandle(),
+        Spacing.vertical(32.0.h),
+        _buildPromoInput(context),
+      ],
+    );
+  }
+
+  Widget _buildPromoInput(BuildContext context) {
+    final BorderRadius borderRadius = BorderRadius.horizontal(
+      left: Radius.circular(8.0.r),
+      right: Radius.circular(35.0.r),
+    );
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: borderRadius,
+        boxShadow: <BoxShadow>[
+          BoxShadow(
+            color: Colors.black.withOpacity(.05),
+            blurRadius: 8.0.sp,
+            offset: Offset(
+              .0,
+              1.0.sp,
+            ),
+          ),
+        ],
+      ),
+      child: TextFormField(
+        controller: _textEditingController,
+        onChanged: (value) {},
+        decoration: InputDecoration(
+          border: OutlineInputBorder(
+            borderRadius: borderRadius,
+            gapPadding: .0,
+            borderSide: BorderSide.none,
+          ),
+          errorBorder: OutlineInputBorder(
+            borderRadius: borderRadius,
+            gapPadding: .0,
+            borderSide: BorderSide(
+              color: AppColor.error,
+              width: 1.0.sp,
+            ),
+          ),
+          hintText: 'Enter your promo code',
+          suffixIcon: Container(
+            width: 36.0.sp,
+            height: 36.0.sp,
+            decoration: BoxDecoration(
+              color: Colors.black,
+              borderRadius: BorderRadius.circular(100.0.r),
+            ),
+            child: Center(
+              child: Icon(
+                Icons.arrow_forward,
+                size: 24.0.sp,
+                color: Colors.white,
+              ),
+            ),
+          ),
+          suffixIconConstraints: const BoxConstraints(),
+          contentPadding: EdgeInsets.only(
+            left: 20.0.w,
+          ),
+          isDense: true,
+          hintStyle: CustomTextStyles.medium.size(14.0, AppColor.gray),
+          alignLabelWithHint: true,
+          label: Text(
+            'Promo Code',
+            style: CustomTextStyles.regular.size(14.0, AppColor.gray),
+          ),
+          fillColor: Colors.white,
+          filled: true,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildHandle() {
+    return Center(
+      child: Container(
+        height: 6.0.sp,
+        width: 60.0.sp,
+        decoration: BoxDecoration(
+          color: AppColor.gray,
+          borderRadius: BorderRadius.circular(100.0.r),
+        ),
+      ),
+    );
+  }
+}
 
 class BottomSortBySheet extends StatefulWidget {
   const BottomSortBySheet({
@@ -23,9 +137,10 @@ class BottomSortBySheet extends StatefulWidget {
 class _BottomSortBySheetState extends State<BottomSortBySheet> {
   @override
   Widget build(BuildContext context) {
-    return FractionallySizedBox(
-      heightFactor: 352 / 812,
+    return SizedBox(
+      height: 812.0.h,
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Spacing.vertical(14.0.h),

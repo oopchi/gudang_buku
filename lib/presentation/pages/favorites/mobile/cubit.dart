@@ -1,16 +1,16 @@
-import 'package:bookstore/domain/controller/favorites_view_controller.dart';
-import 'package:bookstore/domain/controller/shop_view_controller.dart';
-import 'package:bookstore/domain/model/favorite_button_model.dart';
-import 'package:bookstore/domain/model/filter_model.dart';
-import 'package:bookstore/domain/model/genre_model.dart';
-import 'package:bookstore/domain/model/product_model.dart';
-import 'package:bookstore/util/dartz_helper.dart';
-import 'package:bookstore/util/list_type_helper.dart';
-import 'package:bookstore/util/sort_helper.dart';
+import 'package:gudangBuku/domain/controller/favorites_view_controller.dart';
+import 'package:gudangBuku/domain/controller/shop_view_controller.dart';
+import 'package:gudangBuku/domain/model/favorite_button_model.dart';
+import 'package:gudangBuku/domain/model/filter_model.dart';
+import 'package:gudangBuku/domain/model/genre_model.dart';
+import 'package:gudangBuku/domain/model/product_model.dart';
+import 'package:gudangBuku/util/dartz_helper.dart';
+import 'package:gudangBuku/util/list_type_helper.dart';
+import 'package:gudangBuku/util/sort_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:dartz/dartz.dart';
-import 'package:bookstore/util/failure_helper.dart';
+import 'package:gudangBuku/util/failure_helper.dart';
 
 import 'state.dart';
 
@@ -162,7 +162,7 @@ class FavoritesMobileCubit extends Cubit<FavoritesMobileState> {
 
     if (!isMounted()) return;
 
-    emit(FavoritesAddToCartSuccess(
+    emit(FavoritesMobileAddToCartSuccess(
       dateTime: DateTime.now(),
     ));
   }
@@ -184,17 +184,13 @@ class FavoritesMobileCubit extends Cubit<FavoritesMobileState> {
       return;
     }
 
-    final int productIdx = products.indexWhere(
-      (ProductModel element) => element == productModel,
-    );
-
-    products.removeAt(productIdx);
+    final List<ProductModel> newProducts = [...products]..remove(productModel);
 
     if (!isMounted()) return;
 
     emit(FavoritesMobileLoaded(
       genres: genres,
-      products: products,
+      products: newProducts,
       selectedGenre: selectedGenre,
     ));
   }

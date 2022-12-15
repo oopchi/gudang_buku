@@ -1,5 +1,5 @@
-import 'package:bookstore/domain/dto/transaction_response.dart';
-import 'package:bookstore/util/failure_helper.dart';
+import 'package:gudangBuku/domain/dto/transaction_response.dart';
+import 'package:gudangBuku/util/failure_helper.dart';
 import 'package:dartz/dartz.dart';
 
 abstract class TransactionRepository {
@@ -10,5 +10,10 @@ abstract class TransactionRepository {
 
   Future<Either<Failure, String>> getCartTransactionId({
     required String uid,
+  });
+
+  Future<Either<Failure, String>> addDiscountToCart({
+    required String uid,
+    required String discountId,
   });
 }

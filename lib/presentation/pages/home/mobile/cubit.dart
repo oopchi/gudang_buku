@@ -1,13 +1,13 @@
-import 'package:bookstore/domain/controller/home_view_controller.dart';
-import 'package:bookstore/domain/model/event_model.dart';
-import 'package:bookstore/domain/model/favorite_button_model.dart';
-import 'package:bookstore/domain/model/product_model.dart';
-import 'package:bookstore/domain/model/promo_model.dart';
-import 'package:bookstore/util/dartz_helper.dart';
+import 'package:gudangBuku/domain/controller/home_view_controller.dart';
+import 'package:gudangBuku/domain/model/event_model.dart';
+import 'package:gudangBuku/domain/model/favorite_button_model.dart';
+import 'package:gudangBuku/domain/model/product_model.dart';
+import 'package:gudangBuku/domain/model/promo_model.dart';
+import 'package:gudangBuku/util/dartz_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:dartz/dartz.dart';
-import 'package:bookstore/util/failure_helper.dart';
+import 'package:gudangBuku/util/failure_helper.dart';
 
 import 'state.dart';
 

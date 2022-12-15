@@ -1,5 +1,5 @@
-import 'package:bookstore/domain/model/genre_model.dart';
-import 'package:bookstore/domain/model/product_model.dart';
+import 'package:gudangBuku/domain/model/genre_model.dart';
+import 'package:gudangBuku/domain/model/product_model.dart';
 import 'package:equatable/equatable.dart';
 
 class FavoritesMobileState extends Equatable {
@@ -76,8 +76,8 @@ class FavoritesMobileRefresh extends FavoritesMobileState {
       ];
 }
 
-class FavoritesAddToCartSuccess extends FavoritesMobileState {
-  const FavoritesAddToCartSuccess({
+class FavoritesMobileAddToCartSuccess extends FavoritesMobileState {
+  const FavoritesMobileAddToCartSuccess({
     required DateTime dateTime,
   }) : _dateTime = dateTime;
 

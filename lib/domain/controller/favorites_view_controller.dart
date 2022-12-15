@@ -1,30 +1,31 @@
-import 'package:bookstore/data/service/auth_service_fs.dart';
-import 'package:bookstore/domain/dto/author_book_response.dart';
-import 'package:bookstore/domain/dto/author_response.dart';
-import 'package:bookstore/domain/dto/book_response.dart';
-import 'package:bookstore/domain/dto/favorite_response.dart';
-import 'package:bookstore/domain/dto/genre_response.dart';
-import 'package:bookstore/domain/dto/media_response.dart';
-import 'package:bookstore/domain/dto/review_response.dart';
-import 'package:bookstore/domain/dto/transaction_detail_response.dart';
-import 'package:bookstore/domain/model/favorite_button_model.dart';
-import 'package:bookstore/domain/model/filter_model.dart';
-import 'package:bookstore/domain/model/genre_model.dart';
-import 'package:bookstore/domain/model/product_model.dart';
-import 'package:bookstore/domain/repository/author_book_repository.dart';
-import 'package:bookstore/domain/repository/author_repository.dart';
-import 'package:bookstore/domain/repository/book_genre_repository.dart';
-import 'package:bookstore/domain/repository/book_repository.dart';
-import 'package:bookstore/domain/repository/favorite_repository.dart';
-import 'package:bookstore/domain/repository/genre_repository.dart';
-import 'package:bookstore/domain/repository/media_repository.dart';
-import 'package:bookstore/domain/repository/review_repository.dart';
-import 'package:bookstore/domain/repository/transaction_detail_repository.dart';
-import 'package:bookstore/domain/repository/transaction_repository.dart';
-import 'package:bookstore/util/dartz_helper.dart';
-import 'package:bookstore/util/failure_helper.dart';
-import 'package:bookstore/util/sort_helper.dart';
+import 'package:gudangBuku/data/service/auth_service_fs.dart';
+import 'package:gudangBuku/domain/dto/author_book_response.dart';
+import 'package:gudangBuku/domain/dto/author_response.dart';
+import 'package:gudangBuku/domain/dto/book_response.dart';
+import 'package:gudangBuku/domain/dto/favorite_response.dart';
+import 'package:gudangBuku/domain/dto/genre_response.dart';
+import 'package:gudangBuku/domain/dto/media_response.dart';
+import 'package:gudangBuku/domain/dto/review_response.dart';
+import 'package:gudangBuku/domain/dto/transaction_detail_response.dart';
+import 'package:gudangBuku/domain/model/favorite_button_model.dart';
+import 'package:gudangBuku/domain/model/filter_model.dart';
+import 'package:gudangBuku/domain/model/genre_model.dart';
+import 'package:gudangBuku/domain/model/product_model.dart';
+import 'package:gudangBuku/domain/repository/author_book_repository.dart';
+import 'package:gudangBuku/domain/repository/author_repository.dart';
+import 'package:gudangBuku/domain/repository/book_genre_repository.dart';
+import 'package:gudangBuku/domain/repository/book_repository.dart';
+import 'package:gudangBuku/domain/repository/favorite_repository.dart';
+import 'package:gudangBuku/domain/repository/genre_repository.dart';
+import 'package:gudangBuku/domain/repository/media_repository.dart';
+import 'package:gudangBuku/domain/repository/review_repository.dart';
+import 'package:gudangBuku/domain/repository/transaction_detail_repository.dart';
+import 'package:gudangBuku/domain/repository/transaction_repository.dart';
+import 'package:gudangBuku/util/dartz_helper.dart';
+import 'package:gudangBuku/util/failure_helper.dart';
+import 'package:gudangBuku/util/sort_helper.dart';
 import 'package:dartz/dartz.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 class FavoritesViewController {
   const FavoritesViewController({
@@ -197,12 +198,24 @@ class FavoritesViewController {
 
       final List<MediaResponse> mediaResponses = mediaRes.asRight();
 
-      final String imageUrl = mediaResponses[0].url!;
+      String imageUrl = mediaResponses[0].url!;
+
+      if (!Uri.parse(imageUrl).hasScheme) {
+        imageUrl =
+            await FirebaseStorage.instance.ref(imageUrl).getDownloadURL();
+      }
 
       final List<String> imageUrls = <String>[];
 
       for (final MediaResponse media in mediaResponses) {
-        imageUrls.add(media.url!);
+        String imageUrl = media.url!;
+
+        if (!Uri.parse(imageUrl).hasScheme) {
+          imageUrl =
+              await FirebaseStorage.instance.ref(imageUrl).getDownloadURL();
+        }
+
+        imageUrls.add(imageUrl);
       }
 
       final Either<Failure, List<AuthorBookResponse>> authorBookRes =

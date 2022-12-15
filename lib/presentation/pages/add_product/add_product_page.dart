@@ -1,5 +1,5 @@
-import 'package:bookstore/presentation/pages/add_product/mobile/view.dart';
-import 'package:bookstore/presentation/widget/responsive_helper.dart';
+import 'package:gudangBuku/presentation/pages/add_product/mobile/view.dart';
+import 'package:gudangBuku/presentation/widget/responsive_helper.dart';
 import 'package:flutter/material.dart';
 
 class AddProductPage extends StatelessWidget {

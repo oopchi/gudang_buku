@@ -1,7 +1,7 @@
-import 'package:bookstore/domain/model/event_model.dart';
-import 'package:bookstore/presentation/pages/home/mobile/cubit.dart';
-import 'package:bookstore/presentation/pages/home/mobile/state.dart';
-import 'package:bookstore/presentation/widget/event_banner.dart';
+import 'package:gudangBuku/domain/model/event_model.dart';
+import 'package:gudangBuku/presentation/pages/home/mobile/cubit.dart';
+import 'package:gudangBuku/presentation/pages/home/mobile/state.dart';
+import 'package:gudangBuku/presentation/widget/event_banner.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

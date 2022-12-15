@@ -1,21 +1,22 @@
 import 'dart:async';
 
-import 'package:bookstore/presentation/widget/loading_helper.dart';
-import 'package:bookstore/presentation/widget/route_helper.dart';
+import 'package:gudangBuku/presentation/pages/cart/cart_page.dart';
+import 'package:gudangBuku/presentation/widget/loading_helper.dart';
+import 'package:gudangBuku/presentation/widget/route_helper.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:bookstore/config/constant/routes.dart';
-import 'package:bookstore/domain/model/filter_model.dart';
-import 'package:bookstore/presentation/pages/add_product/add_product_page.dart';
-import 'package:bookstore/presentation/pages/favorites/favorites_page.dart';
-import 'package:bookstore/presentation/pages/home/home_page.dart';
-import 'package:bookstore/presentation/pages/login/login_page.dart';
-import 'package:bookstore/presentation/pages/product/product_page.dart';
-import 'package:bookstore/presentation/pages/register/register_page.dart';
-import 'package:bookstore/presentation/pages/shop/shop_page.dart';
-import 'package:bookstore/presentation/widget/bottom_navigation_helper.dart';
-import 'package:bookstore/presentation/widget/error_helper.dart';
-import 'package:bookstore/util/list_type_helper.dart';
-import 'package:bookstore/util/sort_helper.dart';
+import 'package:gudangBuku/config/constant/routes.dart';
+import 'package:gudangBuku/domain/model/filter_model.dart';
+import 'package:gudangBuku/presentation/pages/add_product/add_product_page.dart';
+import 'package:gudangBuku/presentation/pages/favorites/favorites_page.dart';
+import 'package:gudangBuku/presentation/pages/home/home_page.dart';
+import 'package:gudangBuku/presentation/pages/login/login_page.dart';
+import 'package:gudangBuku/presentation/pages/product/product_page.dart';
+import 'package:gudangBuku/presentation/pages/register/register_page.dart';
+import 'package:gudangBuku/presentation/pages/shop/shop_page.dart';
+import 'package:gudangBuku/presentation/widget/bottom_navigation_helper.dart';
+import 'package:gudangBuku/presentation/widget/error_helper.dart';
+import 'package:gudangBuku/util/list_type_helper.dart';
+import 'package:gudangBuku/util/sort_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -247,7 +248,7 @@ class AppRouter {
             GoRoute(
               name: AppRoutes.cart.name,
               path: AppRoutes.cart.path,
-              builder: (context, state) => const HomePage(),
+              builder: (context, state) => const CartPage(),
               routes: <RouteBase>[
                 GoRoute(
                   name: AppRoutes.cartToCheckout.name,

@@ -1,8 +1,8 @@
-import 'package:bookstore/domain/model/filter_model.dart';
-import 'package:bookstore/presentation/pages/favorites/mobile/view.dart';
-import 'package:bookstore/presentation/widget/responsive_helper.dart';
-import 'package:bookstore/util/list_type_helper.dart';
-import 'package:bookstore/util/sort_helper.dart';
+import 'package:gudangBuku/domain/model/filter_model.dart';
+import 'package:gudangBuku/presentation/pages/favorites/mobile/view.dart';
+import 'package:gudangBuku/presentation/widget/responsive_helper.dart';
+import 'package:gudangBuku/util/list_type_helper.dart';
+import 'package:gudangBuku/util/sort_helper.dart';
 import 'package:flutter/material.dart';
 
 class FavoritesPage extends StatelessWidget {

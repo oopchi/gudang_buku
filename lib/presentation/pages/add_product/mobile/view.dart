@@ -1,20 +1,20 @@
-import 'package:bookstore/config/constant/colors.dart';
-import 'package:bookstore/config/constant/routes.dart';
-import 'package:bookstore/data/repository/author_book_repository_fs.dart';
-import 'package:bookstore/data/repository/author_repository_fs.dart';
-import 'package:bookstore/data/repository/book_repository_fs.dart';
-import 'package:bookstore/data/repository/media_repository_fs.dart';
-import 'package:bookstore/domain/model/author_model.dart';
-import 'package:bookstore/presentation/pages/add_product/mobile/state.dart';
-import 'package:bookstore/presentation/widget/appbar_helper.dart';
-import 'package:bookstore/presentation/widget/button_helper.dart';
-import 'package:bookstore/presentation/widget/dialog_helper.dart';
-import 'package:bookstore/presentation/widget/form_input_helper.dart';
-import 'package:bookstore/presentation/widget/loading_helper.dart';
-import 'package:bookstore/presentation/widget/snackbar_helper.dart';
-import 'package:bookstore/presentation/widget/spacing.dart';
-import 'package:bookstore/util/form_helper.dart';
-import 'package:bookstore/util/text_helper.dart';
+import 'package:gudangBuku/config/constant/colors.dart';
+import 'package:gudangBuku/config/constant/routes.dart';
+import 'package:gudangBuku/data/repository/author_book_repository_fs.dart';
+import 'package:gudangBuku/data/repository/author_repository_fs.dart';
+import 'package:gudangBuku/data/repository/book_repository_fs.dart';
+import 'package:gudangBuku/data/repository/media_repository_fs.dart';
+import 'package:gudangBuku/domain/model/author_model.dart';
+import 'package:gudangBuku/presentation/pages/add_product/mobile/state.dart';
+import 'package:gudangBuku/presentation/widget/appbar_helper.dart';
+import 'package:gudangBuku/presentation/widget/button_helper.dart';
+import 'package:gudangBuku/presentation/widget/dialog_helper.dart';
+import 'package:gudangBuku/presentation/widget/form_input_helper.dart';
+import 'package:gudangBuku/presentation/widget/loading_helper.dart';
+import 'package:gudangBuku/presentation/widget/snackbar_helper.dart';
+import 'package:gudangBuku/presentation/widget/spacing.dart';
+import 'package:gudangBuku/util/form_helper.dart';
+import 'package:gudangBuku/util/text_helper.dart';
 import 'package:drag_and_drop_lists/drag_and_drop_list_interface.dart';
 import 'package:drag_and_drop_lists/drag_and_drop_lists.dart';
 import 'package:flutter/material.dart';
@@ -179,6 +179,9 @@ class _AddProductMobilePageState extends State<AddProductMobilePage> {
     return Form(
       key: _formKey,
       child: ListView(
+        physics: const BouncingScrollPhysics(
+          parent: AlwaysScrollableScrollPhysics(),
+        ),
         padding: EdgeInsets.symmetric(
           horizontal: 16.0.w,
           vertical: 20.0.h,

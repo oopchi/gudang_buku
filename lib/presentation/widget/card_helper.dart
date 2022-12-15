@@ -1,8 +1,10 @@
-import 'package:bookstore/config/constant/colors.dart';
-import 'package:bookstore/domain/model/product_model.dart';
-import 'package:bookstore/presentation/widget/spacing.dart';
-import 'package:bookstore/util/format_helper.dart';
-import 'package:bookstore/util/list_type_helper.dart';
+import 'package:gudangBuku/config/constant/colors.dart';
+import 'package:gudangBuku/domain/model/product_model.dart';
+import 'package:gudangBuku/presentation/widget/number_counter.dart';
+import 'package:gudangBuku/presentation/widget/spacing.dart';
+import 'package:gudangBuku/util/format_helper.dart';
+import 'package:gudangBuku/util/list_type_helper.dart';
+import 'package:gudangBuku/util/text_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
@@ -10,10 +12,12 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 enum _ProductType {
   normal,
   favorite,
+  cart,
 }
 
 extension _ProductTypeExt on _ProductType {
   bool get isFavorite => this == _ProductType.favorite;
+  bool get isCart => this == _ProductType.cart;
 }
 
 class ProductCard extends StatelessWidget {
@@ -25,7 +29,9 @@ class ProductCard extends StatelessWidget {
     this.listType = ListType.grid,
   })  : onCartTap = null,
         onDeleteButtonTap = null,
-        _productType = _ProductType.normal;
+        _productType = _ProductType.normal,
+        onQtyChanged = null,
+        currQty = -1;
 
   const ProductCard.favorite({
     super.key,
@@ -35,7 +41,21 @@ class ProductCard extends StatelessWidget {
     this.listType = ListType.grid,
     this.onDeleteButtonTap,
   })  : onFavoriteTap = null,
-        _productType = _ProductType.favorite;
+        _productType = _ProductType.favorite,
+        onQtyChanged = null,
+        currQty = -1;
+
+  const ProductCard.cart({
+    super.key,
+    required this.model,
+    this.onProductTap,
+    this.onDeleteButtonTap,
+    this.onQtyChanged,
+    required this.currQty,
+    this.onFavoriteTap,
+  })  : _productType = _ProductType.cart,
+        listType = ListType.list,
+        onCartTap = null;
 
   final ProductModel model;
   final VoidCallback? onFavoriteTap;
@@ -44,11 +64,11 @@ class ProductCard extends StatelessWidget {
   final ListType listType;
   final _ProductType _productType;
   final VoidCallback? onDeleteButtonTap;
+  final ValueChanged<int>? onQtyChanged;
+  final int currQty;
 
   @override
   Widget build(BuildContext context) {
-    final Uri uri = Uri.parse(model.imageUrl);
-    final String uris = uri.toString();
     if (listType == ListType.grid) {
       return Material(
         color: Colors.transparent,
@@ -92,7 +112,9 @@ class ProductCard extends StatelessWidget {
                     children: <Widget>[
                       _buildCard(),
                       Spacing.horizontal(11.0.w),
-                      _buildDetail(),
+                      Expanded(
+                        child: _buildDetail(),
+                      ),
                     ],
                   ),
                 ),
@@ -101,18 +123,66 @@ class ProductCard extends StatelessWidget {
             Spacing.vertical(10.0.sp),
           ],
         ),
-        Positioned(
-          top: 78.0.sp,
-          right: .0,
-          child: _buildIconButton(),
-        ),
+        if (!_productType.isCart)
+          Positioned(
+            top: 78.0.sp,
+            right: .0,
+            child: _buildIconButton(),
+          ),
         if (_productType.isFavorite)
           Positioned(
             top: .0,
             right: .0,
             child: _buildDeleteButton(),
           ),
+        if (_productType.isCart)
+          Positioned(
+            top: .0,
+            right: .0,
+            child: _buildPopupButton(),
+          ),
       ],
+    );
+  }
+
+  Widget _buildPopupButton() {
+    return PopupMenuButton<String>(
+      itemBuilder: (context) => [
+        if (!model.favoriteButtonModel.isFavorite)
+          PopupMenuItem(
+            value: 'Favorite',
+            child: Text(
+              'Add to favorites',
+              style: CustomTextStyles.regular.size(11.0),
+            ),
+          ),
+        PopupMenuItem(
+          value: 'Delete',
+          child: Text(
+            'Delete from the list',
+            style: CustomTextStyles.regular.size(11.0),
+          ),
+        ),
+      ],
+      onSelected: (value) {
+        if (value == 'Favorite') {
+          if (onFavoriteTap != null) {
+            onFavoriteTap!();
+          }
+        } else if (value == 'Delete') {
+          if (onDeleteButtonTap != null) {
+            onDeleteButtonTap!();
+          }
+        }
+      },
+      child: Padding(
+        padding: EdgeInsets.all(8.0.sp),
+        child: Icon(
+          Icons.more_vert,
+          size: 30.0.sp,
+          color: AppColor.gray,
+        ),
+      ),
     );
   }
 
@@ -123,21 +193,45 @@ class ProductCard extends StatelessWidget {
 
   Widget _buildDetail() {
     return Column(
+      mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
+        Spacing.vertical(11.0.sp),
         Row(
           children: <Widget>[
             _buildTitle(),
             _buildDiscountChip(),
           ],
         ),
-        Spacing.vertical(4.0.h),
+        Spacing.vertical(4.0.sp),
         _buildAuthor(),
-        Spacing.vertical(8.0.h),
+        Spacing.vertical(8.0.sp),
         _buildRatingStars(),
-        Spacing.vertical(8.0.h),
-        _buildPrice(),
+        Spacing.vertical(8.0.sp),
+        if (_productType.isCart) _buildQtyButton() else _buildPrice(),
+        Spacing.vertical(11.0.sp),
+      ],
+    );
+  }
+
+  Widget _buildQtyButton() {
+    return Row(
+      children: <Widget>[
+        AppNumberCounter(
+          onChanged: onQtyChanged,
+          value: currQty,
+        ),
+        Expanded(
+          child: Align(
+            alignment: Alignment.centerRight,
+            child: Padding(
+              padding: EdgeInsets.symmetric(
+                horizontal: 15.0.sp,
+              ),
+              child: _buildPrice(),
+            ),
+          ),
+        ),
       ],
     );
   }
@@ -300,11 +394,12 @@ class ProductCard extends StatelessWidget {
             left: 9.0.sp,
             child: _buildDiscountChip(),
           ),
-          Positioned(
-            top: 2.0.sp,
-            right: 3.0.sp,
-            child: _buildDeleteButton(),
-          ),
+          if (_productType.isFavorite)
+            Positioned(
+              top: 2.0.sp,
+              right: 3.0.sp,
+              child: _buildDeleteButton(),
+            ),
         ],
       );
     }

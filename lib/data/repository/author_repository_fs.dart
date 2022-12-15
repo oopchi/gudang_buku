@@ -1,11 +1,11 @@
 import 'dart:io';
 
-import 'package:bookstore/domain/dto/author_response.dart';
-import 'package:bookstore/domain/repository/author_repository.dart';
-import 'package:bookstore/util/exception_helper.dart';
+import 'package:gudangBuku/domain/dto/author_response.dart';
+import 'package:gudangBuku/domain/repository/author_repository.dart';
+import 'package:gudangBuku/util/exception_helper.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dartz/dartz.dart';
-import 'package:bookstore/util/failure_helper.dart';
+import 'package:gudangBuku/util/failure_helper.dart';
 
 class AuthorRepositoryFS implements AuthorRepository {
   AuthorRepositoryFS._internal();

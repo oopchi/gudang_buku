@@ -1,4 +1,4 @@
-import 'package:bookstore/domain/model/product_model.dart';
+import 'package:gudangBuku/domain/model/product_model.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 

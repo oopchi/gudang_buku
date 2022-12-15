@@ -1,8 +1,8 @@
-import 'package:bookstore/config/constant/colors.dart';
-import 'package:bookstore/config/provider_setup.dart';
-import 'package:bookstore/config/router/router.dart';
-import 'package:bookstore/data/local/local_storage_hive.dart';
-import 'package:bookstore/presentation/widget/scroll_behaviour_helper.dart';
+import 'package:gudangBuku/config/constant/colors.dart';
+import 'package:gudangBuku/config/provider_setup.dart';
+import 'package:gudangBuku/config/router/router.dart';
+import 'package:gudangBuku/data/local/local_storage_hive.dart';
+import 'package:gudangBuku/presentation/widget/scroll_behaviour_helper.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
@@ -20,7 +20,7 @@ Future<void> main() async {
   await dotenv.load();
 
   await Firebase.initializeApp(
-    name: 'bookStore',
+    name: 'gudangBuku',
     options: DefaultFirebaseOptions.currentPlatform,
   );
   if (kIsWeb) {

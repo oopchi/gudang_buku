@@ -1,24 +1,25 @@
-import 'package:bookstore/config/constant/colors.dart';
-import 'package:bookstore/config/constant/routes.dart';
-import 'package:bookstore/domain/model/filter_model.dart';
-import 'package:bookstore/domain/model/genre_model.dart';
-import 'package:bookstore/domain/model/product_model.dart';
-import 'package:bookstore/presentation/pages/favorites/mobile/cubit.dart';
-import 'package:bookstore/presentation/pages/favorites/mobile/state.dart';
-import 'package:bookstore/presentation/widget/appbar_helper.dart';
-import 'package:bookstore/presentation/widget/card_helper.dart';
-import 'package:bookstore/presentation/widget/loading_helper.dart';
-import 'package:bookstore/presentation/widget/modal_sheet_helper.dart';
-import 'package:bookstore/presentation/widget/snackbar_helper.dart';
-import 'package:bookstore/presentation/widget/spacing.dart';
-import 'package:bookstore/util/list_type_helper.dart';
-import 'package:bookstore/util/sort_helper.dart';
-import 'package:bookstore/util/text_helper.dart';
+import 'package:gudangBuku/config/constant/colors.dart';
+import 'package:gudangBuku/config/constant/routes.dart';
+import 'package:gudangBuku/domain/model/filter_model.dart';
+import 'package:gudangBuku/domain/model/genre_model.dart';
+import 'package:gudangBuku/domain/model/product_model.dart';
+import 'package:gudangBuku/presentation/pages/favorites/mobile/cubit.dart';
+import 'package:gudangBuku/presentation/pages/favorites/mobile/state.dart';
+import 'package:gudangBuku/presentation/widget/appbar_helper.dart';
+import 'package:gudangBuku/presentation/widget/card_helper.dart';
+import 'package:gudangBuku/presentation/widget/loading_helper.dart';
+import 'package:gudangBuku/presentation/widget/modal_sheet_helper.dart';
+import 'package:gudangBuku/presentation/widget/snackbar_helper.dart';
+import 'package:gudangBuku/presentation/widget/spacing.dart';
+import 'package:gudangBuku/util/list_type_helper.dart';
+import 'package:gudangBuku/util/sort_helper.dart';
+import 'package:gudangBuku/util/text_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:sliding_sheet/sliding_sheet.dart';
 
 class FavoritesMobileBody extends StatefulWidget {
   const FavoritesMobileBody({
@@ -67,6 +68,15 @@ class _FavoritesMobileBodyState extends State<FavoritesMobileBody> {
             AppRoutes.favorites.name,
             queryParams: state.params,
           );
+        }
+
+        if (state is FavoritesMobileAddToCartSuccess) {
+          ScaffoldMessenger.of(context)
+            ..hideCurrentSnackBar()
+            ..showSnackBar(AppSnackBar(
+              content: 'Success adding to cart.',
+              backgroundColor: Colors.green,
+            ));
         }
       },
       buildWhen: (previous, current) =>
@@ -205,19 +215,28 @@ class _FavoritesMobileBodyState extends State<FavoritesMobileBody> {
       borderRadius: BorderRadius.circular(100.0.r),
       child: InkWell(
         borderRadius: BorderRadius.circular(100.0.r),
-        onTap: () => showModalBottomSheet<SortBy>(
+        onTap: () => showSlidingBottomSheet<SortBy>(
+          context,
           useRootNavigator: true,
-          backgroundColor: Colors.white,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.vertical(
-              top: Radius.circular(34.0.r),
-            ),
-          ),
-          isScrollControlled: true,
-          context: context,
           builder: (BuildContext context) {
-            return BottomSortBySheet(
-              selectedSort: widget.sortBy,
+            return SlidingSheetDialog(
+              duration: const Duration(milliseconds: 300),
+              avoidStatusBar: true,
+              cornerRadiusOnFullscreen: .0,
+              color: Colors.white,
+              cornerRadius: 34.0.r,
+              snapSpec: const SnapSpec(
+                initialSnap: .4,
+                snap: true,
+                snappings: [
+                  .4,
+                  .7,
+                  1.0,
+                ],
+              ),
+              builder: (context, state) => BottomSortBySheet(
+                selectedSort: widget.sortBy,
+              ),
             );
           },
         ).then((SortBy? value) {

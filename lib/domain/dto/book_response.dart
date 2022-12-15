@@ -1,4 +1,4 @@
-import 'package:bookstore/util/json_helper.dart';
+import 'package:gudangBuku/util/json_helper.dart';
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 

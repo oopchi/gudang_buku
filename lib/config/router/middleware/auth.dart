@@ -1,7 +1,7 @@
 import 'dart:async';
 
-import 'package:bookstore/domain/local/local_storage.dart';
-import 'package:bookstore/domain/dto/user_response.dart';
+import 'package:gudangBuku/domain/local/local_storage.dart';
+import 'package:gudangBuku/domain/dto/user_response.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 class AuthMiddleware {

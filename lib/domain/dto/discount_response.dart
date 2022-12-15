@@ -1,4 +1,4 @@
-import 'package:bookstore/util/json_helper.dart';
+import 'package:gudangBuku/util/json_helper.dart';
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -17,6 +17,9 @@ class DiscountResponse extends Equatable {
     this.requiredMerit,
     this.startDate,
     this.endDate,
+    this.minAmount,
+    this.maxAmount,
+    this.url,
   });
 
   factory DiscountResponse.fromJson(Map<String, dynamic> json) =>
@@ -37,6 +40,12 @@ class DiscountResponse extends Equatable {
   final String? issuerId;
 
   final int? requiredMerit;
+
+  final int? minAmount;
+
+  final int? maxAmount;
+
+  final String? url;
 
   @JsonKey(
     fromJson: JsonHelper.fromTimestamp,
@@ -64,5 +73,8 @@ class DiscountResponse extends Equatable {
         requiredMerit,
         startDate,
         endDate,
+        minAmount,
+        maxAmount,
+        url,
       ];
 }

@@ -1,9 +1,10 @@
 import 'dart:io';
 
-import 'package:bookstore/util/failure_helper.dart';
+import 'package:gudangBuku/util/failure_helper.dart';
 import 'package:dartz/dartz.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
+import 'package:isolated_worker/isolated_worker.dart';
 
 class StorageServiceFS {
   // Return full path of the file on firebase not the url

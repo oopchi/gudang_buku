@@ -1,19 +1,18 @@
-import 'package:bookstore/data/service/storage_service_fs.dart';
-import 'package:bookstore/domain/dto/author_response.dart';
-import 'package:bookstore/domain/dto/book_response.dart';
-import 'package:bookstore/domain/dto/media_response.dart';
-import 'package:bookstore/domain/model/author_model.dart';
-import 'package:bookstore/domain/repository/author_book_repository.dart';
-import 'package:bookstore/domain/repository/author_repository.dart';
-import 'package:bookstore/domain/repository/book_repository.dart';
-import 'package:bookstore/domain/repository/media_repository.dart';
-import 'package:bookstore/util/dartz_helper.dart';
-import 'package:bookstore/util/failure_helper.dart';
+import 'package:gudangBuku/data/service/storage_service_fs.dart';
+import 'package:gudangBuku/domain/dto/author_response.dart';
+import 'package:gudangBuku/domain/dto/book_response.dart';
+import 'package:gudangBuku/domain/dto/media_response.dart';
+import 'package:gudangBuku/domain/model/author_model.dart';
+import 'package:gudangBuku/domain/repository/author_book_repository.dart';
+import 'package:gudangBuku/domain/repository/author_repository.dart';
+import 'package:gudangBuku/domain/repository/book_repository.dart';
+import 'package:gudangBuku/domain/repository/media_repository.dart';
+import 'package:gudangBuku/domain/service/image_picker_service.dart';
+import 'package:gudangBuku/util/dartz_helper.dart';
+import 'package:gudangBuku/util/failure_helper.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:image_picker_web/image_picker_web.dart';
 
 import 'state.dart';
 
@@ -246,18 +245,8 @@ class AddProductMobileCubit extends Cubit<AddProductMobileState> {
     _emit(const AddProductMobileLoading());
 
     try {
-      final List<Uint8List> pickedImages = [];
-      if (kIsWeb) {
-        pickedImages.addAll(await ImagePickerWeb.getMultiImagesAsBytes() ?? []);
-      } else {
-        final ImagePicker picker = ImagePicker();
-
-        final List<XFile> pickedImagesXFile = await picker.pickMultiImage();
-
-        for (final img in pickedImagesXFile) {
-          pickedImages.add(await img.readAsBytes());
-        }
-      }
+      final List<Uint8List> pickedImages =
+          await ImageAndVideoPicker.getImages();
 
       final List<Uint8List> newList = oldState.images.toList()
         ..addAll(pickedImages);
@@ -282,17 +271,7 @@ class AddProductMobileCubit extends Cubit<AddProductMobileState> {
     _emit(const AddProductMobileLoading());
 
     try {
-      late final Uint8List? pickedVideo;
-      if (kIsWeb) {
-        pickedVideo = await ImagePickerWeb.getVideoAsBytes();
-      } else {
-        final ImagePicker picker = ImagePicker();
-        final XFile? pickedVideoXFile = await picker.pickVideo(
-          source: ImageSource.gallery,
-        );
-
-        pickedVideo = await pickedVideoXFile?.readAsBytes();
-      }
+      final Uint8List? pickedVideo = await ImageAndVideoPicker.getVideo();
 
       if (pickedVideo == null) return;
 

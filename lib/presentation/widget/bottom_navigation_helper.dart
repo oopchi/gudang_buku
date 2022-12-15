@@ -1,6 +1,6 @@
-import 'package:bookstore/config/constant/dimensions.dart';
-import 'package:bookstore/config/constant/routes.dart';
-import 'package:bookstore/presentation/widget/spacing.dart';
+import 'package:gudangBuku/config/constant/dimensions.dart';
+import 'package:gudangBuku/config/constant/routes.dart';
+import 'package:gudangBuku/presentation/widget/spacing.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
@@ -87,7 +87,7 @@ class BottomNavigationScaffold extends StatelessWidget {
             inactiveIcon: Icons.account_circle_outlined,
             label: 'Profile',
             isSelected: currentIndex == 4,
-            onTap: () => context.goNamed(AppRoutes.profile.name),
+            onTap: () => context.goNamed(AppRoutes.addProduct.name),
           ),
         ],
       ),
