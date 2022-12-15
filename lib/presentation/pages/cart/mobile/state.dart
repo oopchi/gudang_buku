@@ -1,4 +1,5 @@
 import 'package:gudangBuku/domain/dto/discount_response.dart';
+import 'package:gudangBuku/domain/model/discount_model.dart';
 import 'package:gudangBuku/domain/model/product_model.dart';
 import 'package:equatable/equatable.dart';
 
@@ -63,7 +64,7 @@ class CartMobileLoaded extends CartMobileState {
 
   final List<ProductModel> products;
   final Map<String, int> stocks;
-  final DiscountResponse? discount;
+  final DiscountModel? discount;
   final double total;
   final double actualTotal;
 

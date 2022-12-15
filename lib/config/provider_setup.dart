@@ -2,11 +2,14 @@ import 'package:gudangBuku/data/local/local_storage_hive.dart';
 import 'package:gudangBuku/data/repository/author_book_repository_fs.dart';
 import 'package:gudangBuku/data/repository/author_repository_fs.dart';
 import 'package:gudangBuku/data/repository/book_repository_fs.dart';
+import 'package:gudangBuku/data/repository/discount_repository_fs.dart';
 import 'package:gudangBuku/data/repository/favorite_repository_fs.dart';
 import 'package:gudangBuku/data/repository/media_repository_fs.dart';
 import 'package:gudangBuku/data/repository/review_repository_fs.dart';
+import 'package:gudangBuku/data/repository/user_discount_repository_fs.dart';
 import 'package:gudangBuku/data/repository/user_repository_fs.dart';
 import 'package:gudangBuku/data/service/auth_service_fs.dart';
+import 'package:gudangBuku/domain/controller/discount_controller.dart';
 import 'package:gudangBuku/domain/controller/product_controller.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
@@ -27,6 +30,13 @@ final providers = <SingleChildWidget>[
       favoriteRepository: FavoriteRepositoryFS(),
       mediaRepository: MediaRepositoryFS(),
       reviewRepository: ReviewRepositoryFS(),
+    ),
+  ),
+  ProxyProvider<AuthServiceFS, DiscountController>(
+    update: (context, value, previous) => DiscountController(
+      authServiceFS: value,
+      discountRepository: DiscountRepositoryFS(),
+      userDiscountRepository: UserDiscountRepositoryFS(),
     ),
   ),
 ];

@@ -506,14 +506,16 @@ class _AddProductMobilePageState extends State<AddProductMobilePage> {
             TextPosition(offset: _priceController.text.length),
           );
         });
-        cubit.checkPrice(state, int.tryParse(value) ?? -1);
+
+        final String parsedValue = value.replaceAll(r'.', '');
+        cubit.checkPrice(state, int.tryParse(parsedValue) ?? -1);
       },
       label: 'Price',
       hintText: '100000',
       validator: (String? value) {
         if (value == null) return 'Value ';
 
-        final String parsedValue = value.replaceAll(r'\.', '');
+        final String parsedValue = value.replaceAll(r'.', '');
 
         if (int.tryParse(parsedValue) == null) {
           return 'Price can only consists of numbers';

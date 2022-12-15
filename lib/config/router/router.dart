@@ -238,6 +238,7 @@ class AppRouter {
 
                 final String genreId = q['genreId'] ?? '';
                 return FavoritesPage(
+                  key: UniqueKey(),
                   filterModels: filterModels,
                   genreId: genreId,
                   listType: listType,

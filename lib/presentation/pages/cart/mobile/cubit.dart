@@ -2,6 +2,7 @@ import 'package:gudangBuku/data/service/auth_service_fs.dart';
 import 'package:gudangBuku/domain/controller/product_controller.dart';
 import 'package:gudangBuku/domain/dto/discount_response.dart';
 import 'package:gudangBuku/domain/dto/transaction_detail_response.dart';
+import 'package:gudangBuku/domain/model/discount_model.dart';
 import 'package:gudangBuku/domain/model/favorite_button_model.dart';
 import 'package:gudangBuku/domain/model/product_model.dart';
 import 'package:gudangBuku/domain/repository/favorite_repository.dart';
@@ -139,7 +140,7 @@ class CartMobileCubit extends Cubit<CartMobileState> {
   List<double> _countTotal({
     required List<ProductModel> products,
     required Map<String, int> stocks,
-    DiscountResponse? discount,
+    DiscountModel? discount,
   }) {
     double total = .0;
 
@@ -154,11 +155,11 @@ class CartMobileCubit extends Cubit<CartMobileState> {
     double actualTotal = total;
 
     if (discount != null) {
-      if (discount.minAmount != null && discount.minAmount! > total) {
+      if (discount.minAmount > total) {
       } else {
         final double realAmount = discount.amountType == 'Amount'
-            ? (discount.amount!).toDouble()
-            : discount.amount! * total / 100;
+            ? (discount.amount).toDouble()
+            : discount.amount * total / 100;
 
         late final double actualAmount;
 
@@ -330,12 +331,12 @@ class CartMobileCubit extends Cubit<CartMobileState> {
   }
 
   Future<void> addDiscountCode(
-      CartMobileLoaded oldState, DiscountResponse discount) async {
+      CartMobileLoaded oldState, DiscountModel discount) async {
     _emit(const CartMobileLoading());
     final Either<Failure, String> discountRes =
         await _transactionRepository.addDiscountToCart(
       uid: _authServiceFS.getUser().uid,
-      discountId: discount.id!,
+      discountId: discount.id,
     );
 
     if (discountRes.isLeft()) {

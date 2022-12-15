@@ -1,11 +1,13 @@
 import 'package:gudangBuku/config/constant/colors.dart';
 import 'package:gudangBuku/config/constant/routes.dart';
 import 'package:gudangBuku/domain/dto/discount_response.dart';
+import 'package:gudangBuku/domain/model/discount_model.dart';
 import 'package:gudangBuku/domain/model/product_model.dart';
 import 'package:gudangBuku/presentation/pages/cart/mobile/cubit.dart';
 import 'package:gudangBuku/presentation/pages/cart/mobile/state.dart';
 import 'package:gudangBuku/presentation/widget/appbar_helper.dart';
 import 'package:gudangBuku/presentation/widget/card_helper.dart';
+import 'package:gudangBuku/presentation/widget/discount_sheet/view.dart';
 import 'package:gudangBuku/presentation/widget/loading_helper.dart';
 import 'package:gudangBuku/presentation/widget/modal_sheet_helper.dart';
 import 'package:gudangBuku/presentation/widget/snackbar_helper.dart';
@@ -91,6 +93,7 @@ class _CartMobileBodyState extends State<CartMobileBody> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
+          Spacing.vertical(25.0.sp),
           _buildPromoButton(context, state),
         ],
       ),
@@ -99,32 +102,104 @@ class _CartMobileBodyState extends State<CartMobileBody> {
 
   Widget _buildPromoButton(BuildContext context, CartMobileLoaded state) {
     final CartMobileCubit cubit = BlocProvider.of<CartMobileCubit>(context);
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-          onTap: () => showSlidingBottomSheet<DiscountResponse>(
-                context,
-                useRootNavigator: true,
-                builder: (BuildContext context) {
-                  return SlidingSheetDialog(
-                    duration: const Duration(milliseconds: 300),
-                    avoidStatusBar: true,
-                    cornerRadiusOnFullscreen: .0,
+
+    final BorderRadius borderRadius = BorderRadius.horizontal(
+      left: Radius.circular(8.0.r),
+      right: Radius.circular(35.0.r),
+    );
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: borderRadius,
+        color: Colors.white,
+        boxShadow: <BoxShadow>[
+          BoxShadow(
+            color: Colors.black.withOpacity(.05),
+            blurRadius: 8.0.sp,
+            offset: Offset(
+              .0,
+              1.0.sp,
+            ),
+          ),
+        ],
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: () => showSlidingBottomSheet<DiscountModel>(
+            context,
+            useRootNavigator: true,
+            builder: (BuildContext context) {
+              return SlidingSheetDialog(
+                duration: const Duration(milliseconds: 300),
+                avoidStatusBar: true,
+                cornerRadiusOnFullscreen: .0,
+                color: Colors.white,
+                cornerRadius: 34.0.r,
+                snapSpec: const SnapSpec(
+                  initialSnap: .4,
+                  snap: true,
+                  snappings: [
+                    .4,
+                    .7,
+                    1.0,
+                  ],
+                ),
+                builder: (context, state) => const DiscountSheet(),
+              );
+            },
+          ).then((value) {
+            if (value == null) return null;
+            cubit.addDiscountCode(state, value);
+          }),
+          child: TextFormField(
+            enabled: false,
+            decoration: InputDecoration(
+              border: OutlineInputBorder(
+                borderRadius: borderRadius,
+                gapPadding: .0,
+                borderSide: BorderSide.none,
+              ),
+              errorBorder: OutlineInputBorder(
+                borderRadius: borderRadius,
+                gapPadding: .0,
+                borderSide: BorderSide(
+                  color: AppColor.error,
+                  width: 1.0.sp,
+                ),
+              ),
+              hintText: 'Enter your promo code',
+              suffixIcon: Container(
+                width: 36.0.sp,
+                height: 36.0.sp,
+                decoration: BoxDecoration(
+                  color: Colors.black,
+                  borderRadius: BorderRadius.circular(100.0.r),
+                ),
+                child: Center(
+                  child: Icon(
+                    Icons.arrow_forward,
+                    size: 24.0.sp,
                     color: Colors.white,
-                    cornerRadius: 34.0.r,
-                    snapSpec: const SnapSpec(
-                      initialSnap: .4,
-                      snap: true,
-                      snappings: [
-                        .4,
-                        .7,
-                        1.0,
-                      ],
-                    ),
-                    builder: (context, state) => const DiscountSheet(),
-                  );
-                },
-              )),
+                  ),
+                ),
+              ),
+              suffixIconConstraints: const BoxConstraints(),
+              contentPadding: EdgeInsets.only(
+                left: 20.0.w,
+              ),
+              isDense: true,
+              hintStyle: CustomTextStyles.medium.size(14.0, AppColor.gray),
+              alignLabelWithHint: true,
+              label: Text(
+                'Promo Code',
+                style: CustomTextStyles.regular.size(14.0, AppColor.gray),
+              ),
+              fillColor: Colors.white,
+              filled: true,
+            ),
+          ),
+        ),
+      ),
     );
   }
 
