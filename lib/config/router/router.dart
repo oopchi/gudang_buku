@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:gudang_buku/presentation/pages/cart/cart_page.dart';
+import 'package:gudang_buku/presentation/widget/coming_soon.dart';
 import 'package:gudang_buku/presentation/widget/loading_helper.dart';
 import 'package:gudang_buku/presentation/widget/route_helper.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -130,14 +131,6 @@ class AppRouter {
               name: AppRoutes.home.name,
               path: AppRoutes.home.path,
               builder: (context, state) => const HomePage(),
-              routes: <RouteBase>[
-                GoRoute(
-                  name: AppRoutes.homeToShop.name,
-                  path: AppRoutes
-                      .homeToShop.path, // pake query param bukan path param
-                  builder: (context, state) => const HomePage(),
-                ),
-              ],
             ),
             GoRoute(
               name: AppRoutes.shop.name,
@@ -254,107 +247,51 @@ class AppRouter {
                 GoRoute(
                   name: AppRoutes.cartToCheckout.name,
                   path: AppRoutes.cartToCheckout.path,
-                  builder: (context, state) => const HomePage(),
-                  routes: <RouteBase>[
-                    GoRoute(
-                      name: AppRoutes.cartToCheckoutToPaymentMethods.name,
-                      path: AppRoutes.cartToCheckoutToPaymentMethods.path,
-                      builder: (context, state) => const HomePage(),
-                      routes: <RouteBase>[
-                        GoRoute(
-                          name: AppRoutes
-                              .cartToCheckoutToPaymentMethodsToAdd.name,
-                          path: AppRoutes
-                              .cartToCheckoutToPaymentMethodsToAdd.path,
-                          builder: (context, state) => const HomePage(),
-                        ),
-                      ],
-                    ),
-                    GoRoute(
-                      name: AppRoutes.cartToCheckoutToShippingAddress.name,
-                      path: AppRoutes.cartToCheckoutToShippingAddress.path,
-                      builder: (context, state) => const HomePage(),
-                      routes: <RouteBase>[
-                        GoRoute(
-                          name: AppRoutes
-                              .cartToCheckoutToShippingAddressToAdd.name,
-                          path: AppRoutes
-                              .cartToCheckoutToShippingAddressToAdd.path,
-                          builder: (context, state) => const HomePage(),
-                        ),
-                        GoRoute(
-                          name: AppRoutes
-                              .cartToCheckoutToShippingAddressToEdit.name,
-                          path: AppRoutes
-                              .cartToCheckoutToShippingAddressToEdit.path,
-                          builder: (context, state) => const HomePage(),
-                        ),
-                      ],
-                    ),
-                  ],
+                  builder: (context, state) => const ComingSoonView(),
                 ),
               ],
             ),
             GoRoute(
               name: AppRoutes.profile.name,
               path: AppRoutes.profile.path,
-              builder: (context, state) => const HomePage(),
+              builder: (context, state) => const ComingSoonView(),
               routes: <RouteBase>[
                 GoRoute(
                   name: AppRoutes.profileToOrders.name,
                   path: AppRoutes.profileToOrders.path,
-                  builder: (context, state) => const HomePage(),
+                  builder: (context, state) => const ComingSoonView(),
                   routes: <RouteBase>[
                     GoRoute(
                       name: AppRoutes.profileToOrdersToOrderDetails.name,
                       path: AppRoutes.profileToOrdersToOrderDetails.path,
-                      builder: (context, state) => const HomePage(),
+                      builder: (context, state) => const ComingSoonView(),
                     ),
                   ],
                 ),
                 GoRoute(
                   name: AppRoutes.profileToSettings.name,
                   path: AppRoutes.profileToSettings.path,
-                  builder: (context, state) => const HomePage(),
+                  builder: (context, state) => const ComingSoonView(),
                 ),
                 GoRoute(
                   name: AppRoutes.profileToReviews.name,
                   path: AppRoutes.profileToReviews.path,
-                  builder: (context, state) => const HomePage(),
+                  builder: (context, state) => const ComingSoonView(),
                 ),
                 GoRoute(
                   name: AppRoutes.profileToPaymentMethods.name,
                   path: AppRoutes.profileToPaymentMethods.path,
-                  builder: (context, state) => const HomePage(),
-                  routes: <RouteBase>[
-                    GoRoute(
-                      name: AppRoutes.profileToPaymentMethodsToAdd.name,
-                      path: AppRoutes.profileToPaymentMethodsToAdd.path,
-                      builder: (context, state) => const HomePage(),
-                    ),
-                  ],
+                  builder: (context, state) => const ComingSoonView(),
                 ),
                 GoRoute(
                   name: AppRoutes.profileToShippingAddress.name,
                   path: AppRoutes.profileToShippingAddress.path,
-                  builder: (context, state) => const HomePage(),
-                  routes: <RouteBase>[
-                    GoRoute(
-                      name: AppRoutes.profileToShippingAddressToAdd.name,
-                      path: AppRoutes.profileToShippingAddressToAdd.path,
-                      builder: (context, state) => const HomePage(),
-                    ),
-                    GoRoute(
-                      name: AppRoutes.profileToShippingAddressToEdit.name,
-                      path: AppRoutes.profileToShippingAddressToEdit.path,
-                      builder: (context, state) => const HomePage(),
-                    ),
-                  ],
+                  builder: (context, state) => const ComingSoonView(),
                 ),
                 GoRoute(
                   name: AppRoutes.profileToPromoCodes.name,
                   path: AppRoutes.profileToPromoCodes.path,
-                  builder: (context, state) => const HomePage(),
+                  builder: (context, state) => const ComingSoonView(),
                 ),
               ],
             ),

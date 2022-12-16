@@ -40,7 +40,7 @@ class LoginMobileFormState extends LoginMobileState {
   const LoginMobileFormState({
     this.email = '',
     this.password = '',
-    this.emailErr = false,
+    this.emailErr = true,
     this.isPasswordEightCharacters = false,
     this.hasPasswordOneNumber = false,
     this.isVisible = false,

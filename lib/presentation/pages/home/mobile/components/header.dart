@@ -1,3 +1,5 @@
+import 'package:go_router/go_router.dart';
+import 'package:gudang_buku/config/constant/routes.dart';
 import 'package:gudang_buku/domain/model/event_model.dart';
 import 'package:gudang_buku/presentation/pages/home/mobile/cubit.dart';
 import 'package:gudang_buku/presentation/pages/home/mobile/state.dart';
@@ -14,12 +16,12 @@ class HomeMobileHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final HomeMobileLoaded state =
         BlocProvider.of<HomeMobileCubit>(context).state as HomeMobileLoaded;
-
     return CarouselSlider(
       items: <Widget>[
         for (final EventModel eventModel in state.events)
           EventBanner(
             eventModel: eventModel,
+            onNavigateTap: () => context.goNamed(AppRoutes.profile.name),
           ),
       ],
       options: CarouselOptions(

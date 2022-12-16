@@ -73,7 +73,7 @@ class _HomeMobileBodyState extends State<HomeMobileBody> {
                   title: promo.title,
                   subtitle: promo.description,
                   onViewAllTap: () => context.goNamed(
-                    AppRoutes.homeToShop.name,
+                    AppRoutes.shop.name,
                     queryParams: <String, dynamic>{
                       'promoId': promo.id,
                     },
