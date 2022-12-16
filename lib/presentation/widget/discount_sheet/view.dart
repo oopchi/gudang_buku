@@ -1,16 +1,16 @@
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:gudangBuku/config/constant/colors.dart';
-import 'package:gudangBuku/domain/controller/discount_controller.dart';
-import 'package:gudangBuku/domain/model/discount_model.dart';
-import 'package:gudangBuku/presentation/widget/button_helper.dart';
-import 'package:gudangBuku/presentation/widget/discount_sheet/cubit.dart';
-import 'package:gudangBuku/presentation/widget/discount_sheet/state.dart';
-import 'package:gudangBuku/presentation/widget/loading_helper.dart';
-import 'package:gudangBuku/presentation/widget/snackbar_helper.dart';
-import 'package:gudangBuku/presentation/widget/spacing.dart';
+import 'package:gudang_buku/config/constant/colors.dart';
+import 'package:gudang_buku/domain/controller/discount_controller.dart';
+import 'package:gudang_buku/domain/model/discount_model.dart';
+import 'package:gudang_buku/presentation/widget/button_helper.dart';
+import 'package:gudang_buku/presentation/widget/discount_sheet/cubit.dart';
+import 'package:gudang_buku/presentation/widget/discount_sheet/state.dart';
+import 'package:gudang_buku/presentation/widget/loading_helper.dart';
+import 'package:gudang_buku/presentation/widget/snackbar_helper.dart';
+import 'package:gudang_buku/presentation/widget/spacing.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:gudangBuku/util/text_helper.dart';
+import 'package:gudang_buku/util/text_helper.dart';
 import 'package:provider/provider.dart';
 
 class DiscountSheet extends StatefulWidget {

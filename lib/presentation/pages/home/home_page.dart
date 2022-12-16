@@ -1,5 +1,5 @@
-import 'package:gudangBuku/presentation/pages/home/mobile/view.dart';
-import 'package:gudangBuku/presentation/widget/responsive_helper.dart';
+import 'package:gudang_buku/presentation/pages/home/mobile/view.dart';
+import 'package:gudang_buku/presentation/widget/responsive_helper.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatelessWidget {

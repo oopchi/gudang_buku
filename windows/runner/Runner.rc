@@ -90,12 +90,12 @@ BEGIN
         BLOCK "040904e4"
         BEGIN
             VALUE "CompanyName", "com.example" "\0"
-            VALUE "FileDescription", "gudangBuku" "\0"
+            VALUE "FileDescription", "gudang_buku" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "gudangBuku" "\0"
+            VALUE "InternalName", "gudang_buku" "\0"
             VALUE "LegalCopyright", "Copyright (C) 2022 com.example. All rights reserved." "\0"
-            VALUE "OriginalFilename", "gudangBuku.exe" "\0"
-            VALUE "ProductName", "gudangBuku" "\0"
+            VALUE "OriginalFilename", "gudang_buku.exe" "\0"
+            VALUE "ProductName", "gudang_buku" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END

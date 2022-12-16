@@ -1,14 +1,14 @@
 import 'package:dartz/dartz.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:gudangBuku/data/service/auth_service_fs.dart';
-import 'package:gudangBuku/domain/dto/discount_response.dart';
-import 'package:gudangBuku/domain/dto/user_discount_response.dart';
-import 'package:gudangBuku/domain/model/discount_model.dart';
-import 'package:gudangBuku/domain/repository/discount_repository.dart';
-import 'package:gudangBuku/domain/repository/user_discount_repository.dart';
-import 'package:gudangBuku/util/dartz_helper.dart';
-import 'package:gudangBuku/util/failure_helper.dart';
+import 'package:gudang_buku/data/service/auth_service_fs.dart';
+import 'package:gudang_buku/domain/dto/discount_response.dart';
+import 'package:gudang_buku/domain/dto/user_discount_response.dart';
+import 'package:gudang_buku/domain/model/discount_model.dart';
+import 'package:gudang_buku/domain/repository/discount_repository.dart';
+import 'package:gudang_buku/domain/repository/user_discount_repository.dart';
+import 'package:gudang_buku/util/dartz_helper.dart';
+import 'package:gudang_buku/util/failure_helper.dart';
 
 class DiscountController {
   const DiscountController({

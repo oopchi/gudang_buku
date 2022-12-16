@@ -1,4 +1,4 @@
-import 'package:gudangBuku/util/json_helper.dart';
+import 'package:gudang_buku/util/json_helper.dart';
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 

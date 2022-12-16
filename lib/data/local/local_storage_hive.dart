@@ -1,5 +1,5 @@
-import 'package:gudangBuku/domain/local/local_storage.dart';
-import 'package:gudangBuku/domain/model/user_model.dart';
+import 'package:gudang_buku/domain/local/local_storage.dart';
+import 'package:gudang_buku/domain/model/user_model.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 class LocalStorageHive implements LocalStorage {

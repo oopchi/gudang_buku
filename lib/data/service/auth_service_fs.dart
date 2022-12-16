@@ -1,12 +1,12 @@
 import 'dart:io';
 
-import 'package:gudangBuku/config/constant/routes.dart';
-import 'package:gudangBuku/domain/dto/user_response.dart';
-import 'package:gudangBuku/domain/local/local_storage.dart';
-import 'package:gudangBuku/domain/repository/user_repository.dart';
-import 'package:gudangBuku/util/dartz_helper.dart';
-import 'package:gudangBuku/util/exception_helper.dart';
-import 'package:gudangBuku/util/failure_helper.dart';
+import 'package:gudang_buku/config/constant/routes.dart';
+import 'package:gudang_buku/domain/dto/user_response.dart';
+import 'package:gudang_buku/domain/local/local_storage.dart';
+import 'package:gudang_buku/domain/repository/user_repository.dart';
+import 'package:gudang_buku/util/dartz_helper.dart';
+import 'package:gudang_buku/util/exception_helper.dart';
+import 'package:gudang_buku/util/failure_helper.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dartz/dartz.dart';
 import 'package:firebase_auth/firebase_auth.dart';

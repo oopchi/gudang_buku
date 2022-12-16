@@ -1,6 +1,6 @@
-import 'package:gudangBuku/domain/dto/discount_response.dart';
-import 'package:gudangBuku/domain/model/discount_model.dart';
-import 'package:gudangBuku/domain/model/product_model.dart';
+import 'package:gudang_buku/domain/dto/discount_response.dart';
+import 'package:gudang_buku/domain/model/discount_model.dart';
+import 'package:gudang_buku/domain/model/product_model.dart';
 import 'package:equatable/equatable.dart';
 
 class CartMobileState extends Equatable {

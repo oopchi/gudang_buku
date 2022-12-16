@@ -1,7 +1,7 @@
-import 'package:gudangBuku/config/constant/colors.dart';
-import 'package:gudangBuku/domain/model/event_model.dart';
-import 'package:gudangBuku/presentation/widget/button_helper.dart';
-import 'package:gudangBuku/presentation/widget/spacing.dart';
+import 'package:gudang_buku/config/constant/colors.dart';
+import 'package:gudang_buku/domain/model/event_model.dart';
+import 'package:gudang_buku/presentation/widget/button_helper.dart';
+import 'package:gudang_buku/presentation/widget/spacing.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 

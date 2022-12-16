@@ -1,7 +1,7 @@
-import 'package:gudangBuku/data/service/auth_service_fs.dart';
-import 'package:gudangBuku/util/dartz_helper.dart';
-import 'package:gudangBuku/util/failure_helper.dart';
-import 'package:gudangBuku/util/form_helper.dart';
+import 'package:gudang_buku/data/service/auth_service_fs.dart';
+import 'package:gudang_buku/util/dartz_helper.dart';
+import 'package:gudang_buku/util/failure_helper.dart';
+import 'package:gudang_buku/util/form_helper.dart';
 import 'package:dartz/dartz.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

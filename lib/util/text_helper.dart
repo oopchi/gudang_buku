@@ -1,4 +1,4 @@
-import 'package:gudangBuku/config/constant/colors.dart';
+import 'package:gudang_buku/config/constant/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 

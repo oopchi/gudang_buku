@@ -1,11 +1,11 @@
 import 'dart:io';
 
-import 'package:gudangBuku/domain/dto/media_response.dart';
-import 'package:gudangBuku/domain/repository/media_repository.dart';
-import 'package:gudangBuku/util/exception_helper.dart';
+import 'package:gudang_buku/domain/dto/media_response.dart';
+import 'package:gudang_buku/domain/repository/media_repository.dart';
+import 'package:gudang_buku/util/exception_helper.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dartz/dartz.dart';
-import 'package:gudangBuku/util/failure_helper.dart';
+import 'package:gudang_buku/util/failure_helper.dart';
 
 class MediaRepositoryFS implements MediaRepository {
   MediaRepositoryFS._internal();

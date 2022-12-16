@@ -1,5 +1,5 @@
-import 'package:gudangBuku/presentation/pages/cart/mobile/view.dart';
-import 'package:gudangBuku/presentation/widget/responsive_helper.dart';
+import 'package:gudang_buku/presentation/pages/cart/mobile/view.dart';
+import 'package:gudang_buku/presentation/widget/responsive_helper.dart';
 import 'package:flutter/material.dart';
 
 class CartPage extends StatelessWidget {

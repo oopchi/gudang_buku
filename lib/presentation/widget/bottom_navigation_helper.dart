@@ -1,6 +1,6 @@
-import 'package:gudangBuku/config/constant/dimensions.dart';
-import 'package:gudangBuku/config/constant/routes.dart';
-import 'package:gudangBuku/presentation/widget/spacing.dart';
+import 'package:gudang_buku/config/constant/dimensions.dart';
+import 'package:gudang_buku/config/constant/routes.dart';
+import 'package:gudang_buku/presentation/widget/spacing.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';

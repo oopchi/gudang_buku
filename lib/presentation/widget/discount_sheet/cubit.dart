@@ -1,10 +1,10 @@
 import 'package:dartz/dartz.dart';
 import 'package:easy_debounce/easy_debounce.dart';
-import 'package:gudangBuku/domain/controller/discount_controller.dart';
+import 'package:gudang_buku/domain/controller/discount_controller.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:gudangBuku/domain/model/discount_model.dart';
-import 'package:gudangBuku/util/dartz_helper.dart';
-import 'package:gudangBuku/util/failure_helper.dart';
+import 'package:gudang_buku/domain/model/discount_model.dart';
+import 'package:gudang_buku/util/dartz_helper.dart';
+import 'package:gudang_buku/util/failure_helper.dart';
 
 import 'state.dart';
 

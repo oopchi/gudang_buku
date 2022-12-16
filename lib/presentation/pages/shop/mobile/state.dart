@@ -1,5 +1,5 @@
-import 'package:gudangBuku/domain/model/genre_model.dart';
-import 'package:gudangBuku/domain/model/product_model.dart';
+import 'package:gudang_buku/domain/model/genre_model.dart';
+import 'package:gudang_buku/domain/model/product_model.dart';
 import 'package:equatable/equatable.dart';
 
 class ShopMobileState extends Equatable {

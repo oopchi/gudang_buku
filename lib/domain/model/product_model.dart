@@ -1,4 +1,4 @@
-import 'package:gudangBuku/domain/model/favorite_button_model.dart';
+import 'package:gudang_buku/domain/model/favorite_button_model.dart';
 import 'package:equatable/equatable.dart';
 
 class ProductModel extends Equatable {

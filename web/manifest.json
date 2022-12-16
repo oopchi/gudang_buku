@@ -1,6 +1,6 @@
 {
-    "name": "gudangBuku",
-    "short_name": "gudangBuku",
+    "name": "gudang_buku",
+    "short_name": "gudang_buku",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

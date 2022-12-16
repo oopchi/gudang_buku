@@ -1,15 +1,15 @@
-import 'package:gudangBuku/data/service/auth_service_fs.dart';
-import 'package:gudangBuku/domain/controller/product_controller.dart';
-import 'package:gudangBuku/domain/dto/discount_response.dart';
-import 'package:gudangBuku/domain/dto/transaction_detail_response.dart';
-import 'package:gudangBuku/domain/model/discount_model.dart';
-import 'package:gudangBuku/domain/model/favorite_button_model.dart';
-import 'package:gudangBuku/domain/model/product_model.dart';
-import 'package:gudangBuku/domain/repository/favorite_repository.dart';
-import 'package:gudangBuku/domain/repository/transaction_detail_repository.dart';
-import 'package:gudangBuku/domain/repository/transaction_repository.dart';
-import 'package:gudangBuku/util/dartz_helper.dart';
-import 'package:gudangBuku/util/failure_helper.dart';
+import 'package:gudang_buku/data/service/auth_service_fs.dart';
+import 'package:gudang_buku/domain/controller/product_controller.dart';
+import 'package:gudang_buku/domain/dto/discount_response.dart';
+import 'package:gudang_buku/domain/dto/transaction_detail_response.dart';
+import 'package:gudang_buku/domain/model/discount_model.dart';
+import 'package:gudang_buku/domain/model/favorite_button_model.dart';
+import 'package:gudang_buku/domain/model/product_model.dart';
+import 'package:gudang_buku/domain/repository/favorite_repository.dart';
+import 'package:gudang_buku/domain/repository/transaction_detail_repository.dart';
+import 'package:gudang_buku/domain/repository/transaction_repository.dart';
+import 'package:gudang_buku/util/dartz_helper.dart';
+import 'package:gudang_buku/util/failure_helper.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

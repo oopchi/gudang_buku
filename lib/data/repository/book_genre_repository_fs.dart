@@ -1,11 +1,11 @@
 import 'dart:io';
 
-import 'package:gudangBuku/domain/dto/book_genre_response.dart';
-import 'package:gudangBuku/domain/repository/book_genre_repository.dart';
-import 'package:gudangBuku/util/exception_helper.dart';
+import 'package:gudang_buku/domain/dto/book_genre_response.dart';
+import 'package:gudang_buku/domain/repository/book_genre_repository.dart';
+import 'package:gudang_buku/util/exception_helper.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dartz/dartz.dart';
-import 'package:gudangBuku/util/failure_helper.dart';
+import 'package:gudang_buku/util/failure_helper.dart';
 
 class BookGenreRepositoryFS implements BookGenreRepository {
   BookGenreRepositoryFS._internal();

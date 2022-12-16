@@ -1,5 +1,5 @@
-import 'package:gudangBuku/domain/model/event_model.dart';
-import 'package:gudangBuku/domain/model/promo_model.dart';
+import 'package:gudang_buku/domain/model/event_model.dart';
+import 'package:gudang_buku/domain/model/promo_model.dart';
 import 'package:equatable/equatable.dart';
 
 class HomeMobileState extends Equatable {

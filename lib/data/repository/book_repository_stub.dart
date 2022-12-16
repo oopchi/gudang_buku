@@ -1,10 +1,10 @@
-// import 'package:gudangBuku/domain/dto/author_response.dart';
-// import 'package:gudangBuku/domain/dto/book_response.dart';
-// import 'package:gudangBuku/domain/dto/genre_response.dart';
-// import 'package:gudangBuku/domain/dto/media_response.dart';
-// import 'package:gudangBuku/domain/repository/book_repository.dart';
+// import 'package:gudang_buku/domain/dto/author_response.dart';
+// import 'package:gudang_buku/domain/dto/book_response.dart';
+// import 'package:gudang_buku/domain/dto/genre_response.dart';
+// import 'package:gudang_buku/domain/dto/media_response.dart';
+// import 'package:gudang_buku/domain/repository/book_repository.dart';
 // import 'package:dartz/dartz.dart';
-// import 'package:gudangBuku/util/failure_helper.dart';
+// import 'package:gudang_buku/util/failure_helper.dart';
 
 // class BookRepositoryStub implements BookRepository {
 //   BookRepositoryStub._internal();

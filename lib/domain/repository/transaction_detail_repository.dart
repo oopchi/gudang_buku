@@ -1,5 +1,5 @@
-import 'package:gudangBuku/domain/dto/transaction_detail_response.dart';
-import 'package:gudangBuku/util/failure_helper.dart';
+import 'package:gudang_buku/domain/dto/transaction_detail_response.dart';
+import 'package:gudang_buku/util/failure_helper.dart';
 import 'package:dartz/dartz.dart';
 
 abstract class TransactionDetailRepository {

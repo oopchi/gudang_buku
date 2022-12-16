@@ -1,9 +1,9 @@
-import 'package:gudangBuku/data/repository/favorite_repository_fs.dart';
-import 'package:gudangBuku/data/repository/transaction_detail_repository_fs.dart';
-import 'package:gudangBuku/data/repository/transaction_repository_fs.dart';
-import 'package:gudangBuku/data/service/auth_service_fs.dart';
-import 'package:gudangBuku/domain/controller/product_controller.dart';
-import 'package:gudangBuku/presentation/pages/cart/mobile/components/body.dart';
+import 'package:gudang_buku/data/repository/favorite_repository_fs.dart';
+import 'package:gudang_buku/data/repository/transaction_detail_repository_fs.dart';
+import 'package:gudang_buku/data/repository/transaction_repository_fs.dart';
+import 'package:gudang_buku/data/service/auth_service_fs.dart';
+import 'package:gudang_buku/domain/controller/product_controller.dart';
+import 'package:gudang_buku/presentation/pages/cart/mobile/components/body.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';

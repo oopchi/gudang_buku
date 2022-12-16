@@ -1,4 +1,4 @@
-import 'package:gudangBuku/domain/model/product_model.dart';
+import 'package:gudang_buku/domain/model/product_model.dart';
 import 'package:equatable/equatable.dart';
 
 class ProductMobileState extends Equatable {

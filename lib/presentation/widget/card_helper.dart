@@ -1,10 +1,10 @@
-import 'package:gudangBuku/config/constant/colors.dart';
-import 'package:gudangBuku/domain/model/product_model.dart';
-import 'package:gudangBuku/presentation/widget/number_counter.dart';
-import 'package:gudangBuku/presentation/widget/spacing.dart';
-import 'package:gudangBuku/util/format_helper.dart';
-import 'package:gudangBuku/util/list_type_helper.dart';
-import 'package:gudangBuku/util/text_helper.dart';
+import 'package:gudang_buku/config/constant/colors.dart';
+import 'package:gudang_buku/domain/model/product_model.dart';
+import 'package:gudang_buku/presentation/widget/number_counter.dart';
+import 'package:gudang_buku/presentation/widget/spacing.dart';
+import 'package:gudang_buku/util/format_helper.dart';
+import 'package:gudang_buku/util/list_type_helper.dart';
+import 'package:gudang_buku/util/text_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';

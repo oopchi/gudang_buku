@@ -1,4 +1,4 @@
-import 'package:gudangBuku/domain/model/author_model.dart';
+import 'package:gudang_buku/domain/model/author_model.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 

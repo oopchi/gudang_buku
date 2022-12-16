@@ -1,5 +1,5 @@
-import 'package:gudangBuku/config/constant/colors.dart';
-import 'package:gudangBuku/util/text_helper.dart';
+import 'package:gudang_buku/config/constant/colors.dart';
+import 'package:gudang_buku/util/text_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';

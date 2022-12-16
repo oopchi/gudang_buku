@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:gudangBuku/util/failure_helper.dart';
+import 'package:gudang_buku/util/failure_helper.dart';
 import 'package:dartz/dartz.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';

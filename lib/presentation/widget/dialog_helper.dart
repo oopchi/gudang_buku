@@ -1,5 +1,5 @@
-import 'package:gudangBuku/presentation/widget/spacing.dart';
-import 'package:gudangBuku/util/text_helper.dart';
+import 'package:gudang_buku/presentation/widget/spacing.dart';
+import 'package:gudang_buku/util/text_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 

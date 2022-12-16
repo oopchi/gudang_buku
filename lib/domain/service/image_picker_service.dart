@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 
 import 'image_picker_stub.dart'
     // ignore: uri_does_not_exist
-    if (dart.library.io) 'package:gudangBuku/domain/service/image_picker_not_web.dart'
+    if (dart.library.io) 'package:gudang_buku/domain/service/image_picker_not_web.dart'
     // ignore: uri_does_not_exist
     if (dart.library.html) 'image_picker_web.dart';
 

@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:gudangBuku/domain/model/discount_model.dart';
+import 'package:gudang_buku/domain/model/discount_model.dart';
 
 class DiscountSheetState extends Equatable {
   const DiscountSheetState();

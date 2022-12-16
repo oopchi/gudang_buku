@@ -1,10 +1,10 @@
-import 'package:gudangBuku/domain/controller/product_view_controller.dart';
-import 'package:gudangBuku/domain/model/favorite_button_model.dart';
-import 'package:gudangBuku/domain/model/product_model.dart';
-import 'package:gudangBuku/util/dartz_helper.dart';
+import 'package:gudang_buku/domain/controller/product_view_controller.dart';
+import 'package:gudang_buku/domain/model/favorite_button_model.dart';
+import 'package:gudang_buku/domain/model/product_model.dart';
+import 'package:gudang_buku/util/dartz_helper.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:dartz/dartz.dart';
-import 'package:gudangBuku/util/failure_helper.dart';
+import 'package:gudang_buku/util/failure_helper.dart';
 
 import 'state.dart';
 
