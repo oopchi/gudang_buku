@@ -12,6 +12,10 @@ abstract class TransactionRepository {
     required String uid,
   });
 
+  Future<Either<Failure, TransactionResponse>> getCartTransaction({
+    required String uid,
+  });
+
   Future<Either<Failure, String>> addDiscountToCart({
     required String uid,
     required String discountId,

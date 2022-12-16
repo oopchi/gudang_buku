@@ -68,4 +68,29 @@ class DiscountRepositoryFS implements DiscountRepository {
       return const Left(ConnectionFailure('Failed to connect to the network'));
     }
   }
+
+  @override
+  Future<Either<Failure, DiscountResponse>> fetchDiscountWithId(
+      String id) async {
+    try {
+      return await discounts.doc(id).get().then(
+        (DocumentSnapshot<Object?> result) {
+          if (!result.exists) {
+            return const Left(ServerFailure('Invalid Discount Id'));
+          }
+          final Map<String, dynamic> data =
+              result.data() as Map<String, dynamic>;
+
+          data['id'] = result.reference.id;
+
+          return Right(DiscountResponse.fromJson(data));
+        },
+        onError: (e) => Left(DatabaseFailure(e.toString())),
+      );
+    } on ServerException {
+      return const Left(ServerFailure('Server Failure'));
+    } on SocketException {
+      return const Left(ConnectionFailure('Failed to connect to the network'));
+    }
+  }
 }

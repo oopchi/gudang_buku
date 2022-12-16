@@ -54,7 +54,12 @@ class _DiscountSheetState extends State<DiscountSheet> {
           current is DiscountSheetAllDiscounts ||
           current is DiscountSheetLoading,
       builder: (context, state) {
-        if (state is DiscountSheetLoading) return const LoadingView();
+        if (state is DiscountSheetLoading) {
+          return SizedBox(
+            height: 500.0.h,
+            child: const LoadingView(),
+          );
+        }
         if (state is DiscountSheetAllDiscounts) {
           return Padding(
             padding: EdgeInsets.symmetric(
@@ -89,7 +94,12 @@ class _DiscountSheetState extends State<DiscountSheet> {
           current is DiscountSheetSmallLoading ||
           current is DiscountSheetFilteredDiscounts,
       builder: (context, state) {
-        if (state is DiscountSheetSmallLoading) return const LoadingView();
+        if (state is DiscountSheetSmallLoading) {
+          return SizedBox(
+            height: 500.0.h,
+            child: const LoadingView(),
+          );
+        }
         if (state is DiscountSheetFilteredDiscounts) {
           return ListView(
             padding: EdgeInsets.symmetric(

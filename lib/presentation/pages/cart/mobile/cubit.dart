@@ -1,7 +1,9 @@
 import 'package:gudang_buku/data/service/auth_service_fs.dart';
+import 'package:gudang_buku/domain/controller/discount_controller.dart';
 import 'package:gudang_buku/domain/controller/product_controller.dart';
 import 'package:gudang_buku/domain/dto/discount_response.dart';
 import 'package:gudang_buku/domain/dto/transaction_detail_response.dart';
+import 'package:gudang_buku/domain/dto/transaction_response.dart';
 import 'package:gudang_buku/domain/model/discount_model.dart';
 import 'package:gudang_buku/domain/model/favorite_button_model.dart';
 import 'package:gudang_buku/domain/model/product_model.dart';
@@ -23,8 +25,10 @@ class CartMobileCubit extends Cubit<CartMobileState> {
     required TransactionDetailRepository transactionDetailRepository,
     required ProductController productController,
     required FavoriteRepository favoriteRepository,
+    required DiscountController discountController,
   })  : _isMounted = isMounted,
         _transactionRepository = transactionRepository,
+        _discountController = discountController,
         _favoriteRepository = favoriteRepository,
         _transactionDetailRepository = transactionDetailRepository,
         _productController = productController,
@@ -36,26 +40,41 @@ class CartMobileCubit extends Cubit<CartMobileState> {
   final TransactionDetailRepository _transactionDetailRepository;
   final ProductController _productController;
   final FavoriteRepository _favoriteRepository;
+  final DiscountController _discountController;
 
   final AuthServiceFS _authServiceFS;
 
   Future<void> load() async {
-    final Either<Failure, String> transactionIdRes =
-        await _transactionRepository.getCartTransactionId(
+    final Either<Failure, TransactionResponse> transactionRes =
+        await _transactionRepository.getCartTransaction(
       uid: _authServiceFS.getUser().uid,
     );
 
-    if (transactionIdRes.isLeft()) {
-      _emit(CartMobileFailure(message: transactionIdRes.asLeft().message));
+    if (transactionRes.isLeft()) {
+      _emit(CartMobileFailure(message: transactionRes.asLeft().message));
       return;
     }
 
-    final String transactionId = transactionIdRes.asRight();
+    final TransactionResponse transaction = transactionRes.asRight();
+
+    DiscountModel? discount;
+    if (transaction.discountId != null) {
+      final Either<Failure, DiscountModel> discountRes =
+          await _discountController.getDiscountWithId(transaction.discountId!);
+
+      if (discountRes.isLeft()) {
+        _emit(CartMobileFailure(message: discountRes.asLeft().message));
+
+        return;
+      }
+
+      discount = discountRes.asRight();
+    }
 
     final Either<Failure, List<TransactionDetailResponse>>
         transactionDetailsRes = await _transactionDetailRepository
             .fetchAllTransactionDetailForTransactionId(
-      transactionId: transactionId,
+      transactionId: transaction.id!,
     );
 
     if (transactionDetailsRes.isLeft()) {
@@ -85,9 +104,18 @@ class CartMobileCubit extends Cubit<CartMobileState> {
 
     final List<ProductModel> products = productsRes.asRight();
 
+    final List<double> totals = _countTotal(
+      products: products,
+      stocks: stocks,
+      discount: discount,
+    );
+
     _emit(CartMobileLoaded(
       products: products,
       stocks: stocks,
+      discount: discount,
+      total: totals[0],
+      actualTotal: totals[1],
     ));
   }
 
@@ -122,18 +150,34 @@ class CartMobileCubit extends Cubit<CartMobileState> {
 
     newList.remove(model);
 
+    final Map<String, int> newMap = {...oldState.stocks};
+    newMap.remove(model.id);
+
     List<double> totals = _countTotal(
       products: newList,
-      stocks: oldState.stocks,
+      stocks: newMap,
       discount: oldState.discount,
     );
 
     emit(CartMobileLoaded(
       products: newList,
-      stocks: oldState.stocks,
+      stocks: newMap,
       total: totals[0],
       actualTotal: totals[1],
       discount: oldState.discount,
+    ));
+  }
+
+  void removeDiscountCode(CartMobileLoaded oldState) {
+    final List<double> totals = _countTotal(
+      products: oldState.products,
+      stocks: oldState.stocks,
+    );
+    _emit(CartMobileLoaded(
+      products: oldState.products,
+      stocks: oldState.stocks,
+      total: totals[0],
+      actualTotal: totals[1],
     ));
   }
 

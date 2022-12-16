@@ -6,7 +6,6 @@ import 'package:workmanager/workmanager.dart';
 @pragma('vm:entry-point')
 void callbackDispatcher() {
   Workmanager().executeTask((taskName, inputData) async {
-    LocalStorageHive();
     if (taskName == LocalStoragePath.user.text) {
       await LocalStorageHive().init();
 

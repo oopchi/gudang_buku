@@ -24,6 +24,53 @@ class DiscountController {
 
   final AuthServiceFS _authServiceFS;
 
+  Future<Either<Failure, DiscountModel>> getDiscountWithId(String id) async {
+    final Either<Failure, DiscountResponse> discountRes =
+        await _discountRepository.fetchDiscountWithId(id);
+
+    if (discountRes.isLeft()) {
+      return Left(discountRes.asLeft());
+    }
+
+    final DiscountResponse discountResponse = discountRes.asRight();
+    final Uri uri = Uri.parse(discountResponse.url!);
+
+    late final String imageUrl;
+
+    if (uri.hasScheme) {
+      imageUrl = discountResponse.url!;
+    } else {
+      final FirebaseStorage storage = FirebaseStorage.instance;
+
+      imageUrl = await storage.ref(discountResponse.url!).getDownloadURL();
+    }
+
+    DateTimeRange? dateTimeRange;
+
+    if (discountResponse.startDate != null &&
+        discountResponse.endDate != null) {
+      dateTimeRange = DateTimeRange(
+        start: discountResponse.startDate!,
+        end: discountResponse.endDate!,
+      );
+    }
+
+    final DiscountModel discountModel = DiscountModel(
+      id: discountResponse.id!,
+      name: discountResponse.description!,
+      maxUse: discountResponse.maxUse,
+      amount: discountResponse.amount!,
+      amountType: discountResponse.amountType!,
+      code: discountResponse.name!,
+      maxAmount: discountResponse.maxAmount,
+      imageUrl: imageUrl,
+      minAmount: discountResponse.minAmount ?? 0,
+      dateTimeRange: dateTimeRange,
+    );
+
+    return Right(discountModel);
+  }
+
   Future<Either<Failure, List<DiscountModel>>>
       getAllDiscountsForCurrentUser() async {
     final Either<Failure, List<UserDiscountResponse>> userDiscountsRes =

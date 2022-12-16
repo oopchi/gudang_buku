@@ -1,23 +1,23 @@
 import 'package:gudang_buku/config/constant/colors.dart';
 import 'package:gudang_buku/config/constant/routes.dart';
-import 'package:gudang_buku/domain/dto/discount_response.dart';
 import 'package:gudang_buku/domain/model/discount_model.dart';
 import 'package:gudang_buku/domain/model/product_model.dart';
 import 'package:gudang_buku/presentation/pages/cart/mobile/cubit.dart';
 import 'package:gudang_buku/presentation/pages/cart/mobile/state.dart';
+import 'package:gudang_buku/presentation/widget/animation_helper.dart';
 import 'package:gudang_buku/presentation/widget/appbar_helper.dart';
+import 'package:gudang_buku/presentation/widget/button_helper.dart';
 import 'package:gudang_buku/presentation/widget/card_helper.dart';
 import 'package:gudang_buku/presentation/widget/discount_sheet/view.dart';
 import 'package:gudang_buku/presentation/widget/loading_helper.dart';
-import 'package:gudang_buku/presentation/widget/modal_sheet_helper.dart';
 import 'package:gudang_buku/presentation/widget/snackbar_helper.dart';
 import 'package:gudang_buku/presentation/widget/spacing.dart';
+import 'package:gudang_buku/util/format_helper.dart';
 import 'package:gudang_buku/util/text_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:sliding_sheet/sliding_sheet.dart';
 
 class CartMobileBody extends StatefulWidget {
@@ -30,14 +30,6 @@ class CartMobileBody extends StatefulWidget {
 }
 
 class _CartMobileBodyState extends State<CartMobileBody> {
-  final RefreshController _refreshController = RefreshController();
-
-  @override
-  void dispose() {
-    _refreshController.dispose();
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
     return _buildPage(context);
@@ -88,15 +80,81 @@ class _CartMobileBodyState extends State<CartMobileBody> {
   }
 
   Widget _buildBottomBar(BuildContext context, CartMobileLoaded state) {
-    return SizedBox(
-      height: 205.0.sp,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Spacing.vertical(25.0.sp),
-          _buildPromoButton(context, state),
-        ],
+    return AnimatedOpacitySize(
+      isVisible: state.products.isNotEmpty,
+      child: Container(
+        height: 205.0.sp,
+        padding: EdgeInsets.symmetric(
+          vertical: 20.0.sp,
+          horizontal: 16.0.w,
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            _buildPromoButton(context, state),
+            Spacing.vertical(28.0.sp),
+            _buildTotal(context, state),
+            Spacing.vertical(24.0.sp),
+            _buildCheckoutButton(context, state),
+          ],
+        ),
       ),
+    );
+  }
+
+  Widget _buildCheckoutButton(BuildContext context, CartMobileLoaded state) {
+    return AppButton(
+      text: 'CHECKOUT',
+      textStyle: CustomTextStyles.medium.size(
+        14.0,
+        Colors.white,
+      ),
+      height: 48.0.sp,
+      onPressed: () => context.goNamed(AppRoutes.cartToCheckout.name),
+    );
+  }
+
+  Widget _buildTotal(BuildContext context, CartMobileLoaded state) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: <Widget>[
+        Text(
+          'Total amount:',
+          style: CustomTextStyles.medium.size(
+            14.0,
+            AppColor.gray,
+          ),
+        ),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: <Widget>[
+              if (state.total != state.actualTotal)
+                Text(
+                  FormatHelper.formatCurrency(state.total.toInt().toString()),
+                  style: CustomTextStyles.medium
+                      .size(
+                        18.0,
+                        AppColor.gray,
+                      )
+                      .copyWith(
+                        decoration: TextDecoration.lineThrough,
+                      ),
+                  textAlign: TextAlign.end,
+                ),
+              Spacing.vertical(4.0.sp),
+              Text(
+                FormatHelper.formatCurrency(
+                    state.actualTotal.toInt().toString()),
+                style: CustomTextStyles.semiBold.size(
+                  18.0,
+                ),
+                textAlign: TextAlign.end,
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 
@@ -107,6 +165,103 @@ class _CartMobileBodyState extends State<CartMobileBody> {
       left: Radius.circular(8.0.r),
       right: Radius.circular(35.0.r),
     );
+    if (state.discount == null) {
+      return Container(
+        decoration: BoxDecoration(
+          borderRadius: borderRadius,
+          color: Colors.white,
+          boxShadow: <BoxShadow>[
+            BoxShadow(
+              color: Colors.black.withOpacity(.05),
+              blurRadius: 8.0.sp,
+              offset: Offset(
+                .0,
+                1.0.sp,
+              ),
+            ),
+          ],
+        ),
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            onTap: () => showSlidingBottomSheet<DiscountModel>(
+              context,
+              useRootNavigator: true,
+              builder: (BuildContext context) {
+                return SlidingSheetDialog(
+                  duration: const Duration(milliseconds: 300),
+                  avoidStatusBar: true,
+                  cornerRadiusOnFullscreen: .0,
+                  color: Colors.white,
+                  cornerRadius: 34.0.r,
+                  snapSpec: const SnapSpec(
+                    initialSnap: .4,
+                    snap: true,
+                    snappings: [
+                      .4,
+                      .7,
+                      1.0,
+                    ],
+                  ),
+                  builder: (context, state) => const DiscountSheet(),
+                );
+              },
+            ).then((value) {
+              if (value == null) return null;
+              cubit.addDiscountCode(state, value);
+            }),
+            child: TextFormField(
+              enabled: false,
+              decoration: InputDecoration(
+                border: OutlineInputBorder(
+                  borderRadius: borderRadius,
+                  gapPadding: .0,
+                  borderSide: BorderSide.none,
+                ),
+                errorBorder: OutlineInputBorder(
+                  borderRadius: borderRadius,
+                  gapPadding: .0,
+                  borderSide: BorderSide(
+                    color: AppColor.error,
+                    width: 1.0.sp,
+                  ),
+                ),
+                hintText: 'Enter your promo code',
+                suffixIcon: Container(
+                  width: 36.0.sp,
+                  height: 36.0.sp,
+                  decoration: BoxDecoration(
+                    color: Colors.black,
+                    borderRadius: BorderRadius.circular(100.0.r),
+                  ),
+                  child: Center(
+                    child: Icon(
+                      Icons.arrow_forward,
+                      size: 24.0.sp,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+                suffixIconConstraints: const BoxConstraints(),
+                contentPadding: EdgeInsets.only(
+                  left: 20.0.w,
+                ),
+                isDense: true,
+                hintStyle: CustomTextStyles.medium.size(14.0, AppColor.gray),
+                alignLabelWithHint: true,
+                label: Text(
+                  'Promo Code',
+                  style: CustomTextStyles.regular.size(14.0, AppColor.gray),
+                ),
+                fillColor: Colors.white,
+                filled: true,
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+
     return Container(
       decoration: BoxDecoration(
         borderRadius: borderRadius,
@@ -122,83 +277,22 @@ class _CartMobileBodyState extends State<CartMobileBody> {
           ),
         ],
       ),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: () => showSlidingBottomSheet<DiscountModel>(
-            context,
-            useRootNavigator: true,
-            builder: (BuildContext context) {
-              return SlidingSheetDialog(
-                duration: const Duration(milliseconds: 300),
-                avoidStatusBar: true,
-                cornerRadiusOnFullscreen: .0,
-                color: Colors.white,
-                cornerRadius: 34.0.r,
-                snapSpec: const SnapSpec(
-                  initialSnap: .4,
-                  snap: true,
-                  snappings: [
-                    .4,
-                    .7,
-                    1.0,
-                  ],
-                ),
-                builder: (context, state) => const DiscountSheet(),
-              );
-            },
-          ).then((value) {
-            if (value == null) return null;
-            cubit.addDiscountCode(state, value);
-          }),
-          child: TextFormField(
-            enabled: false,
-            decoration: InputDecoration(
-              border: OutlineInputBorder(
-                borderRadius: borderRadius,
-                gapPadding: .0,
-                borderSide: BorderSide.none,
-              ),
-              errorBorder: OutlineInputBorder(
-                borderRadius: borderRadius,
-                gapPadding: .0,
-                borderSide: BorderSide(
-                  color: AppColor.error,
-                  width: 1.0.sp,
-                ),
-              ),
-              hintText: 'Enter your promo code',
-              suffixIcon: Container(
-                width: 36.0.sp,
-                height: 36.0.sp,
-                decoration: BoxDecoration(
-                  color: Colors.black,
-                  borderRadius: BorderRadius.circular(100.0.r),
-                ),
-                child: Center(
-                  child: Icon(
-                    Icons.arrow_forward,
-                    size: 24.0.sp,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-              suffixIconConstraints: const BoxConstraints(),
-              contentPadding: EdgeInsets.only(
-                left: 20.0.w,
-              ),
-              isDense: true,
-              hintStyle: CustomTextStyles.medium.size(14.0, AppColor.gray),
-              alignLabelWithHint: true,
-              label: Text(
-                'Promo Code',
-                style: CustomTextStyles.regular.size(14.0, AppColor.gray),
-              ),
-              fillColor: Colors.white,
-              filled: true,
+      child: Row(
+        children: <Widget>[
+          Expanded(
+            child: Text(
+              state.discount!.code,
+              style: CustomTextStyles.medium.size(14.0),
             ),
           ),
-        ),
+          IconButton(
+            onPressed: () => cubit.removeDiscountCode(state),
+            icon: const Icon(Icons.clear),
+            iconSize: 24.0.sp,
+            padding: EdgeInsets.all(6.0.sp),
+            constraints: const BoxConstraints(),
+          ),
+        ],
       ),
     );
   }
@@ -268,6 +362,7 @@ class _CartMobileBodyState extends State<CartMobileBody> {
               ),
               onDeleteButtonTap: () => cubit.removeFromCart(state, model),
               onQtyChanged: (value) {
+                if (value < 1) return;
                 if (value < state.stocks[model.id]!) {
                   cubit.decrementToCart(state, model);
                 } else {
