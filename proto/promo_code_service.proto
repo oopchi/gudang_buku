@@ -1,0 +1,50 @@
+syntax = "proto3";
+
+package pb;
+
+import "google/api/annotations.proto";
+import "promo_code_request.proto";
+import "promo_code_response.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+
+option go_package = "github.com/oopchi/gudang_buku_server/pb";
+
+service PromoCodeService {
+    rpc CreatePromoCode(stream CreatePromoCodeRequest) returns (PromoCodeResponse) {
+        option (google.api.http) = {
+            post: "/v1/promo_codes"
+            body: "*"
+        };
+		option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+			description: "Use this API to create a new promo code";
+			summary: "Create new promo code";
+        };
+    }
+    rpc SoftDeletePromoCode(DeletePromoCodeRequest) returns (ListPromoCodeResponse) {
+        option (google.api.http) = {
+            post: "/v1/promo_codes/delete"
+        };
+		option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+			description: "Use this API to soft delete promo code";
+			summary: "Soft Delete a promo code";
+        };
+    }
+    rpc ForceDeletePromoCode(DeletePromoCodeRequest) returns (ListPromoCodeResponse) {
+        option (google.api.http) = {
+            post: "/v1/promo_codes/force_delete"
+        };
+		option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+			description: "Use this API to force delete promo code";
+			summary: "Force Delete a promo code";
+        };
+    }
+    rpc ListOngoingPromoCodes(ListOngoingPromoCodesRequest) returns (stream PromoCodeResponse) {
+        option (google.api.http) = {
+            get: "/v1/promo_codes"
+        };
+		option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+			description: "Use this API to get all ongoing promo codes";
+			summary: "Get all ongoing promo codes";
+        };
+    }
+}

@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package pb;
+
+import "google/protobuf/timestamp.proto";
+
+import "validate/validate.proto";
+
+option go_package = "github.com/oopchi/gudang_buku_server/pb";
+
+message RenewAccessTokenResponse {
+    option (validate.ignored) = true;
+
+    string accessToken = 1;
+    google.protobuf.Timestamp accessTokenExpiresAt = 2;
+}

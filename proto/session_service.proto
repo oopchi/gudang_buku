@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package pb;
+
+import "google/api/annotations.proto";
+import "access_token_request.proto";
+import "access_token_response.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+
+option go_package = "github.com/oopchi/gudang_buku_server/pb";
+
+service SessionService {
+    rpc RenewAccessToken(RenewAccessTokenRequest) returns (RenewAccessTokenResponse) {
+        option (google.api.http) = {
+            post: "/v1/tokens/renew_access"
+            body: "*"
+        };
+		option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+			description: "Use this API to get a new access token using a refresh token";
+			summary: "Get access token";
+        };
+    }
+}

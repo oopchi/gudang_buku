@@ -1,0 +1,59 @@
+syntax = "proto3";
+
+package pb;
+
+import "google/api/annotations.proto";
+import "book_request.proto";
+import "book_response.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+
+option go_package = "github.com/oopchi/gudang_buku_server/pb";
+
+service BookService {
+    rpc CreateBook(CreateBookRequest) returns (BookResponse) {
+        option (google.api.http) = {
+            post: "/v1/books"
+            body: "*"
+        };
+		option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+			description: "Use this API to create a new book";
+			summary: "Create new book";
+        };
+    }
+    rpc GetBook(GetBookRequest) returns (BookResponse) {
+        option (google.api.http) = {
+            get: "/v1/books/{id}"
+        };
+		option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+			description: "Use this API to get a book by id";
+			summary: "Get specific book by id";
+        };
+    }
+    rpc ListBook(ListBookRequest) returns (ListBookResponse) {
+        option (google.api.http) = {
+            get: "/v1/books"
+        };
+		option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+			description: "Use this API to get a list of books";
+			summary: "Get list of books";
+        };
+    }
+    rpc SoftDeleteBook(DeleteBookRequest) returns (ListBookResponse) {
+        option (google.api.http) = {
+            post: "/v1/books/delete"
+        };
+		option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+			description: "Use this API to soft delete book";
+			summary: "Soft Delete a book";
+        };
+    }
+    rpc ForceDeleteBook(DeleteBookRequest) returns (ListBookResponse) {
+        option (google.api.http) = {
+            post: "/v1/books/force_delete"
+        };
+		option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+			description: "Use this API to force delete book";
+			summary: "Force Delete a book";
+        };
+    }
+}

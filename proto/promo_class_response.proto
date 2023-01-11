@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+package pb;
+
+import "validate/validate.proto";
+
+import "google/protobuf/timestamp.proto";
+
+option go_package = "github.com/oopchi/gudang_buku_server/pb";
+
+message PromoClassResponse {
+    option (validate.ignored) = true;
+
+    int64 id = 1;
+    string name = 2;
+    int32 maximumConcurrentPromo = 3;
+    google.protobuf.Timestamp createdAt = 4;
+}
+
+message ListPromoClassResponse {
+    option (validate.ignored) = true;
+
+    repeated PromoClassResponse promos = 1;
+}

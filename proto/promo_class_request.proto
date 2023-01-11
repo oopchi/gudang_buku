@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package pb;
+
+import "validate/validate.proto";
+
+option go_package = "github.com/oopchi/gudang_buku_server/pb";
+
+message CreatePromoClassRequest {
+    string name = 1;
+    int32 maximumConcurrentPromo = 2 [
+        (validate.rules).int32.gte = 0
+    ];
+}
+
+message UpdatePromoClassRequest {
+    string name = 1;
+    int32 maximumConcurrentPromo = 2 [
+        (validate.rules).int32.gte = 0
+    ];
+}

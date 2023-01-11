@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+package pb;
+
+import "google/protobuf/timestamp.proto";
+
+import "validate/validate.proto";
+
+option go_package = "github.com/oopchi/gudang_buku_server/pb";
+ 
+message UserResponse {
+    option (validate.ignored) = true;
+
+    int64 id = 1;
+    string name = 2;
+    optional string email = 3;
+    bool emailVerified = 4;
+    optional string phoneNumber = 5;
+    bool phoneNumberVerified = 6;
+    google.protobuf.Timestamp createdAt = 7;
+    optional google.protobuf.Timestamp updatedAt = 8;
+}
+
+message LoginUserResponse {
+    option (validate.ignored) = true;
+    
+    UserResponse user = 1;
+    string sessionID= 2;
+    string accessToken = 3;
+    string refreshToken = 4;
+    google.protobuf.Timestamp accessTokenExpiresAt = 5;
+    google.protobuf.Timestamp refreshTokenExpiresAt = 6;
+}

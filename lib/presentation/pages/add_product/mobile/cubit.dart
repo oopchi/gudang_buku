@@ -273,7 +273,10 @@ class AddProductMobileCubit extends Cubit<AddProductMobileState> {
     try {
       final Uint8List? pickedVideo = await ImageAndVideoPicker.getVideo();
 
-      if (pickedVideo == null) return;
+      if (pickedVideo == null) {
+        _emit(oldState);
+        return;
+      }
 
       final List<Uint8List> newList = oldState.videos.toList();
 

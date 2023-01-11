@@ -1,0 +1,65 @@
+syntax = "proto3";
+
+package pb;
+
+import "validate/validate.proto";
+
+import "google/protobuf/timestamp.proto";
+
+option go_package = "github.com/oopchi/gudang_buku_server/pb";
+
+
+message ListOngoingPromoCodesRequest {
+    optional int32 pageID = 1 [
+        (validate.rules).int32.gte = 1,
+        (validate.rules).int32.ignore_empty = true
+    ];
+    optional int32 pageSize = 2 [
+        (validate.rules).int32.gte = 10,
+        (validate.rules).int32.lte = 40,
+        (validate.rules).int32.ignore_empty = true
+    ];
+}
+
+message DeletePromoCodeRequest {
+    repeated int64 ids = 1 [
+        (validate.rules).repeated.items.int64.gte = 1,
+        (validate.rules).repeated.min_items = 1
+    ];
+}
+
+
+message CreatePromoCodeRequest {
+    oneof data {
+        CreatePromoCodeContent content = 1;
+        bytes chunk = 2;
+    }
+}
+
+message CreatePromoCodeContent {
+    string code = 1;
+    double discountAmount = 2 [
+        (validate.rules).double = {gte: 0, lt: 10000000000}
+    ];
+    string discountType = 3 [
+        (validate.rules).string = {in: ["amount", "percentage"]}
+    ];
+    optional google.protobuf.Timestamp expirationDate = 4;
+    optional double minimumPurchaseAmount = 5 [
+        (validate.rules).double = {gte: 0, lt: 10000000000, ignore_empty: true}
+    ];
+
+    optional double maximumDiscountAmount = 6 [
+        (validate.rules).double = {gte: 0, lt: 10000000000, ignore_empty: true}
+    ];
+
+    int32 numOfUse = 7 [
+        (validate.rules).int32.gte = 0
+    ];
+
+    int64 promoClassID = 8 [
+        (validate.rules).int64.gt = 0
+    ];
+    optional string imageExtension = 9;
+    optional string mimeType = 10;
+}

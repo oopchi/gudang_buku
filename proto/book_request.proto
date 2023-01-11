@@ -1,0 +1,85 @@
+syntax = "proto3";
+
+package pb;
+
+import "validate/validate.proto";
+
+option go_package = "github.com/oopchi/gudang_buku_server/pb";
+
+message CreateBookRequest {
+    string title = 1 [
+        (validate.rules).string.min_len = 3
+    ];
+    optional string description = 2;
+    double price = 3 [
+        (validate.rules).double.gte = 0,
+        (validate.rules).double.lt = 10000000000
+    ];
+    int32 stock = 4 [
+        (validate.rules).int32.gte = 0,
+        (validate.rules).int32.lt = 100000
+    ];
+    double weight = 5 [
+        (validate.rules).double.gte = 0,
+        (validate.rules).double.lt = 10000000000
+    ];
+    repeated string genres = 6 [
+        (validate.rules).repeated.min_items = 1
+    ];
+    repeated string authors = 7 [
+        (validate.rules).repeated.min_items = 1
+    ];
+}
+ 
+message GetBookRequest {
+    int64 id = 1 [
+        (validate.rules).int64.gt = 0
+    ];
+}
+
+message ListBookRequest {
+    optional int32 pageID = 1 [
+        (validate.rules).int32.gte = 1,
+        (validate.rules).int32.ignore_empty = true
+    ];
+    optional int32 pageSize = 2 [
+        (validate.rules).int32.gte = 10,
+        (validate.rules).int32.lte = 40,
+        (validate.rules).int32.ignore_empty = true
+    ];
+    optional string sort = 3 [
+        (validate.rules).string = {
+            in: [
+                "latest", "popular", "highest_price", "lowest_price", "highest_rating", "lowest_rating"
+            ],
+            ignore_empty: true
+        }
+    ];
+    optional double minPrice = 4 [
+        (validate.rules).double.gte = 0,
+        (validate.rules).double.lt = 10000000000,
+        (validate.rules).double.ignore_empty = true
+    ];
+    optional double maxPrice = 5 [
+        (validate.rules).double.gte = 0,
+        (validate.rules).double.lt = 10000000000,
+        (validate.rules).double.ignore_empty = true
+    ];
+    optional int32 minRating = 6 [
+        (validate.rules).int32.gte = 0,
+        (validate.rules).int32.lte = 10,
+        (validate.rules).int32.ignore_empty = true
+    ];
+    optional int32 maxRating = 7 [
+        (validate.rules).int32.gte = 0,
+        (validate.rules).int32.lte = 10,
+        (validate.rules).int32.ignore_empty = true
+    ];
+}
+
+message DeleteBookRequest {
+    repeated int64 ids = 1 [
+        (validate.rules).repeated.items.int64.gte = 1,
+        (validate.rules).repeated.min_items = 1
+    ];
+}

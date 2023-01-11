@@ -1,0 +1,42 @@
+syntax = "proto3";
+
+package pb;
+
+import "validate/validate.proto";
+
+import "google/protobuf/timestamp.proto";
+
+import "pagination_response.proto";
+
+option go_package = "github.com/oopchi/gudang_buku_server/pb";
+
+message PromoCodeResponse {
+    oneof data {
+        PromoCodeContent content = 1;
+        bytes chunk = 2;
+
+    }
+}
+
+message PromoCodeContent {
+    int64 id = 1;
+    string code = 2;
+    double discountAmount = 3;
+    string discountType = 4 [
+        (validate.rules).string = {in:["amount", "percentage"]}
+    ];
+    optional google.protobuf.Timestamp expirationDate = 5;
+    optional double minimumPurchaseAmount = 6;
+    optional double maximumDiscountAmount = 7;
+    int32 numOfUse = 9;
+    int64 promoClassID = 10;
+    google.protobuf.Timestamp createdAt = 11;
+    optional google.protobuf.Timestamp updatedAt = 12;
+}
+
+message ListPromoCodeResponse {
+    option (validate.ignored) = true;
+
+    repeated PromoCodeResponse promos = 1;
+    PaginationResponse pagination = 2;
+}

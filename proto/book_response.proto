@@ -1,0 +1,42 @@
+syntax = "proto3";
+
+package pb;
+
+import "google/protobuf/timestamp.proto";
+
+import "validate/validate.proto";
+
+import "author_response.proto";
+
+import "genre_response.proto";
+
+import "pagination_response.proto";
+
+option go_package = "github.com/oopchi/gudang_buku_server/pb";
+ 
+message BookResponse {
+    int64 id = 1;
+    string title = 2;
+    optional string description = 3;
+    double price = 4;
+    int32 stock = 5;
+    double weight = 6;
+    string productStatus = 7 [
+        (validate.rules).string = {in: ["out_of_stock", "in_stock", "running_low"]}
+    ];
+    google.protobuf.Timestamp createdAt = 8;
+    optional google.protobuf.Timestamp updatedAt = 9;
+    optional double averageRating = 10;
+    optional int64 numOfRating = 11;
+    optional int64 numOfBought = 12;
+    optional bool isRated = 13;
+    repeated AuthorResponse authors = 14;
+    repeated GenreResponse genres = 15;
+}
+
+message ListBookResponse {
+    option (validate.ignored) = true;
+    
+    repeated BookResponse books = 1;
+    PaginationResponse pagination = 2;
+}
