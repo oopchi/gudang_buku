@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:gudang_buku/config/constant/routes.dart';
-import 'package:gudang_buku/domain/dto/user_response.dart';
 import 'package:gudang_buku/domain/local/local_storage.dart';
 import 'package:gudang_buku/domain/repository/user_repository.dart';
 import 'package:gudang_buku/util/dartz_helper.dart';
