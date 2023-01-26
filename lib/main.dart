@@ -1,7 +1,7 @@
 import 'package:gudang_buku/config/constant/colors.dart';
 import 'package:gudang_buku/config/provider_setup.dart';
 import 'package:gudang_buku/config/router/router.dart';
-import 'package:gudang_buku/data/local/local_storage_hive.dart';
+import 'package:gudang_buku/inter/local/local_storage_hive.dart';
 import 'package:gudang_buku/presentation/widget/scroll_behaviour_helper.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';

@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package pb;
+
+import "google/api/annotations.proto";
+import "discount_request.proto";
+import "discount_response.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+
+option go_package = "github.com/oopchi/gudang_buku_server/pb";
+
+service DiscountService {
+    rpc CreateDiscount(CreateDiscountRequest) returns (stream DiscountResponse) {
+        option (google.api.http) = {
+            post: "/v1/discounts"
+            body: "*"
+        };
+		option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+			description: "Use this API to create a new discount and returns a stream of existing discounts";
+			summary: "Create new discount";
+        };
+    }
+    rpc ListDiscounts(ListDiscountRequest) returns (stream DiscountResponse) {
+        option (google.api.http) = {
+            get: "/v1/discounts"
+        };
+		option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+			description: "Use this API to list all discounts";
+			summary: "List discounts";
+        };
+    }
+}

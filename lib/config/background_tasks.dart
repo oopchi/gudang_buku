@@ -1,6 +1,6 @@
-import 'package:gudang_buku/data/local/local_storage_hive.dart';
-import 'package:gudang_buku/domain/local/local_storage.dart';
-import 'package:gudang_buku/domain/dto/user_response.dart';
+import 'package:gudang_buku/infra/local/local_storage.dart';
+import 'package:gudang_buku/inter/local/local_storage_hive.dart';
+import 'package:gudang_buku/domain/dto_fs/user_response.dart';
 import 'package:workmanager/workmanager.dart';
 
 @pragma('vm:entry-point')

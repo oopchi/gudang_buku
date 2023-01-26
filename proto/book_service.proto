@@ -10,17 +10,17 @@ import "protoc-gen-openapiv2/options/annotations.proto";
 option go_package = "github.com/oopchi/gudang_buku_server/pb";
 
 service BookService {
-    rpc CreateBook(CreateBookRequest) returns (BookResponse) {
+    rpc CreateBook(stream CreateBookRequest) returns (stream BookResponse) {
         option (google.api.http) = {
             post: "/v1/books"
             body: "*"
         };
 		option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
-			description: "Use this API to create a new book";
+			description: "Use this API to create a new book and returns a stream of existing books";
 			summary: "Create new book";
         };
     }
-    rpc GetBook(GetBookRequest) returns (BookResponse) {
+    rpc GetBook(GetBookRequest) returns (stream BookResponse) {
         option (google.api.http) = {
             get: "/v1/books/{id}"
         };
@@ -29,7 +29,7 @@ service BookService {
 			summary: "Get specific book by id";
         };
     }
-    rpc ListBook(ListBookRequest) returns (ListBookResponse) {
+    rpc ListBooks(ListBooksRequest) returns (stream BookResponse) {
         option (google.api.http) = {
             get: "/v1/books"
         };
@@ -38,22 +38,49 @@ service BookService {
 			summary: "Get list of books";
         };
     }
-    rpc SoftDeleteBook(DeleteBookRequest) returns (ListBookResponse) {
+    rpc SoftDeleteBooks(DeleteBooksRequest) returns (stream BookResponse) {
         option (google.api.http) = {
-            post: "/v1/books/delete"
+            post: "/v1/books/deletes"
         };
 		option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
-			description: "Use this API to soft delete book";
-			summary: "Soft Delete a book";
+			description: "Use this API to soft delete books and returns a stream of existing books";
+			summary: "Soft Delete books";
         };
     }
-    rpc ForceDeleteBook(DeleteBookRequest) returns (ListBookResponse) {
+    rpc ForceDeleteBooks(DeleteBooksRequest) returns (stream BookResponse) {
         option (google.api.http) = {
-            post: "/v1/books/force_delete"
+            post: "/v1/books/force_deletes"
         };
 		option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
-			description: "Use this API to force delete book";
-			summary: "Force Delete a book";
+			description: "Use this API to force delete books and returns a stream of existing books";
+			summary: "Force Delete books";
+        };
+    }
+    rpc AddUserFavoriteBook(AddUserFavoriteBookRequest) returns (stream BookResponse) {
+        option (google.api.http) = {
+            post: "/v1/books/favorite"
+        };
+		option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+			description: "Use this API to add a book to a user's favorites that returns a list of that user's favorite books";
+			summary: "Add a book to a user's favorites";
+        };
+    }
+    rpc ListUserFavoriteBooks(ListUserFavoriteBooksRequest) returns (stream BookResponse) {
+        option (google.api.http) = {
+            get: "/v1/books/favorite"
+        };
+		option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+			description: "Use this API to get a list of user favorite's books";
+			summary: "Get list of user favorite's books";
+        };
+    }
+    rpc DeleteUserFavoriteBook(DeleteUserFavoriteBookRequest) returns (stream BookResponse) {
+        option (google.api.http) = {
+            post: "/v1/books/favorite/delete"
+        };
+		option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+			description: "Use this API to force delete a book from a use favorites and returns a stream of that user's existing favorite book list";
+			summary: "Force Delete a user favorite book";
         };
     }
 }

@@ -10,7 +10,8 @@ import 'dart:core' as $core;
 import 'package:fixnum/fixnum.dart' as $fixnum;
 import 'package:protobuf/protobuf.dart' as $pb;
 
-import 'google/protobuf/timestamp.pb.dart' as $8;
+import 'image_data.pb.dart' as $13;
+import 'google/protobuf/timestamp.pb.dart' as $12;
 
 class ListOngoingPromoCodesRequest extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'ListOngoingPromoCodesRequest', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'pb'), createEmptyInstance: create)
@@ -73,14 +74,14 @@ class ListOngoingPromoCodesRequest extends $pb.GeneratedMessage {
   void clearPageSize() => clearField(2);
 }
 
-class DeletePromoCodeRequest extends $pb.GeneratedMessage {
-  static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'DeletePromoCodeRequest', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'pb'), createEmptyInstance: create)
+class DeletePromoCodesRequest extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'DeletePromoCodesRequest', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'pb'), createEmptyInstance: create)
     ..p<$fixnum.Int64>(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'ids', $pb.PbFieldType.K6)
     ..hasRequiredFields = false
   ;
 
-  DeletePromoCodeRequest._() : super();
-  factory DeletePromoCodeRequest({
+  DeletePromoCodesRequest._() : super();
+  factory DeletePromoCodesRequest({
     $core.Iterable<$fixnum.Int64>? ids,
   }) {
     final _result = create();
@@ -89,26 +90,26 @@ class DeletePromoCodeRequest extends $pb.GeneratedMessage {
     }
     return _result;
   }
-  factory DeletePromoCodeRequest.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
-  factory DeletePromoCodeRequest.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  factory DeletePromoCodesRequest.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory DeletePromoCodesRequest.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
   @$core.Deprecated(
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
   'Will be removed in next major version')
-  DeletePromoCodeRequest clone() => DeletePromoCodeRequest()..mergeFromMessage(this);
+  DeletePromoCodesRequest clone() => DeletePromoCodesRequest()..mergeFromMessage(this);
   @$core.Deprecated(
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  DeletePromoCodeRequest copyWith(void Function(DeletePromoCodeRequest) updates) => super.copyWith((message) => updates(message as DeletePromoCodeRequest)) as DeletePromoCodeRequest; // ignore: deprecated_member_use
+  DeletePromoCodesRequest copyWith(void Function(DeletePromoCodesRequest) updates) => super.copyWith((message) => updates(message as DeletePromoCodesRequest)) as DeletePromoCodesRequest; // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
-  static DeletePromoCodeRequest create() => DeletePromoCodeRequest._();
-  DeletePromoCodeRequest createEmptyInstance() => create();
-  static $pb.PbList<DeletePromoCodeRequest> createRepeated() => $pb.PbList<DeletePromoCodeRequest>();
+  static DeletePromoCodesRequest create() => DeletePromoCodesRequest._();
+  DeletePromoCodesRequest createEmptyInstance() => create();
+  static $pb.PbList<DeletePromoCodesRequest> createRepeated() => $pb.PbList<DeletePromoCodesRequest>();
   @$core.pragma('dart2js:noInline')
-  static DeletePromoCodeRequest getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<DeletePromoCodeRequest>(create);
-  static DeletePromoCodeRequest? _defaultInstance;
+  static DeletePromoCodesRequest getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<DeletePromoCodesRequest>(create);
+  static DeletePromoCodesRequest? _defaultInstance;
 
   @$pb.TagNumber(1)
   $core.List<$fixnum.Int64> get ids => $_getList(0);
@@ -116,34 +117,39 @@ class DeletePromoCodeRequest extends $pb.GeneratedMessage {
 
 enum CreatePromoCodeRequest_Data {
   content, 
-  chunk, 
+  imageData, 
   notSet
 }
 
 class CreatePromoCodeRequest extends $pb.GeneratedMessage {
   static const $core.Map<$core.int, CreatePromoCodeRequest_Data> _CreatePromoCodeRequest_DataByTag = {
     1 : CreatePromoCodeRequest_Data.content,
-    2 : CreatePromoCodeRequest_Data.chunk,
+    2 : CreatePromoCodeRequest_Data.imageData,
     0 : CreatePromoCodeRequest_Data.notSet
   };
   static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'CreatePromoCodeRequest', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'pb'), createEmptyInstance: create)
     ..oo(0, [1, 2])
     ..aOM<CreatePromoCodeContent>(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'content', subBuilder: CreatePromoCodeContent.create)
-    ..a<$core.List<$core.int>>(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'chunk', $pb.PbFieldType.OY)
+    ..aOM<$13.ImageData>(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'imageData', protoName: 'imageData', subBuilder: $13.ImageData.create)
+    ..aOS(3, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'code')
     ..hasRequiredFields = false
   ;
 
   CreatePromoCodeRequest._() : super();
   factory CreatePromoCodeRequest({
     CreatePromoCodeContent? content,
-    $core.List<$core.int>? chunk,
+    $13.ImageData? imageData,
+    $core.String? code,
   }) {
     final _result = create();
     if (content != null) {
       _result.content = content;
     }
-    if (chunk != null) {
-      _result.chunk = chunk;
+    if (imageData != null) {
+      _result.imageData = imageData;
+    }
+    if (code != null) {
+      _result.code = code;
     }
     return _result;
   }
@@ -183,46 +189,51 @@ class CreatePromoCodeRequest extends $pb.GeneratedMessage {
   CreatePromoCodeContent ensureContent() => $_ensure(0);
 
   @$pb.TagNumber(2)
-  $core.List<$core.int> get chunk => $_getN(1);
+  $13.ImageData get imageData => $_getN(1);
   @$pb.TagNumber(2)
-  set chunk($core.List<$core.int> v) { $_setBytes(1, v); }
+  set imageData($13.ImageData v) { setField(2, v); }
   @$pb.TagNumber(2)
-  $core.bool hasChunk() => $_has(1);
+  $core.bool hasImageData() => $_has(1);
   @$pb.TagNumber(2)
-  void clearChunk() => clearField(2);
+  void clearImageData() => clearField(2);
+  @$pb.TagNumber(2)
+  $13.ImageData ensureImageData() => $_ensure(1);
+
+  @$pb.TagNumber(3)
+  $core.String get code => $_getSZ(2);
+  @$pb.TagNumber(3)
+  set code($core.String v) { $_setString(2, v); }
+  @$pb.TagNumber(3)
+  $core.bool hasCode() => $_has(2);
+  @$pb.TagNumber(3)
+  void clearCode() => clearField(3);
 }
 
 class CreatePromoCodeContent extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'CreatePromoCodeContent', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'pb'), createEmptyInstance: create)
-    ..aOS(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'code')
+    ..aInt64(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'promoClassID', protoName: 'promoClassID')
     ..a<$core.double>(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'discountAmount', $pb.PbFieldType.OD, protoName: 'discountAmount')
     ..aOS(3, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'discountType', protoName: 'discountType')
-    ..aOM<$8.Timestamp>(4, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'expirationDate', protoName: 'expirationDate', subBuilder: $8.Timestamp.create)
+    ..aOM<$12.Timestamp>(4, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'expirationDate', protoName: 'expirationDate', subBuilder: $12.Timestamp.create)
     ..a<$core.double>(5, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'minimumPurchaseAmount', $pb.PbFieldType.OD, protoName: 'minimumPurchaseAmount')
     ..a<$core.double>(6, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'maximumDiscountAmount', $pb.PbFieldType.OD, protoName: 'maximumDiscountAmount')
     ..a<$core.int>(7, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'numOfUse', $pb.PbFieldType.O3, protoName: 'numOfUse')
-    ..aInt64(8, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'promoClassID', protoName: 'promoClassID')
-    ..aOS(9, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'imageExtension', protoName: 'imageExtension')
-    ..aOS(10, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'mimeType', protoName: 'mimeType')
     ..hasRequiredFields = false
   ;
 
   CreatePromoCodeContent._() : super();
   factory CreatePromoCodeContent({
-    $core.String? code,
+    $fixnum.Int64? promoClassID,
     $core.double? discountAmount,
     $core.String? discountType,
-    $8.Timestamp? expirationDate,
+    $12.Timestamp? expirationDate,
     $core.double? minimumPurchaseAmount,
     $core.double? maximumDiscountAmount,
     $core.int? numOfUse,
-    $fixnum.Int64? promoClassID,
-    $core.String? imageExtension,
-    $core.String? mimeType,
   }) {
     final _result = create();
-    if (code != null) {
-      _result.code = code;
+    if (promoClassID != null) {
+      _result.promoClassID = promoClassID;
     }
     if (discountAmount != null) {
       _result.discountAmount = discountAmount;
@@ -241,15 +252,6 @@ class CreatePromoCodeContent extends $pb.GeneratedMessage {
     }
     if (numOfUse != null) {
       _result.numOfUse = numOfUse;
-    }
-    if (promoClassID != null) {
-      _result.promoClassID = promoClassID;
-    }
-    if (imageExtension != null) {
-      _result.imageExtension = imageExtension;
-    }
-    if (mimeType != null) {
-      _result.mimeType = mimeType;
     }
     return _result;
   }
@@ -275,13 +277,13 @@ class CreatePromoCodeContent extends $pb.GeneratedMessage {
   static CreatePromoCodeContent? _defaultInstance;
 
   @$pb.TagNumber(1)
-  $core.String get code => $_getSZ(0);
+  $fixnum.Int64 get promoClassID => $_getI64(0);
   @$pb.TagNumber(1)
-  set code($core.String v) { $_setString(0, v); }
+  set promoClassID($fixnum.Int64 v) { $_setInt64(0, v); }
   @$pb.TagNumber(1)
-  $core.bool hasCode() => $_has(0);
+  $core.bool hasPromoClassID() => $_has(0);
   @$pb.TagNumber(1)
-  void clearCode() => clearField(1);
+  void clearPromoClassID() => clearField(1);
 
   @$pb.TagNumber(2)
   $core.double get discountAmount => $_getN(1);
@@ -302,15 +304,15 @@ class CreatePromoCodeContent extends $pb.GeneratedMessage {
   void clearDiscountType() => clearField(3);
 
   @$pb.TagNumber(4)
-  $8.Timestamp get expirationDate => $_getN(3);
+  $12.Timestamp get expirationDate => $_getN(3);
   @$pb.TagNumber(4)
-  set expirationDate($8.Timestamp v) { setField(4, v); }
+  set expirationDate($12.Timestamp v) { setField(4, v); }
   @$pb.TagNumber(4)
   $core.bool hasExpirationDate() => $_has(3);
   @$pb.TagNumber(4)
   void clearExpirationDate() => clearField(4);
   @$pb.TagNumber(4)
-  $8.Timestamp ensureExpirationDate() => $_ensure(3);
+  $12.Timestamp ensureExpirationDate() => $_ensure(3);
 
   @$pb.TagNumber(5)
   $core.double get minimumPurchaseAmount => $_getN(4);
@@ -338,32 +340,5 @@ class CreatePromoCodeContent extends $pb.GeneratedMessage {
   $core.bool hasNumOfUse() => $_has(6);
   @$pb.TagNumber(7)
   void clearNumOfUse() => clearField(7);
-
-  @$pb.TagNumber(8)
-  $fixnum.Int64 get promoClassID => $_getI64(7);
-  @$pb.TagNumber(8)
-  set promoClassID($fixnum.Int64 v) { $_setInt64(7, v); }
-  @$pb.TagNumber(8)
-  $core.bool hasPromoClassID() => $_has(7);
-  @$pb.TagNumber(8)
-  void clearPromoClassID() => clearField(8);
-
-  @$pb.TagNumber(9)
-  $core.String get imageExtension => $_getSZ(8);
-  @$pb.TagNumber(9)
-  set imageExtension($core.String v) { $_setString(8, v); }
-  @$pb.TagNumber(9)
-  $core.bool hasImageExtension() => $_has(8);
-  @$pb.TagNumber(9)
-  void clearImageExtension() => clearField(9);
-
-  @$pb.TagNumber(10)
-  $core.String get mimeType => $_getSZ(9);
-  @$pb.TagNumber(10)
-  set mimeType($core.String v) { $_setString(9, v); }
-  @$pb.TagNumber(10)
-  $core.bool hasMimeType() => $_has(9);
-  @$pb.TagNumber(10)
-  void clearMimeType() => clearField(10);
 }
 

@@ -1,25 +1,25 @@
-import 'package:gudang_buku/data/service/auth_service_fs.dart';
-import 'package:gudang_buku/domain/dto/author_book_response.dart';
-import 'package:gudang_buku/domain/dto/author_response.dart';
-import 'package:gudang_buku/domain/dto/book_response.dart';
-import 'package:gudang_buku/domain/dto/favorite_response.dart';
-import 'package:gudang_buku/domain/dto/genre_response.dart';
-import 'package:gudang_buku/domain/dto/media_response.dart';
-import 'package:gudang_buku/domain/dto/review_response.dart';
-import 'package:gudang_buku/domain/dto/transaction_detail_response.dart';
+import 'package:gudang_buku/service/auth_service_impl.dart';
+import 'package:gudang_buku/domain/dto_fs/author_book_response.dart';
+import 'package:gudang_buku/domain/dto_fs/author_response.dart';
+import 'package:gudang_buku/domain/dto_fs/book_response.dart';
+import 'package:gudang_buku/domain/dto_fs/favorite_response.dart';
+import 'package:gudang_buku/domain/dto_fs/genre_response.dart';
+import 'package:gudang_buku/domain/dto_fs/media_response.dart';
+import 'package:gudang_buku/domain/dto_fs/review_response.dart';
+import 'package:gudang_buku/domain/dto_fs/transaction_detail_response.dart';
 import 'package:gudang_buku/domain/model/favorite_button_model.dart';
 import 'package:gudang_buku/domain/model/filter_model.dart';
 import 'package:gudang_buku/domain/model/genre_model.dart';
 import 'package:gudang_buku/domain/model/product_model.dart';
-import 'package:gudang_buku/domain/repository/author_book_repository.dart';
-import 'package:gudang_buku/domain/repository/author_repository.dart';
-import 'package:gudang_buku/domain/repository/book_genre_repository.dart';
-import 'package:gudang_buku/domain/repository/book_repository.dart';
-import 'package:gudang_buku/domain/repository/favorite_repository.dart';
-import 'package:gudang_buku/domain/repository/genre_repository.dart';
-import 'package:gudang_buku/domain/repository/media_repository.dart';
-import 'package:gudang_buku/domain/repository/review_repository.dart';
-import 'package:gudang_buku/domain/repository/transaction_detail_repository.dart';
+import 'package:gudang_buku/infra/repository/author_book_repository.dart';
+import 'package:gudang_buku/infra/repository/author_repository.dart';
+import 'package:gudang_buku/infra/repository/book_genre_repository.dart';
+import 'package:gudang_buku/infra/repository/book_repository.dart';
+import 'package:gudang_buku/infra/repository/favorite_repository.dart';
+import 'package:gudang_buku/infra/repository/genre_repository.dart';
+import 'package:gudang_buku/infra/repository/media_repository.dart';
+import 'package:gudang_buku/infra/repository/review_repository.dart';
+import 'package:gudang_buku/infra/repository/transaction_detail_repository.dart';
 import 'package:gudang_buku/util/dartz_helper.dart';
 import 'package:gudang_buku/util/failure_helper.dart';
 import 'package:gudang_buku/util/sort_helper.dart';
@@ -31,7 +31,7 @@ class ShopViewController {
     required GenreRepository genreRepository,
     required BookRepository bookRepository,
     required FavoriteRepository favoriteRepository,
-    required AuthServiceFS authServiceFS,
+    required AuthServiceImpl authServiceFS,
     required MediaRepository mediaRepository,
     required AuthorBookRepository authorBookRepository,
     required ReviewRepository reviewRepository,
@@ -59,7 +59,7 @@ class ShopViewController {
   final BookGenreRepository _bookGenreRepository;
   final TransactionDetailRepository _transactionDetailRepository;
 
-  final AuthServiceFS _authServiceFS;
+  final AuthServiceImpl _authServiceFS;
 
   Future<Either<Failure, String>> addToFavorite({
     required String bookId,

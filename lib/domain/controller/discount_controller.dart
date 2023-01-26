@@ -1,12 +1,12 @@
 import 'package:dartz/dartz.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:gudang_buku/data/service/auth_service_fs.dart';
-import 'package:gudang_buku/domain/dto/discount_response.dart';
-import 'package:gudang_buku/domain/dto/user_discount_response.dart';
+import 'package:gudang_buku/service/auth_service_impl.dart';
+import 'package:gudang_buku/domain/dto_fs/discount_response.dart';
+import 'package:gudang_buku/domain/dto_fs/user_discount_response.dart';
 import 'package:gudang_buku/domain/model/discount_model.dart';
-import 'package:gudang_buku/domain/repository/discount_repository.dart';
-import 'package:gudang_buku/domain/repository/user_discount_repository.dart';
+import 'package:gudang_buku/infra/repository/discount_repository.dart';
+import 'package:gudang_buku/infra/repository/user_discount_repository.dart';
 import 'package:gudang_buku/util/dartz_helper.dart';
 import 'package:gudang_buku/util/failure_helper.dart';
 
@@ -14,7 +14,7 @@ class DiscountController {
   const DiscountController({
     required UserDiscountRepository userDiscountRepository,
     required DiscountRepository discountRepository,
-    required AuthServiceFS authServiceFS,
+    required AuthServiceImpl authServiceFS,
   })  : _userDiscountRepository = userDiscountRepository,
         _authServiceFS = authServiceFS,
         _discountRepository = discountRepository;
@@ -22,7 +22,7 @@ class DiscountController {
   final UserDiscountRepository _userDiscountRepository;
   final DiscountRepository _discountRepository;
 
-  final AuthServiceFS _authServiceFS;
+  final AuthServiceImpl _authServiceFS;
 
   Future<Either<Failure, DiscountModel>> getDiscountWithId(String id) async {
     final Either<Failure, DiscountResponse> discountRes =

@@ -9,19 +9,19 @@ import 'dart:core' as $core;
 
 import 'package:protobuf/protobuf.dart' as $pb;
 
-import 'google/protobuf/timestamp.pb.dart' as $8;
+import 'google/protobuf/timestamp.pb.dart' as $12;
 
 class RenewAccessTokenResponse extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'RenewAccessTokenResponse', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'pb'), createEmptyInstance: create)
     ..aOS(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'accessToken', protoName: 'accessToken')
-    ..aOM<$8.Timestamp>(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'accessTokenExpiresAt', protoName: 'accessTokenExpiresAt', subBuilder: $8.Timestamp.create)
+    ..aOM<$12.Timestamp>(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'accessTokenExpiresAt', protoName: 'accessTokenExpiresAt', subBuilder: $12.Timestamp.create)
     ..hasRequiredFields = false
   ;
 
   RenewAccessTokenResponse._() : super();
   factory RenewAccessTokenResponse({
     $core.String? accessToken,
-    $8.Timestamp? accessTokenExpiresAt,
+    $12.Timestamp? accessTokenExpiresAt,
   }) {
     final _result = create();
     if (accessToken != null) {
@@ -63,14 +63,14 @@ class RenewAccessTokenResponse extends $pb.GeneratedMessage {
   void clearAccessToken() => clearField(1);
 
   @$pb.TagNumber(2)
-  $8.Timestamp get accessTokenExpiresAt => $_getN(1);
+  $12.Timestamp get accessTokenExpiresAt => $_getN(1);
   @$pb.TagNumber(2)
-  set accessTokenExpiresAt($8.Timestamp v) { setField(2, v); }
+  set accessTokenExpiresAt($12.Timestamp v) { setField(2, v); }
   @$pb.TagNumber(2)
   $core.bool hasAccessTokenExpiresAt() => $_has(1);
   @$pb.TagNumber(2)
   void clearAccessTokenExpiresAt() => clearField(2);
   @$pb.TagNumber(2)
-  $8.Timestamp ensureAccessTokenExpiresAt() => $_ensure(1);
+  $12.Timestamp ensureAccessTokenExpiresAt() => $_ensure(1);
 }
 

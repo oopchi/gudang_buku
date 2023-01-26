@@ -1,0 +1,30 @@
+syntax = "proto3";
+
+package pb;
+
+import "validate/validate.proto";
+
+import "google/protobuf/timestamp.proto";
+
+import "book_response.proto";
+
+import "image_data.proto";
+
+option go_package = "github.com/oopchi/gudang_buku_server/pb";
+
+message DiscoveryResponse {
+    int64 id = 4;
+    oneof data {
+        DiscoveryContent content = 1;
+        ImageData imageData = 2;
+        BookResponse book = 3;
+    }
+}
+
+message DiscoveryContent {
+   option (validate.ignored) = true;
+
+   int32 displayOrder = 2;
+   google.protobuf.Timestamp createdAt = 3;
+   optional google.protobuf.Timestamp updatedAt = 1;
+}

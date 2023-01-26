@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+package pb;
+
+import "validate/validate.proto";
+
+import "image_data.proto";
+
+option go_package = "github.com/oopchi/gudang_buku_server/pb";
+
+message CreateDiscoveryRequest {
+    oneof data {
+        CreateDiscoveryContent content = 1;
+        ImageData imageData = 2;
+    }
+}
+
+message CreateDiscoveryContent {
+    optional int32 displayOrder = 1 [
+        (validate.rules).int32.gte = 1
+    ];
+    repeated int64 bookIDs = 2;
+}
+
+message ListDiscoveryRequest {
+}

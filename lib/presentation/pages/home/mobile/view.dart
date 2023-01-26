@@ -1,14 +1,14 @@
-import 'package:gudang_buku/data/local/local_storage_hive.dart';
-import 'package:gudang_buku/data/repository/amount_type_repository_fs.dart';
-import 'package:gudang_buku/data/repository/author_book_repository_fs.dart';
-import 'package:gudang_buku/data/repository/author_repository_fs.dart';
-import 'package:gudang_buku/data/repository/book_repository_fs.dart';
-import 'package:gudang_buku/data/repository/event_repository_fs.dart';
-import 'package:gudang_buku/data/repository/favorite_repository_fs.dart';
-import 'package:gudang_buku/data/repository/media_repository_fs.dart';
-import 'package:gudang_buku/data/repository/promo_repository_fs.dart';
-import 'package:gudang_buku/data/repository/review_repository_fs.dart';
-import 'package:gudang_buku/data/service/auth_service_fs.dart';
+import 'package:gudang_buku/inter/local/local_storage_hive.dart';
+import 'package:gudang_buku/inter/repository/amount_type_repository_fs.dart';
+import 'package:gudang_buku/inter/repository/author_book_repository_fs.dart';
+import 'package:gudang_buku/inter/repository/author_repository_fs.dart';
+import 'package:gudang_buku/inter/repository/book_repository_fs.dart';
+import 'package:gudang_buku/inter/repository/event_repository_fs.dart';
+import 'package:gudang_buku/inter/repository/favorite_repository_fs.dart';
+import 'package:gudang_buku/inter/repository/media_repository_fs.dart';
+import 'package:gudang_buku/inter/repository/promo_repository_fs.dart';
+import 'package:gudang_buku/inter/repository/review_repository_fs.dart';
+import 'package:gudang_buku/service/auth_service_impl.dart';
 import 'package:gudang_buku/domain/controller/home_view_controller.dart';
 import 'package:gudang_buku/presentation/pages/home/mobile/components/body.dart';
 import 'package:gudang_buku/presentation/pages/home/mobile/state.dart';
@@ -43,7 +43,7 @@ class _HomeMobilePageState extends State<HomeMobilePage> {
           authorRepository: AuthorRepositoryFS(),
           favoriteRepository: FavoriteRepositoryFS(),
           mediaRepository: MediaRepositoryFS(),
-          authServiceFS: Provider.of<AuthServiceFS>(
+          authServiceFS: Provider.of<AuthServiceImpl>(
             context,
             listen: false,
           ),

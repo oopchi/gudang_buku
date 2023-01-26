@@ -3,5 +3,7 @@ proto:
 	protoc --proto_path=proto --dart_out="grpc:lib/domain/dto" \
     proto/*.proto
 
+build_runner:
+	fvm flutter pub run build_runner build --delete-conflicting-outputs
 
-.PHONY: proto
+.PHONY: proto build_runner

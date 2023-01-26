@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package pb;
+
+import "google/api/annotations.proto";
+import "discovery_request.proto";
+import "discovery_response.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+
+option go_package = "github.com/oopchi/gudang_buku_server/pb";
+
+service DiscoveryService {
+    rpc CreateDiscovery(stream CreateDiscoveryRequest) returns (stream DiscoveryResponse) {
+        option (google.api.http) = {
+            post: "/v1/discoveries"
+            body: "*"
+        };
+		option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+			description: "Use this API to create a new discovery and returns a stream of existing discoveries";
+			summary: "Create new discovery";
+        };
+    }
+    rpc ListDiscoveries(ListDiscoveryRequest) returns (stream DiscoveryResponse) {
+        option (google.api.http) = {
+            get: "/v1/discoveries"
+        };
+		option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+			description: "Use this API to list all discoveries";
+			summary: "List discoveries";
+        };
+    }
+}

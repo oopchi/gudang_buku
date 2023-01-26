@@ -12,10 +12,21 @@ import "genre_response.proto";
 
 import "pagination_response.proto";
 
+import "image_data.proto";
+
 option go_package = "github.com/oopchi/gudang_buku_server/pb";
- 
+
 message BookResponse {
-    int64 id = 1;
+    option (validate.ignored) = true;
+    int64 id = 4;
+    oneof data {
+        BookContent content = 1;
+        ImageData imageData = 2;
+        PaginationResponse pagination = 3;
+    }
+}
+ 
+message BookContent {
     string title = 2;
     optional string description = 3;
     double price = 4;
@@ -31,12 +42,5 @@ message BookResponse {
     optional int64 numOfBought = 12;
     optional bool isRated = 13;
     repeated AuthorResponse authors = 14;
-    repeated GenreResponse genres = 15;
-}
-
-message ListBookResponse {
-    option (validate.ignored) = true;
-    
-    repeated BookResponse books = 1;
-    PaginationResponse pagination = 2;
+    repeated GenreResponse genres = 1;
 }

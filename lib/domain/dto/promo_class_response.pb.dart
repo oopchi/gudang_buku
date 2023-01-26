@@ -10,14 +10,14 @@ import 'dart:core' as $core;
 import 'package:fixnum/fixnum.dart' as $fixnum;
 import 'package:protobuf/protobuf.dart' as $pb;
 
-import 'google/protobuf/timestamp.pb.dart' as $8;
+import 'google/protobuf/timestamp.pb.dart' as $12;
 
 class PromoClassResponse extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'PromoClassResponse', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'pb'), createEmptyInstance: create)
     ..aInt64(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'id')
     ..aOS(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'name')
     ..a<$core.int>(3, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'maximumConcurrentPromo', $pb.PbFieldType.O3, protoName: 'maximumConcurrentPromo')
-    ..aOM<$8.Timestamp>(4, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'createdAt', protoName: 'createdAt', subBuilder: $8.Timestamp.create)
+    ..aOM<$12.Timestamp>(4, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'createdAt', protoName: 'createdAt', subBuilder: $12.Timestamp.create)
     ..hasRequiredFields = false
   ;
 
@@ -26,7 +26,7 @@ class PromoClassResponse extends $pb.GeneratedMessage {
     $fixnum.Int64? id,
     $core.String? name,
     $core.int? maximumConcurrentPromo,
-    $8.Timestamp? createdAt,
+    $12.Timestamp? createdAt,
   }) {
     final _result = create();
     if (id != null) {
@@ -92,15 +92,15 @@ class PromoClassResponse extends $pb.GeneratedMessage {
   void clearMaximumConcurrentPromo() => clearField(3);
 
   @$pb.TagNumber(4)
-  $8.Timestamp get createdAt => $_getN(3);
+  $12.Timestamp get createdAt => $_getN(3);
   @$pb.TagNumber(4)
-  set createdAt($8.Timestamp v) { setField(4, v); }
+  set createdAt($12.Timestamp v) { setField(4, v); }
   @$pb.TagNumber(4)
   $core.bool hasCreatedAt() => $_has(3);
   @$pb.TagNumber(4)
   void clearCreatedAt() => clearField(4);
   @$pb.TagNumber(4)
-  $8.Timestamp ensureCreatedAt() => $_ensure(3);
+  $12.Timestamp ensureCreatedAt() => $_ensure(3);
 }
 
 class ListPromoClassResponse extends $pb.GeneratedMessage {

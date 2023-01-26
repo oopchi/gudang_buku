@@ -1,4 +1,4 @@
-import 'package:gudang_buku/data/service/auth_service_fs.dart';
+import 'package:gudang_buku/service/auth_service_impl.dart';
 import 'package:gudang_buku/util/dartz_helper.dart';
 import 'package:gudang_buku/util/failure_helper.dart';
 import 'package:gudang_buku/util/form_helper.dart';
@@ -10,11 +10,11 @@ import 'state.dart';
 
 class RegisterMobileCubit extends Cubit<RegisterMobileState> {
   RegisterMobileCubit({
-    required AuthServiceFS authServiceFS,
+    required AuthServiceImpl authServiceFS,
   })  : _authServiceFS = authServiceFS,
         super(const RegisterMobileFormState());
 
-  final AuthServiceFS _authServiceFS;
+  final AuthServiceImpl _authServiceFS;
 
   Future<void> load() async {}
 

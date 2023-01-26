@@ -1,15 +1,15 @@
-import 'package:gudang_buku/data/service/auth_service_fs.dart';
+import 'package:gudang_buku/service/auth_service_impl.dart';
 import 'package:gudang_buku/domain/controller/discount_controller.dart';
 import 'package:gudang_buku/domain/controller/product_controller.dart';
-import 'package:gudang_buku/domain/dto/discount_response.dart';
-import 'package:gudang_buku/domain/dto/transaction_detail_response.dart';
-import 'package:gudang_buku/domain/dto/transaction_response.dart';
+import 'package:gudang_buku/domain/dto_fs/discount_response.dart';
+import 'package:gudang_buku/domain/dto_fs/transaction_detail_response.dart';
+import 'package:gudang_buku/domain/dto_fs/transaction_response.dart';
 import 'package:gudang_buku/domain/model/discount_model.dart';
 import 'package:gudang_buku/domain/model/favorite_button_model.dart';
 import 'package:gudang_buku/domain/model/product_model.dart';
-import 'package:gudang_buku/domain/repository/favorite_repository.dart';
-import 'package:gudang_buku/domain/repository/transaction_detail_repository.dart';
-import 'package:gudang_buku/domain/repository/transaction_repository.dart';
+import 'package:gudang_buku/infra/repository/favorite_repository.dart';
+import 'package:gudang_buku/infra/repository/transaction_detail_repository.dart';
+import 'package:gudang_buku/infra/repository/transaction_repository.dart';
 import 'package:gudang_buku/util/dartz_helper.dart';
 import 'package:gudang_buku/util/failure_helper.dart';
 import 'package:dartz/dartz.dart';
@@ -21,7 +21,7 @@ class CartMobileCubit extends Cubit<CartMobileState> {
   CartMobileCubit({
     required bool Function() isMounted,
     required TransactionRepository transactionRepository,
-    required AuthServiceFS authServiceFS,
+    required AuthServiceImpl authServiceFS,
     required TransactionDetailRepository transactionDetailRepository,
     required ProductController productController,
     required FavoriteRepository favoriteRepository,
@@ -42,7 +42,7 @@ class CartMobileCubit extends Cubit<CartMobileState> {
   final FavoriteRepository _favoriteRepository;
   final DiscountController _discountController;
 
-  final AuthServiceFS _authServiceFS;
+  final AuthServiceImpl _authServiceFS;
 
   Future<void> load() async {
     final Either<Failure, TransactionResponse> transactionRes =

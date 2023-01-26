@@ -1,13 +1,13 @@
-import 'package:gudang_buku/data/repository/author_book_repository_fs.dart';
-import 'package:gudang_buku/data/repository/author_repository_fs.dart';
-import 'package:gudang_buku/data/repository/book_genre_repository_fs.dart';
-import 'package:gudang_buku/data/repository/book_repository_fs.dart';
-import 'package:gudang_buku/data/repository/favorite_repository_fs.dart';
-import 'package:gudang_buku/data/repository/genre_repository_fs.dart';
-import 'package:gudang_buku/data/repository/media_repository_fs.dart';
-import 'package:gudang_buku/data/repository/review_repository_fs.dart';
-import 'package:gudang_buku/data/repository/transaction_detail_repository_fs.dart';
-import 'package:gudang_buku/data/service/auth_service_fs.dart';
+import 'package:gudang_buku/inter/repository/author_book_repository_fs.dart';
+import 'package:gudang_buku/inter/repository/author_repository_fs.dart';
+import 'package:gudang_buku/inter/repository/book_genre_repository_fs.dart';
+import 'package:gudang_buku/inter/repository/book_repository_fs.dart';
+import 'package:gudang_buku/inter/repository/favorite_repository_fs.dart';
+import 'package:gudang_buku/inter/repository/genre_repository_fs.dart';
+import 'package:gudang_buku/inter/repository/media_repository_fs.dart';
+import 'package:gudang_buku/inter/repository/review_repository_fs.dart';
+import 'package:gudang_buku/inter/repository/transaction_detail_repository_fs.dart';
+import 'package:gudang_buku/service/auth_service_impl.dart';
 import 'package:gudang_buku/domain/controller/shop_view_controller.dart';
 import 'package:gudang_buku/domain/model/filter_model.dart';
 import 'package:gudang_buku/presentation/pages/shop/mobile/components/body.dart';
@@ -46,7 +46,7 @@ class _ShopMobilePageState extends State<ShopMobilePage> {
           isMounted: () => mounted,
           shopViewController: ShopViewController(
             genreRepository: GenreRepositoryFS(),
-            authServiceFS: Provider.of<AuthServiceFS>(context, listen: false),
+            authServiceFS: Provider.of<AuthServiceImpl>(context, listen: false),
             authorBookRepository: AuthorBookRepositoryFS(),
             authorRepository: AuthorRepositoryFS(),
             bookRepository: BookRepositoryFS(),

@@ -4,18 +4,43 @@ package pb;
 
 import "validate/validate.proto";
 
+import "image_data.proto";
+
 option go_package = "github.com/oopchi/gudang_buku_server/pb";
 
 message LoginUserRequest {
-    string email = 1 [
-        (validate.rules).string.email = true
-    ];
+    oneof data {
+        LoginUserRequestContent content = 1;
+        LoginGoogleUserContent googleContent = 2;
+    }
+}
+
+message LoginUserRequestContent {
     string password = 2 [
         (validate.rules).string = {min_len: 6, max_len: 254}
     ];
+    string email = 1 [
+        (validate.rules).string.email = true
+    ];
+}
+
+message LoginGoogleUserContent {
+    string idToken = 1;
+}
+
+message CreateUserRequest {
+    oneof data {
+        CreateUserContent content = 1;
+        ImageData imageData = 2;
+        CreateGoogleUserContent googleContent = 3;
+    }
+}
+
+message CreateGoogleUserContent {
+    string idToken = 1;
 }
  
-message CreateUserRequest {
+message CreateUserContent {
     string name = 1 [
         (validate.rules).string = {min_len: 3, max_len: 100},
         (validate.rules).string.pattern = "^[a-zA-Z0-9_]+$"

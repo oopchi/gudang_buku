@@ -25,55 +25,100 @@ class BookServiceClient extends $grpc.Client {
           '/pb.BookService/GetBook',
           ($0.GetBookRequest value) => value.writeToBuffer(),
           ($core.List<$core.int> value) => $1.BookResponse.fromBuffer(value));
-  static final _$listBook =
-      $grpc.ClientMethod<$0.ListBookRequest, $1.ListBookResponse>(
-          '/pb.BookService/ListBook',
-          ($0.ListBookRequest value) => value.writeToBuffer(),
-          ($core.List<$core.int> value) =>
-              $1.ListBookResponse.fromBuffer(value));
-  static final _$softDeleteBook =
-      $grpc.ClientMethod<$0.DeleteBookRequest, $1.ListBookResponse>(
-          '/pb.BookService/SoftDeleteBook',
-          ($0.DeleteBookRequest value) => value.writeToBuffer(),
-          ($core.List<$core.int> value) =>
-              $1.ListBookResponse.fromBuffer(value));
-  static final _$forceDeleteBook =
-      $grpc.ClientMethod<$0.DeleteBookRequest, $1.ListBookResponse>(
-          '/pb.BookService/ForceDeleteBook',
-          ($0.DeleteBookRequest value) => value.writeToBuffer(),
-          ($core.List<$core.int> value) =>
-              $1.ListBookResponse.fromBuffer(value));
+  static final _$listBooks =
+      $grpc.ClientMethod<$0.ListBooksRequest, $1.BookResponse>(
+          '/pb.BookService/ListBooks',
+          ($0.ListBooksRequest value) => value.writeToBuffer(),
+          ($core.List<$core.int> value) => $1.BookResponse.fromBuffer(value));
+  static final _$softDeleteBooks =
+      $grpc.ClientMethod<$0.DeleteBooksRequest, $1.BookResponse>(
+          '/pb.BookService/SoftDeleteBooks',
+          ($0.DeleteBooksRequest value) => value.writeToBuffer(),
+          ($core.List<$core.int> value) => $1.BookResponse.fromBuffer(value));
+  static final _$forceDeleteBooks =
+      $grpc.ClientMethod<$0.DeleteBooksRequest, $1.BookResponse>(
+          '/pb.BookService/ForceDeleteBooks',
+          ($0.DeleteBooksRequest value) => value.writeToBuffer(),
+          ($core.List<$core.int> value) => $1.BookResponse.fromBuffer(value));
+  static final _$addUserFavoriteBook =
+      $grpc.ClientMethod<$0.AddUserFavoriteBookRequest, $1.BookResponse>(
+          '/pb.BookService/AddUserFavoriteBook',
+          ($0.AddUserFavoriteBookRequest value) => value.writeToBuffer(),
+          ($core.List<$core.int> value) => $1.BookResponse.fromBuffer(value));
+  static final _$listUserFavoriteBooks =
+      $grpc.ClientMethod<$0.ListUserFavoriteBooksRequest, $1.BookResponse>(
+          '/pb.BookService/ListUserFavoriteBooks',
+          ($0.ListUserFavoriteBooksRequest value) => value.writeToBuffer(),
+          ($core.List<$core.int> value) => $1.BookResponse.fromBuffer(value));
+  static final _$deleteUserFavoriteBook =
+      $grpc.ClientMethod<$0.DeleteUserFavoriteBookRequest, $1.BookResponse>(
+          '/pb.BookService/DeleteUserFavoriteBook',
+          ($0.DeleteUserFavoriteBookRequest value) => value.writeToBuffer(),
+          ($core.List<$core.int> value) => $1.BookResponse.fromBuffer(value));
 
   BookServiceClient($grpc.ClientChannel channel,
       {$grpc.CallOptions? options,
       $core.Iterable<$grpc.ClientInterceptor>? interceptors})
       : super(channel, options: options, interceptors: interceptors);
 
-  $grpc.ResponseFuture<$1.BookResponse> createBook($0.CreateBookRequest request,
+  $grpc.ResponseStream<$1.BookResponse> createBook(
+      $async.Stream<$0.CreateBookRequest> request,
       {$grpc.CallOptions? options}) {
-    return $createUnaryCall(_$createBook, request, options: options);
+    return $createStreamingCall(_$createBook, request, options: options);
   }
 
-  $grpc.ResponseFuture<$1.BookResponse> getBook($0.GetBookRequest request,
+  $grpc.ResponseStream<$1.BookResponse> getBook($0.GetBookRequest request,
       {$grpc.CallOptions? options}) {
-    return $createUnaryCall(_$getBook, request, options: options);
+    return $createStreamingCall(
+        _$getBook, $async.Stream.fromIterable([request]),
+        options: options);
   }
 
-  $grpc.ResponseFuture<$1.ListBookResponse> listBook($0.ListBookRequest request,
+  $grpc.ResponseStream<$1.BookResponse> listBooks($0.ListBooksRequest request,
       {$grpc.CallOptions? options}) {
-    return $createUnaryCall(_$listBook, request, options: options);
+    return $createStreamingCall(
+        _$listBooks, $async.Stream.fromIterable([request]),
+        options: options);
   }
 
-  $grpc.ResponseFuture<$1.ListBookResponse> softDeleteBook(
-      $0.DeleteBookRequest request,
+  $grpc.ResponseStream<$1.BookResponse> softDeleteBooks(
+      $0.DeleteBooksRequest request,
       {$grpc.CallOptions? options}) {
-    return $createUnaryCall(_$softDeleteBook, request, options: options);
+    return $createStreamingCall(
+        _$softDeleteBooks, $async.Stream.fromIterable([request]),
+        options: options);
   }
 
-  $grpc.ResponseFuture<$1.ListBookResponse> forceDeleteBook(
-      $0.DeleteBookRequest request,
+  $grpc.ResponseStream<$1.BookResponse> forceDeleteBooks(
+      $0.DeleteBooksRequest request,
       {$grpc.CallOptions? options}) {
-    return $createUnaryCall(_$forceDeleteBook, request, options: options);
+    return $createStreamingCall(
+        _$forceDeleteBooks, $async.Stream.fromIterable([request]),
+        options: options);
+  }
+
+  $grpc.ResponseStream<$1.BookResponse> addUserFavoriteBook(
+      $0.AddUserFavoriteBookRequest request,
+      {$grpc.CallOptions? options}) {
+    return $createStreamingCall(
+        _$addUserFavoriteBook, $async.Stream.fromIterable([request]),
+        options: options);
+  }
+
+  $grpc.ResponseStream<$1.BookResponse> listUserFavoriteBooks(
+      $0.ListUserFavoriteBooksRequest request,
+      {$grpc.CallOptions? options}) {
+    return $createStreamingCall(
+        _$listUserFavoriteBooks, $async.Stream.fromIterable([request]),
+        options: options);
+  }
+
+  $grpc.ResponseStream<$1.BookResponse> deleteUserFavoriteBook(
+      $0.DeleteUserFavoriteBookRequest request,
+      {$grpc.CallOptions? options}) {
+    return $createStreamingCall(
+        _$deleteUserFavoriteBook, $async.Stream.fromIterable([request]),
+        options: options);
   }
 }
 
@@ -83,74 +128,121 @@ abstract class BookServiceBase extends $grpc.Service {
   BookServiceBase() {
     $addMethod($grpc.ServiceMethod<$0.CreateBookRequest, $1.BookResponse>(
         'CreateBook',
-        createBook_Pre,
-        false,
-        false,
+        createBook,
+        true,
+        true,
         ($core.List<$core.int> value) => $0.CreateBookRequest.fromBuffer(value),
         ($1.BookResponse value) => value.writeToBuffer()));
     $addMethod($grpc.ServiceMethod<$0.GetBookRequest, $1.BookResponse>(
         'GetBook',
         getBook_Pre,
         false,
-        false,
+        true,
         ($core.List<$core.int> value) => $0.GetBookRequest.fromBuffer(value),
         ($1.BookResponse value) => value.writeToBuffer()));
-    $addMethod($grpc.ServiceMethod<$0.ListBookRequest, $1.ListBookResponse>(
-        'ListBook',
-        listBook_Pre,
+    $addMethod($grpc.ServiceMethod<$0.ListBooksRequest, $1.BookResponse>(
+        'ListBooks',
+        listBooks_Pre,
         false,
+        true,
+        ($core.List<$core.int> value) => $0.ListBooksRequest.fromBuffer(value),
+        ($1.BookResponse value) => value.writeToBuffer()));
+    $addMethod($grpc.ServiceMethod<$0.DeleteBooksRequest, $1.BookResponse>(
+        'SoftDeleteBooks',
+        softDeleteBooks_Pre,
         false,
-        ($core.List<$core.int> value) => $0.ListBookRequest.fromBuffer(value),
-        ($1.ListBookResponse value) => value.writeToBuffer()));
-    $addMethod($grpc.ServiceMethod<$0.DeleteBookRequest, $1.ListBookResponse>(
-        'SoftDeleteBook',
-        softDeleteBook_Pre,
+        true,
+        ($core.List<$core.int> value) =>
+            $0.DeleteBooksRequest.fromBuffer(value),
+        ($1.BookResponse value) => value.writeToBuffer()));
+    $addMethod($grpc.ServiceMethod<$0.DeleteBooksRequest, $1.BookResponse>(
+        'ForceDeleteBooks',
+        forceDeleteBooks_Pre,
         false,
-        false,
-        ($core.List<$core.int> value) => $0.DeleteBookRequest.fromBuffer(value),
-        ($1.ListBookResponse value) => value.writeToBuffer()));
-    $addMethod($grpc.ServiceMethod<$0.DeleteBookRequest, $1.ListBookResponse>(
-        'ForceDeleteBook',
-        forceDeleteBook_Pre,
-        false,
-        false,
-        ($core.List<$core.int> value) => $0.DeleteBookRequest.fromBuffer(value),
-        ($1.ListBookResponse value) => value.writeToBuffer()));
+        true,
+        ($core.List<$core.int> value) =>
+            $0.DeleteBooksRequest.fromBuffer(value),
+        ($1.BookResponse value) => value.writeToBuffer()));
+    $addMethod(
+        $grpc.ServiceMethod<$0.AddUserFavoriteBookRequest, $1.BookResponse>(
+            'AddUserFavoriteBook',
+            addUserFavoriteBook_Pre,
+            false,
+            true,
+            ($core.List<$core.int> value) =>
+                $0.AddUserFavoriteBookRequest.fromBuffer(value),
+            ($1.BookResponse value) => value.writeToBuffer()));
+    $addMethod(
+        $grpc.ServiceMethod<$0.ListUserFavoriteBooksRequest, $1.BookResponse>(
+            'ListUserFavoriteBooks',
+            listUserFavoriteBooks_Pre,
+            false,
+            true,
+            ($core.List<$core.int> value) =>
+                $0.ListUserFavoriteBooksRequest.fromBuffer(value),
+            ($1.BookResponse value) => value.writeToBuffer()));
+    $addMethod(
+        $grpc.ServiceMethod<$0.DeleteUserFavoriteBookRequest, $1.BookResponse>(
+            'DeleteUserFavoriteBook',
+            deleteUserFavoriteBook_Pre,
+            false,
+            true,
+            ($core.List<$core.int> value) =>
+                $0.DeleteUserFavoriteBookRequest.fromBuffer(value),
+            ($1.BookResponse value) => value.writeToBuffer()));
   }
 
-  $async.Future<$1.BookResponse> createBook_Pre($grpc.ServiceCall call,
-      $async.Future<$0.CreateBookRequest> request) async {
-    return createBook(call, await request);
+  $async.Stream<$1.BookResponse> getBook_Pre(
+      $grpc.ServiceCall call, $async.Future<$0.GetBookRequest> request) async* {
+    yield* getBook(call, await request);
   }
 
-  $async.Future<$1.BookResponse> getBook_Pre(
-      $grpc.ServiceCall call, $async.Future<$0.GetBookRequest> request) async {
-    return getBook(call, await request);
+  $async.Stream<$1.BookResponse> listBooks_Pre($grpc.ServiceCall call,
+      $async.Future<$0.ListBooksRequest> request) async* {
+    yield* listBooks(call, await request);
   }
 
-  $async.Future<$1.ListBookResponse> listBook_Pre(
-      $grpc.ServiceCall call, $async.Future<$0.ListBookRequest> request) async {
-    return listBook(call, await request);
+  $async.Stream<$1.BookResponse> softDeleteBooks_Pre($grpc.ServiceCall call,
+      $async.Future<$0.DeleteBooksRequest> request) async* {
+    yield* softDeleteBooks(call, await request);
   }
 
-  $async.Future<$1.ListBookResponse> softDeleteBook_Pre($grpc.ServiceCall call,
-      $async.Future<$0.DeleteBookRequest> request) async {
-    return softDeleteBook(call, await request);
+  $async.Stream<$1.BookResponse> forceDeleteBooks_Pre($grpc.ServiceCall call,
+      $async.Future<$0.DeleteBooksRequest> request) async* {
+    yield* forceDeleteBooks(call, await request);
   }
 
-  $async.Future<$1.ListBookResponse> forceDeleteBook_Pre($grpc.ServiceCall call,
-      $async.Future<$0.DeleteBookRequest> request) async {
-    return forceDeleteBook(call, await request);
+  $async.Stream<$1.BookResponse> addUserFavoriteBook_Pre($grpc.ServiceCall call,
+      $async.Future<$0.AddUserFavoriteBookRequest> request) async* {
+    yield* addUserFavoriteBook(call, await request);
   }
 
-  $async.Future<$1.BookResponse> createBook(
-      $grpc.ServiceCall call, $0.CreateBookRequest request);
-  $async.Future<$1.BookResponse> getBook(
+  $async.Stream<$1.BookResponse> listUserFavoriteBooks_Pre(
+      $grpc.ServiceCall call,
+      $async.Future<$0.ListUserFavoriteBooksRequest> request) async* {
+    yield* listUserFavoriteBooks(call, await request);
+  }
+
+  $async.Stream<$1.BookResponse> deleteUserFavoriteBook_Pre(
+      $grpc.ServiceCall call,
+      $async.Future<$0.DeleteUserFavoriteBookRequest> request) async* {
+    yield* deleteUserFavoriteBook(call, await request);
+  }
+
+  $async.Stream<$1.BookResponse> createBook(
+      $grpc.ServiceCall call, $async.Stream<$0.CreateBookRequest> request);
+  $async.Stream<$1.BookResponse> getBook(
       $grpc.ServiceCall call, $0.GetBookRequest request);
-  $async.Future<$1.ListBookResponse> listBook(
-      $grpc.ServiceCall call, $0.ListBookRequest request);
-  $async.Future<$1.ListBookResponse> softDeleteBook(
-      $grpc.ServiceCall call, $0.DeleteBookRequest request);
-  $async.Future<$1.ListBookResponse> forceDeleteBook(
-      $grpc.ServiceCall call, $0.DeleteBookRequest request);
+  $async.Stream<$1.BookResponse> listBooks(
+      $grpc.ServiceCall call, $0.ListBooksRequest request);
+  $async.Stream<$1.BookResponse> softDeleteBooks(
+      $grpc.ServiceCall call, $0.DeleteBooksRequest request);
+  $async.Stream<$1.BookResponse> forceDeleteBooks(
+      $grpc.ServiceCall call, $0.DeleteBooksRequest request);
+  $async.Stream<$1.BookResponse> addUserFavoriteBook(
+      $grpc.ServiceCall call, $0.AddUserFavoriteBookRequest request);
+  $async.Stream<$1.BookResponse> listUserFavoriteBooks(
+      $grpc.ServiceCall call, $0.ListUserFavoriteBooksRequest request);
+  $async.Stream<$1.BookResponse> deleteUserFavoriteBook(
+      $grpc.ServiceCall call, $0.DeleteUserFavoriteBookRequest request);
 }

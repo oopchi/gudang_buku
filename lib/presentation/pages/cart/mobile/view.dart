@@ -1,7 +1,7 @@
-import 'package:gudang_buku/data/repository/favorite_repository_fs.dart';
-import 'package:gudang_buku/data/repository/transaction_detail_repository_fs.dart';
-import 'package:gudang_buku/data/repository/transaction_repository_fs.dart';
-import 'package:gudang_buku/data/service/auth_service_fs.dart';
+import 'package:gudang_buku/inter/repository/favorite_repository_fs.dart';
+import 'package:gudang_buku/inter/repository/transaction_detail_repository_fs.dart';
+import 'package:gudang_buku/inter/repository/transaction_repository_fs.dart';
+import 'package:gudang_buku/service/auth_service_impl.dart';
 import 'package:gudang_buku/domain/controller/discount_controller.dart';
 import 'package:gudang_buku/domain/controller/product_controller.dart';
 import 'package:gudang_buku/presentation/pages/cart/mobile/components/body.dart';
@@ -29,7 +29,7 @@ class _CartMobilePageState extends State<CartMobilePage> {
             context,
             listen: false,
           ),
-          authServiceFS: Provider.of<AuthServiceFS>(
+          authServiceFS: Provider.of<AuthServiceImpl>(
             context,
             listen: false,
           ),

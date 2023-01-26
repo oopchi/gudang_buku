@@ -1,5 +1,5 @@
 import 'package:dartz/dartz.dart';
-import 'package:gudang_buku/domain/repository/newsletter_repository.dart';
+import 'package:gudang_buku/infra/repository/newsletter_repository.dart';
 import 'package:gudang_buku/util/failure_helper.dart';
 
 class NewsletterController {

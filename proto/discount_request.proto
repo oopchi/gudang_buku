@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package pb;
+
+import "google/protobuf/timestamp.proto";
+
+import "validate/validate.proto";
+
+option go_package = "github.com/oopchi/gudang_buku_server/pb";
+
+
+message CreateDiscountRequest {
+    double discountAmount = 1 [
+        (validate.rules).double.gte = 0,
+        (validate.rules).double.lt = 10000000000
+    ];
+    optional double maximumDiscountAmount = 2 [
+        (validate.rules).double.gte = 0,
+        (validate.rules).double.lt = 10000000000
+    ];
+    string discountType = 3 [
+        (validate.rules).string = {in: ["amount", "percentage"]}
+    ];
+    optional google.protobuf.Timestamp expirationDate = 4;
+    optional int32 numOfUse = 5 [
+        (validate.rules).int32.gte = 0
+    ];
+    repeated int64 bookIDs = 6;
+}
+
+message ListDiscountRequest {
+}

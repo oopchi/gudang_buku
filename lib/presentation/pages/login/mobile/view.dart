@@ -1,7 +1,7 @@
 import 'package:gudang_buku/config/constant/assets.dart';
 import 'package:gudang_buku/config/constant/colors.dart';
 import 'package:gudang_buku/config/constant/routes.dart';
-import 'package:gudang_buku/data/service/auth_service_fs.dart';
+import 'package:gudang_buku/service/auth_service_impl.dart';
 import 'package:gudang_buku/presentation/pages/login/mobile/state.dart';
 import 'package:gudang_buku/presentation/widget/appbar_helper.dart';
 import 'package:gudang_buku/presentation/widget/button_helper.dart';
@@ -33,7 +33,7 @@ class _LoginMobilePageState extends State<LoginMobilePage> {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (BuildContext context) => LoginMobileCubit(
-        authServiceFS: Provider.of<AuthServiceFS>(
+        authServiceFS: Provider.of<AuthServiceImpl>(
           context,
           listen: false,
         ),

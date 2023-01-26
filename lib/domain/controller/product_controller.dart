@@ -1,18 +1,18 @@
-import 'package:gudang_buku/data/service/auth_service_fs.dart';
-import 'package:gudang_buku/domain/dto/author_book_response.dart';
-import 'package:gudang_buku/domain/dto/author_response.dart';
-import 'package:gudang_buku/domain/dto/book_response.dart';
-import 'package:gudang_buku/domain/dto/favorite_response.dart';
-import 'package:gudang_buku/domain/dto/media_response.dart';
-import 'package:gudang_buku/domain/dto/review_response.dart';
+import 'package:gudang_buku/service/auth_service_impl.dart';
+import 'package:gudang_buku/domain/dto_fs/author_book_response.dart';
+import 'package:gudang_buku/domain/dto_fs/author_response.dart';
+import 'package:gudang_buku/domain/dto_fs/book_response.dart';
+import 'package:gudang_buku/domain/dto_fs/favorite_response.dart';
+import 'package:gudang_buku/domain/dto_fs/media_response.dart';
+import 'package:gudang_buku/domain/dto_fs/review_response.dart';
 import 'package:gudang_buku/domain/model/favorite_button_model.dart';
 import 'package:gudang_buku/domain/model/product_model.dart';
-import 'package:gudang_buku/domain/repository/author_book_repository.dart';
-import 'package:gudang_buku/domain/repository/author_repository.dart';
-import 'package:gudang_buku/domain/repository/book_repository.dart';
-import 'package:gudang_buku/domain/repository/favorite_repository.dart';
-import 'package:gudang_buku/domain/repository/media_repository.dart';
-import 'package:gudang_buku/domain/repository/review_repository.dart';
+import 'package:gudang_buku/infra/repository/author_book_repository.dart';
+import 'package:gudang_buku/infra/repository/author_repository.dart';
+import 'package:gudang_buku/infra/repository/book_repository.dart';
+import 'package:gudang_buku/infra/repository/favorite_repository.dart';
+import 'package:gudang_buku/infra/repository/media_repository.dart';
+import 'package:gudang_buku/infra/repository/review_repository.dart';
 import 'package:gudang_buku/util/dartz_helper.dart';
 import 'package:gudang_buku/util/failure_helper.dart';
 import 'package:dartz/dartz.dart';
@@ -26,7 +26,7 @@ class ProductController {
     required MediaRepository mediaRepository,
     required AuthorBookRepository authorBookRepository,
     required AuthorRepository authorRepository,
-    required AuthServiceFS authServiceFS,
+    required AuthServiceImpl authServiceFS,
   })  : _bookRepository = bookRepository,
         _favoriteRepository = favoriteRepository,
         _authorBookRepository = authorBookRepository,
@@ -42,7 +42,7 @@ class ProductController {
   final MediaRepository _mediaRepository;
   final AuthorBookRepository _authorBookRepository;
 
-  final AuthServiceFS _authServiceFS;
+  final AuthServiceImpl _authServiceFS;
 
   Future<Either<Failure, List<ProductModel>>> loadAllProductWithIds(
     List<String> ids,

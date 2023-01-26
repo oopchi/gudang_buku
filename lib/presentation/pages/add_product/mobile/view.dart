@@ -1,9 +1,9 @@
 import 'package:gudang_buku/config/constant/colors.dart';
 import 'package:gudang_buku/config/constant/routes.dart';
-import 'package:gudang_buku/data/repository/author_book_repository_fs.dart';
-import 'package:gudang_buku/data/repository/author_repository_fs.dart';
-import 'package:gudang_buku/data/repository/book_repository_fs.dart';
-import 'package:gudang_buku/data/repository/media_repository_fs.dart';
+import 'package:gudang_buku/inter/repository/author_book_repository_fs.dart';
+import 'package:gudang_buku/inter/repository/author_repository_fs.dart';
+import 'package:gudang_buku/inter/repository/book_repository_fs.dart';
+import 'package:gudang_buku/inter/repository/media_repository_fs.dart';
 import 'package:gudang_buku/domain/model/author_model.dart';
 import 'package:gudang_buku/presentation/pages/add_product/mobile/state.dart';
 import 'package:gudang_buku/presentation/widget/appbar_helper.dart';

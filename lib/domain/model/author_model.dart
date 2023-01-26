@@ -2,19 +2,22 @@ import 'package:equatable/equatable.dart';
 
 class AuthorModel extends Equatable {
   const AuthorModel({
-    required this.id,
     required this.name,
-    this.description,
+    required this.id,
+    required this.createdAt,
+    this.updatedAt,
   });
 
-  final String id;
+  final int id;
   final String name;
-  final String? description;
+  final DateTime createdAt;
+  final DateTime? updatedAt;
 
   @override
   List<Object?> get props => <Object?>[
-        id,
         name,
-        description,
+        id,
+        createdAt,
+        updatedAt,
       ];
 }

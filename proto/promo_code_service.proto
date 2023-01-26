@@ -10,32 +10,32 @@ import "protoc-gen-openapiv2/options/annotations.proto";
 option go_package = "github.com/oopchi/gudang_buku_server/pb";
 
 service PromoCodeService {
-    rpc CreatePromoCode(stream CreatePromoCodeRequest) returns (PromoCodeResponse) {
+    rpc CreatePromoCode(stream CreatePromoCodeRequest) returns (stream PromoCodeResponse) {
         option (google.api.http) = {
             post: "/v1/promo_codes"
             body: "*"
         };
 		option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
-			description: "Use this API to create a new promo code";
+			description: "Use this API to create a new promo code and returns a stream of existing promo codes";
 			summary: "Create new promo code";
         };
     }
-    rpc SoftDeletePromoCode(DeletePromoCodeRequest) returns (ListPromoCodeResponse) {
+    rpc SoftDeletePromoCodes(DeletePromoCodesRequest) returns (stream PromoCodeResponse) {
         option (google.api.http) = {
-            post: "/v1/promo_codes/delete"
+            post: "/v1/promo_codes/deletes"
         };
 		option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
-			description: "Use this API to soft delete promo code";
-			summary: "Soft Delete a promo code";
+			description: "Use this API to soft delete promo codes and returns a stream of existing promo codes";
+			summary: "Soft Delete promo codes";
         };
     }
-    rpc ForceDeletePromoCode(DeletePromoCodeRequest) returns (ListPromoCodeResponse) {
+    rpc ForceDeletePromoCodes(DeletePromoCodesRequest) returns (stream PromoCodeResponse) {
         option (google.api.http) = {
-            post: "/v1/promo_codes/force_delete"
+            post: "/v1/promo_codes/force_deletes"
         };
 		option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
-			description: "Use this API to force delete promo code";
-			summary: "Force Delete a promo code";
+			description: "Use this API to force delete promo codes and returns a stream of existing books";
+			summary: "Force Delete promo codes";
         };
     }
     rpc ListOngoingPromoCodes(ListOngoingPromoCodesRequest) returns (stream PromoCodeResponse) {

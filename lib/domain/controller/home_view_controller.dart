@@ -1,27 +1,27 @@
-import 'package:gudang_buku/data/service/auth_service_fs.dart';
-import 'package:gudang_buku/domain/dto/amount_type_response.dart';
-import 'package:gudang_buku/domain/dto/author_book_response.dart';
-import 'package:gudang_buku/domain/dto/author_response.dart';
-import 'package:gudang_buku/domain/dto/book_response.dart';
-import 'package:gudang_buku/domain/dto/event_response.dart';
-import 'package:gudang_buku/domain/dto/favorite_response.dart';
-import 'package:gudang_buku/domain/dto/media_response.dart';
-import 'package:gudang_buku/domain/dto/review_response.dart';
-import 'package:gudang_buku/domain/local/local_storage.dart';
+import 'package:fixnum/fixnum.dart';
+import 'package:grpc/grpc.dart';
+import 'package:grpc/src/client/common.dart';
+import 'package:gudang_buku/service/auth_service_impl.dart';
+import 'package:gudang_buku/domain/dto/book_response.pb.dart';
+import 'package:gudang_buku/domain/dto/book_service.pbgrpc.dart';
+import 'package:gudang_buku/domain/dto/discount_request.pb.dart';
+import 'package:gudang_buku/domain/dto/discovery_request.pb.dart';
+import 'package:gudang_buku/domain/dto/discovery_response.pb.dart';
+import 'package:gudang_buku/domain/dto/discovery_service.pbgrpc.dart';
+import 'package:gudang_buku/domain/dto/image_data.pb.dart';
+import 'package:gudang_buku/domain/dto_fs/amount_type_response.dart';
+import 'package:gudang_buku/domain/dto_fs/author_book_response.dart';
+import 'package:gudang_buku/domain/dto_fs/author_response.dart';
+import 'package:gudang_buku/domain/dto_fs/book_response.dart';
+import 'package:gudang_buku/domain/dto_fs/event_response.dart';
+import 'package:gudang_buku/domain/dto_fs/favorite_response.dart';
+import 'package:gudang_buku/domain/dto_fs/media_response.dart';
+import 'package:gudang_buku/domain/dto_fs/review_response.dart';
 import 'package:gudang_buku/domain/model/event_model.dart';
 import 'package:gudang_buku/domain/model/favorite_button_model.dart';
 import 'package:gudang_buku/domain/model/product_model.dart';
 import 'package:gudang_buku/domain/model/promo_model.dart';
-import 'package:gudang_buku/domain/dto/promo_response.dart';
-import 'package:gudang_buku/domain/repository/amount_type_repository.dart';
-import 'package:gudang_buku/domain/repository/author_book_repository.dart';
-import 'package:gudang_buku/domain/repository/author_repository.dart';
-import 'package:gudang_buku/domain/repository/book_repository.dart';
-import 'package:gudang_buku/domain/repository/event_repository.dart';
-import 'package:gudang_buku/domain/repository/favorite_repository.dart';
-import 'package:gudang_buku/domain/repository/media_repository.dart';
-import 'package:gudang_buku/domain/repository/promo_repository.dart';
-import 'package:gudang_buku/domain/repository/review_repository.dart';
+import 'package:gudang_buku/domain/dto_fs/promo_response.dart';
 import 'package:gudang_buku/util/dartz_helper.dart';
 import 'package:gudang_buku/util/failure_helper.dart';
 import 'package:dartz/dartz.dart';
@@ -30,39 +30,72 @@ import 'package:flutter/material.dart';
 
 class HomeViewController {
   const HomeViewController({
-    required BookRepository bookRepository,
-    required PromoRepository promoRepository,
-    required LocalStorage localStorage,
-    required ReviewRepository reviewRepository,
-    required EventRepository eventRepository,
-    required FavoriteRepository favoriteRepository,
-    required MediaRepository mediaRepository,
-    required AuthorBookRepository authorBookRepository,
-    required AuthorRepository authorRepository,
-    required AmountTypeRepository amountTypeRepository,
-    required AuthServiceFS authServiceFS,
-  })  : _bookRepository = bookRepository,
-        _amountTypeRepository = amountTypeRepository,
-        _favoriteRepository = favoriteRepository,
-        _authorBookRepository = authorBookRepository,
-        _eventRepository = eventRepository,
-        _mediaRepository = mediaRepository,
-        _promoRepository = promoRepository,
-        _reviewRepository = reviewRepository,
-        _authServiceFS = authServiceFS,
-        _authorRepository = authorRepository;
+    required AuthServiceImpl authServiceFS,
+    required BookServiceClient bookServiceClient,
+    required DiscoveryServiceClient discoveryServiceClient,
+  })  : _authServiceFS = authServiceFS,
+        _bookServiceClient = bookServiceClient,
+        _discoveryServiceClient = discoveryServiceClient;
 
-  final AuthorRepository _authorRepository;
-  final BookRepository _bookRepository;
-  final PromoRepository _promoRepository;
-  final ReviewRepository _reviewRepository;
-  final EventRepository _eventRepository;
-  final FavoriteRepository _favoriteRepository;
-  final MediaRepository _mediaRepository;
-  final AuthorBookRepository _authorBookRepository;
-  final AmountTypeRepository _amountTypeRepository;
+  final BookServiceClient _bookServiceClient;
+  final DiscoveryServiceClient _discoveryServiceClient;
 
-  final AuthServiceFS _authServiceFS;
+  final AuthServiceImpl _authServiceFS;
+
+  Future<Either<Failure, List<DiscoveryResponse>>> getAllDiscoveries() async {
+    try {
+      final Map<int, DiscoveryResponse> discoveryMap =
+          <int, DiscoveryResponse>{};
+
+      final ResponseStream<DiscoveryResponse> response =
+          _discoveryServiceClient.listDiscoveries(ListDiscoveryRequest());
+
+      await for (final DiscoveryResponse discovery in response) {
+        final int key = discovery.id.toInt();
+        discoveryMap[key] ??= DiscoveryResponse();
+
+        switch (discovery.whichData()) {
+          case DiscoveryResponse_Data.content:
+            discoveryMap[key]?.content = discovery.content;
+            break;
+          case DiscoveryResponse_Data.imageData:
+            switch (discoveryMap[key]?.imageData.whichData()) {
+              case ImageData_Data.chunk:
+                discoveryMap[key]?.imageData.chunk;
+                break;
+              case ImageData_Data.metaData:
+                break;
+              case ImageData_Data.notSet:
+              case null:
+                break;
+            }
+            break;
+          case DiscoveryResponse_Data.book:
+            switch (discoveryMap[key]?.book.whichData()) {
+              case BookResponse_Data.imageData:
+                break;
+              case BookResponse_Data.content:
+                break;
+              case BookResponse_Data.pagination:
+                break;
+              case BookResponse_Data.notSet:
+              case null:
+                break;
+            }
+            break;
+          case DiscoveryResponse_Data.notSet:
+            break;
+          default:
+        }
+      }
+    } on GrpcError catch (e) {
+      return Left(ServerFailure(e.toString()));
+    } catch (e) {
+      Left(ServerFailure(e.toString()));
+    }
+
+    return Left(ServerFailure('hi'));
+  }
 
   Future<Either<Failure, List<EventModel>>> getAllEvents() async {
     final Either<Failure, List<EventResponse>> eventRes =

@@ -1,0 +1,41 @@
+syntax = "proto3";
+
+package pb;
+
+import "validate/validate.proto";
+
+import "google/protobuf/timestamp.proto";
+
+import "book_response.proto";
+
+option go_package = "github.com/oopchi/gudang_buku_server/pb";
+
+message DiscountResponse {
+    int64 id = 3;
+    oneof data {
+        DiscountContent content = 1;
+        BookResponse book = 2;
+    }
+}
+
+message DiscountContent {
+    option (validate.ignored) = true;
+
+    double discountAmount = 2 [
+        (validate.rules).double.gte = 0,
+        (validate.rules).double.lt = 10000000000
+    ];
+    optional double maximumDiscountAmount = 3 [
+        (validate.rules).double.gte = 0,
+        (validate.rules).double.lt = 10000000000
+    ];
+    string discountType = 4 [
+        (validate.rules).string = {in: ["amount", "percentage"]}
+    ];
+    optional google.protobuf.Timestamp expirationDate = 5;
+    optional int32 numOfUse = 6 [
+        (validate.rules).int32.gte = 0
+    ];
+    google.protobuf.Timestamp createdAt = 7;
+    optional google.protobuf.Timestamp updatedAt = 1;
+}

@@ -1,4 +1,5 @@
-import 'package:firebase_auth/firebase_auth.dart';
+import 'dart:ffi';
+
 import 'package:hive/hive.dart';
 
 part 'user_model.g.dart';
@@ -6,21 +7,42 @@ part 'user_model.g.dart';
 @HiveType(typeId: 0)
 class UserModel {
   const UserModel({
-    required this.uid,
-    this.photoUrl,
     this.email,
+    required this.createdAt,
+    this.emailVerified = false,
+    required this.id,
+    required this.name,
+    this.password,
+    this.phoneNum,
+    this.phoneNumVerified = false,
+    this.profilePicture,
+    this.updatedAt,
+    required this.accessToken,
+    required this.refreshToken,
   });
 
   @HiveField(0)
-  final String uid;
+  final int id;
   @HiveField(1)
-  final String? photoUrl;
+  final List<Uint8>? profilePicture;
   @HiveField(2)
   final String? email;
-
-  static UserModel from(User user) => UserModel(
-        uid: user.uid,
-        photoUrl: user.photoURL,
-        email: user.email,
-      );
+  @HiveField(3)
+  final bool emailVerified;
+  @HiveField(4)
+  final String? password;
+  @HiveField(5)
+  final String name;
+  @HiveField(6)
+  final String? phoneNum;
+  @HiveField(7)
+  final bool phoneNumVerified;
+  @HiveField(8)
+  final DateTime createdAt;
+  @HiveField(9)
+  final DateTime? updatedAt;
+  @HiveField(10)
+  final String accessToken;
+  @HiveField(11)
+  final String refreshToken;
 }

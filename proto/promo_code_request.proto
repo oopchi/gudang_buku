@@ -6,6 +6,8 @@ import "validate/validate.proto";
 
 import "google/protobuf/timestamp.proto";
 
+import "image_data.proto";
+
 option go_package = "github.com/oopchi/gudang_buku_server/pb";
 
 
@@ -21,7 +23,7 @@ message ListOngoingPromoCodesRequest {
     ];
 }
 
-message DeletePromoCodeRequest {
+message DeletePromoCodesRequest {
     repeated int64 ids = 1 [
         (validate.rules).repeated.items.int64.gte = 1,
         (validate.rules).repeated.min_items = 1
@@ -30,14 +32,14 @@ message DeletePromoCodeRequest {
 
 
 message CreatePromoCodeRequest {
+    string code = 3;
     oneof data {
         CreatePromoCodeContent content = 1;
-        bytes chunk = 2;
+        ImageData imageData = 2;
     }
 }
 
 message CreatePromoCodeContent {
-    string code = 1;
     double discountAmount = 2 [
         (validate.rules).double = {gte: 0, lt: 10000000000}
     ];
@@ -57,9 +59,7 @@ message CreatePromoCodeContent {
         (validate.rules).int32.gte = 0
     ];
 
-    int64 promoClassID = 8 [
+    int64 promoClassID = 1 [
         (validate.rules).int64.gt = 0
     ];
-    optional string imageExtension = 9;
-    optional string mimeType = 10;
 }

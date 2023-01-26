@@ -10,7 +10,7 @@ import "protoc-gen-openapiv2/options/annotations.proto";
 option go_package = "github.com/oopchi/gudang_buku_server/pb";
 
 service UserService {
-    rpc CreateUser(CreateUserRequest) returns (UserResponse) {
+    rpc CreateUser(stream CreateUserRequest) returns (stream UserResponse) {
         option (google.api.http) = {
             post: "/v1/users"
             body: "*"
@@ -20,7 +20,7 @@ service UserService {
 			summary: "Create new user";
         };
     }
-    rpc LoginUser(LoginUserRequest) returns (LoginUserResponse) {
+    rpc LoginUser(LoginUserRequest) returns (stream LoginUserResponse) {
         option (google.api.http) = {
             post: "/v1/users/login"
             body: "*"

@@ -6,28 +6,46 @@ import "google/protobuf/timestamp.proto";
 
 import "validate/validate.proto";
 
+import "image_data.proto";
+
 option go_package = "github.com/oopchi/gudang_buku_server/pb";
- 
+
 message UserResponse {
     option (validate.ignored) = true;
 
-    int64 id = 1;
+    int64 id = 3;
+    oneof data {
+        UserContent content = 1;
+        ImageData imageData = 2;
+    }
+}
+ 
+message UserContent {
+    option (validate.ignored) = true;
+
     string name = 2;
     optional string email = 3;
     bool emailVerified = 4;
     optional string phoneNumber = 5;
     bool phoneNumberVerified = 6;
     google.protobuf.Timestamp createdAt = 7;
-    optional google.protobuf.Timestamp updatedAt = 8;
+    optional google.protobuf.Timestamp updatedAt = 1;
 }
 
 message LoginUserResponse {
+    int64 id = 3;
+    oneof data {
+        LoginUserContent content = 1;
+        UserResponse userData = 2;
+    }
+}
+
+message LoginUserContent {
     option (validate.ignored) = true;
     
-    UserResponse user = 1;
-    string sessionID= 2;
-    string accessToken = 3;
-    string refreshToken = 4;
-    google.protobuf.Timestamp accessTokenExpiresAt = 5;
-    google.protobuf.Timestamp refreshTokenExpiresAt = 6;
+    string sessionID= 1;
+    string accessToken = 2;
+    string refreshToken = 3;
+    google.protobuf.Timestamp accessTokenExpiresAt = 4;
+    google.protobuf.Timestamp refreshTokenExpiresAt = 5;
 }

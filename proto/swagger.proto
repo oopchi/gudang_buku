@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package pb;
+
+import "protoc-gen-openapiv2/options/annotations.proto";
+
+option go_package = "github.com/oopchi/gudang_buku_server/pb";
+
+option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
+	info: {
+		title: "Gudang Buku API";
+		version: "1.0";
+		contact: {
+			name: "Calvin Alfrido (Developer)";
+			url: "https://portfolio-oopchi.vercel.app";
+			email: "calvinalfredo161@gmail.com";
+		};
+	};
+};
