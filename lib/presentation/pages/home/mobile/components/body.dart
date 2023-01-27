@@ -1,7 +1,7 @@
 import 'package:gudang_buku/config/constant/colors.dart';
 import 'package:gudang_buku/config/constant/dimensions.dart';
 import 'package:gudang_buku/config/constant/routes.dart';
-import 'package:gudang_buku/domain/model/promo_model.dart';
+import 'package:gudang_buku/domain/model/promo_code_model.dart';
 import 'package:gudang_buku/presentation/pages/home/mobile/components/header.dart';
 import 'package:gudang_buku/presentation/pages/home/mobile/components/section.dart';
 import 'package:gudang_buku/presentation/pages/home/mobile/cubit.dart';

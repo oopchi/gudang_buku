@@ -2,7 +2,7 @@ import 'package:gudang_buku/domain/controller/home_view_controller.dart';
 import 'package:gudang_buku/domain/model/event_model.dart';
 import 'package:gudang_buku/domain/model/favorite_button_model.dart';
 import 'package:gudang_buku/domain/model/product_model.dart';
-import 'package:gudang_buku/domain/model/promo_model.dart';
+import 'package:gudang_buku/domain/model/promo_code_model.dart';
 import 'package:gudang_buku/util/dartz_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

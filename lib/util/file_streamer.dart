@@ -10,11 +10,17 @@ extension ImageDataExt on ImageData {
       imageID = data.imageID;
       switch (data.whichData()) {
         case ImageData_Data.chunk:
-          chunk.addAll(data.chunk);
+          final List<int> ch = chunk;
+          ch.addAll(data.chunk);
+          chunk = ch;
           return const Right(null);
         case ImageData_Data.metaData:
-          metaData.imageExtension = data.metaData.imageExtension;
-          metaData.mimeType = data.metaData.mimeType;
+          final ImageMetaData mtdt = metaData;
+
+          mtdt.imageExtension = data.metaData.imageExtension;
+          mtdt.mimeType = data.metaData.mimeType;
+
+          metaData = mtdt;
           return const Right(null);
         case ImageData_Data.notSet:
           break;

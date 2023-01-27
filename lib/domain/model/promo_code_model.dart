@@ -2,8 +2,8 @@ import 'package:gudang_buku/domain/model/product_model.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 
-class PromoModel extends Equatable {
-  const PromoModel({
+class PromoCodeModel extends Equatable {
+  const PromoCodeModel({
     required this.id,
     required this.title,
     required this.description,
@@ -13,7 +13,7 @@ class PromoModel extends Equatable {
     required this.amountType,
   });
 
-  final String id;
+  final int id;
   final String title;
   final String description;
   final List<ProductModel> productCardModels;
@@ -21,7 +21,7 @@ class PromoModel extends Equatable {
   final int amount;
   final String amountType;
 
-  PromoModel copyWith({
+  PromoCodeModel copyWith({
     String? id,
     String? title,
     String? description,
@@ -30,7 +30,7 @@ class PromoModel extends Equatable {
     int? amount,
     String? amountType,
   }) =>
-      PromoModel(
+      PromoCodeModel(
         id: id ?? this.id,
         title: title ?? this.title,
         description: description ?? this.description,

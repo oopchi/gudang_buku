@@ -3,6 +3,7 @@ import 'package:gudang_buku/domain/dto/book_request.pb.dart';
 import 'package:gudang_buku/domain/dto/book_response.pb.dart';
 import 'package:gudang_buku/domain/dto/book_service.pbgrpc.dart';
 import 'package:dartz/dartz.dart';
+import 'package:gudang_buku/domain/dto/image_data.pb.dart';
 import 'package:gudang_buku/domain/dto/pagination_response.pb.dart';
 import 'package:gudang_buku/domain/model/author_model.dart';
 import 'package:gudang_buku/domain/model/book_model.dart';
@@ -38,6 +39,9 @@ class BookServiceImpl implements BookService {
     try {
       final Map<int, BookResponse> bookMap = <int, BookResponse>{};
 
+      final Map<int, Map<int, ImageData>> fileMap =
+          <int, Map<int, ImageData>>{};
+
       late final PaginationResponse pagination;
 
       final ResponseStream<BookResponse> response =
@@ -54,13 +58,18 @@ class BookServiceImpl implements BookService {
       await for (final BookResponse book in response) {
         final int key = book.id.toInt();
         bookMap[key] ??= BookResponse();
+        fileMap[key] ??= <int, ImageData>{};
         switch (book.whichData()) {
           case BookResponse_Data.imageData:
-            final Either<Failure, void> res =
-                bookMap[key]!.imageData.add(book.imageData);
+            fileMap[key]?[book.imageData.imageID.toInt()] ??= ImageData();
+
+            final ImageData id = fileMap[key]![book.imageData.imageID.toInt()]!;
+            final Either<Failure, void> res = id.add(book.imageData);
             if (res.isLeft()) {
               return Left(res.asLeft());
             }
+
+            fileMap[key]?[book.imageData.imageID.toInt()] = id;
             break;
           case BookResponse_Data.content:
             bookMap[key]!.content = book.content;
@@ -108,6 +117,13 @@ class BookServiceImpl implements BookService {
           },
         ).toList();
 
+        final List<ImageData>? files = fileMap[e.value.id.toInt()]
+            ?.entries
+            .map(
+              (e) => e.value,
+            )
+            .toList();
+
         return BookModel(
           id: e.value.id.toInt(),
           title: e.value.content.title,
@@ -124,7 +140,7 @@ class BookServiceImpl implements BookService {
           updatedAt: updatedAt,
           authors: authors,
           genres: genres,
-          file: e.value.imageData,
+          files: files,
           stock: e.value.content.hasStock() ? e.value.content.stock : null,
           weight: e.value.content.hasWeight() ? e.value.content.weight : null,
         );

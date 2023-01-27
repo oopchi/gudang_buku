@@ -1,29 +1,23 @@
 import 'dart:ffi';
 import 'dart:io';
-import 'dart:math';
-import 'dart:typed_data';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/foundation.dart';
 import 'package:gudang_buku/domain/dto/image_data.pb.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:grpc/src/client/common.dart';
-import 'package:gudang_buku/config/constant/routes.dart';
 import 'package:gudang_buku/domain/dto/user_request.pb.dart';
 import 'package:gudang_buku/domain/dto/user_response.pb.dart';
 import 'package:gudang_buku/domain/dto/user_service.pbgrpc.dart';
 import 'package:gudang_buku/domain/model/user_model.dart';
 import 'package:gudang_buku/infra/local/local_storage.dart';
-import 'package:gudang_buku/infra/repository/user_repository.dart';
 import 'package:gudang_buku/util/dartz_helper.dart';
 import 'package:gudang_buku/util/exception_helper.dart';
 import 'package:gudang_buku/util/failure_helper.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dartz/dartz.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:gudang_buku/util/file_streamer.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:gudang_buku/config/constant/file.dart';
 
 class AuthServiceImpl {
@@ -31,42 +25,97 @@ class AuthServiceImpl {
     required LocalStorage localStorage,
     required UserServiceClient service,
   })  : _localStorage = localStorage,
-        _service = service;
+        _service = service {
+    _init();
+  }
 
   final LocalStorage _localStorage;
   final UserServiceClient _service;
 
+  bool ready = false;
   UserModel? _currentUser;
 
   UserModel? getUser() => _currentUser;
 
   bool isLoggedIn() => _currentUser != null;
 
+  Future<void> _init() async {
+    _currentUser =
+        await _localStorage.readAt<UserModel>(LocalStoragePath.user, 0);
+    ready = true;
+  }
+
   Future<Either<Failure, UserModel>> loginWithEmailAndPassword({
     required String email,
     required String password,
   }) async {
     try {
-      final ResponseStream<LoginUserResponse> stream = _service.loginUser(LoginUserRequest(
+      final ResponseStream<LoginUserResponse> stream =
+          _service.loginUser(LoginUserRequest(
         content: LoginUserRequestContent(
           email: email,
           password: password,
         ),
       ));
 
+      final LoginUserResponse response = LoginUserResponse();
+
       await for (final LoginUserResponse res in stream) {
         switch (res.whichData()) {
           case LoginUserResponse_Data.content:
-            res.content.
+            response.content = res.content;
             break;
           case LoginUserResponse_Data.userData:
+            final UserResponse ud = response.userData;
+            switch (res.userData.whichData()) {
+              case UserResponse_Data.content:
+                ud.content = res.userData.content;
+                break;
+              case UserResponse_Data.imageData:
+                final ImageData id = ud.imageData;
+                id.add(res.userData.imageData);
+                ud.imageData = id;
+                break;
+              case UserResponse_Data.notSet:
+                break;
+            }
+            response.userData = ud;
             break;
           case LoginUserResponse_Data.notSet:
             break;
         }
       }
 
-      return Right(userCredential);
+      final UserModel userModel = UserModel(
+        createdAt: response.userData.content.createdAt.toDateTime(),
+        id: response.id.toInt(),
+        name: response.userData.content.name,
+        email: response.userData.content.hasEmail()
+            ? response.userData.content.email
+            : null,
+        emailVerified: response.userData.content.hasEmailVerified()
+            ? response.userData.content.emailVerified
+            : false,
+        phoneNum: response.userData.content.hasPhoneNumber()
+            ? response.userData.content.phoneNumber
+            : null,
+        phoneNumVerified: response.userData.content.hasPhoneNumberVerified()
+            ? response.userData.content.phoneNumberVerified
+            : false,
+        updatedAt: response.userData.content.hasUpdatedAt()
+            ? response.userData.content.updatedAt.toDateTime()
+            : null,
+        accessToken: response.content.accessToken,
+        refreshToken: response.content.refreshToken,
+        profilePicture: response.userData.imageData.chunk,
+      );
+
+      await _localStorage.overwrite<UserModel>(
+          LocalStoragePath.user, userModel);
+
+      _currentUser = userModel;
+
+      return Right(userModel);
     } on FirebaseAuthException catch (e) {
       return Left(_handleFirebaseAuthFailure(e));
     } on ServerException {
@@ -118,34 +167,36 @@ class AuthServiceImpl {
             response.content = res.content;
             break;
           case LoginUserResponse_Data.userData:
+            final UserResponse ud = response.userData;
             switch (res.userData.whichData()) {
               case UserResponse_Data.content:
-                response.userData.content = res.userData.content;
+                ud.content = res.userData.content;
                 break;
               case UserResponse_Data.imageData:
-                final Either<Failure, void> r =
-                    response.userData.imageData.add(res.userData.imageData);
+                final ImageData id = ud.imageData;
+                final Either<Failure, void> r = id.add(res.userData.imageData);
                 if (r.isLeft()) {
                   return Left(r.asLeft());
                 }
+                ud.imageData = id;
                 break;
               case UserResponse_Data.notSet:
                 return const Left(
                     ServerFailure('Invalid response from server'));
             }
+            response.userData = ud;
             break;
           case LoginUserResponse_Data.notSet:
             return const Left(ServerFailure('Invalid response from server'));
         }
       }
 
-      List<Uint8>? profilePicture;
+      List<int>? profilePicture;
 
-      //TODO(CALVIN): add google authentication here
-      // if (googleUser.photoUrl != null) {
-      // final String url = googleUser.photoUrl!;
-      // final Uri uri = Uri.parse(url);
-      // }
+      if (googleUser.photoUrl != null) {
+        final String url = googleUser.photoUrl!;
+        profilePicture = await _getImage(url);
+      }
 
       final UserModel userModel = UserModel(
         createdAt: response.userData.content.createdAt.toDateTime(),
@@ -174,6 +225,8 @@ class AuthServiceImpl {
       await _localStorage.overwrite<UserModel>(
           LocalStoragePath.user, userModel);
 
+      _currentUser = userModel;
+
       return Right(userModel);
     } on FirebaseAuthException catch (e) {
       return Left(_handleFirebaseAuthFailure(e));
@@ -184,7 +237,7 @@ class AuthServiceImpl {
     }
   }
 
-  void _getImage(String url) async {
+  Future<List<int>?> _getImage(String url) async {
     var uri = Uri.parse(url);
 
     try {
@@ -194,13 +247,10 @@ class AuthServiceImpl {
       );
 
       if (response.contentLength == 0) {
-        return;
+        return null;
       }
-      Directory tempDir = await getTemporaryDirectory();
-      String tempPath = tempDir.path;
 
-      File file = File('$tempPath/profile.png');
-      await file.writeAsBytes(response.bodyBytes);
+      return response.bodyBytes;
     } catch (e) {}
   }
 
@@ -274,8 +324,6 @@ class AuthServiceImpl {
         email: email,
         password: password,
       );
-    } on FirebaseAuthException catch (e) {
-      return Left(_handleFirebaseAuthFailure(e));
     } on ServerException {
       return const Left(ServerFailure('Server Failure'));
     } on SocketException {

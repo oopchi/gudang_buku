@@ -4,6 +4,7 @@ import 'package:gudang_buku/domain/dto/discount_service.pbgrpc.dart';
 import 'package:gudang_buku/domain/dto/discount_request.pb.dart';
 import 'package:gudang_buku/domain/dto/discount_response.pb.dart';
 import 'package:dartz/dartz.dart';
+import 'package:gudang_buku/domain/dto/image_data.pb.dart';
 import 'package:gudang_buku/domain/dto/pagination_response.pb.dart';
 import 'package:gudang_buku/domain/model/author_model.dart';
 import 'package:gudang_buku/domain/model/book_model.dart';
@@ -26,8 +27,11 @@ class DiscountServiceImpl implements DiscountService {
     try {
       final Map<int, DiscountResponse> discountMap = <int, DiscountResponse>{};
 
-      final Map<int, Map<int, BookResponse>> bookMapMap =
+      final Map<int, Map<int, BookResponse>> bookMap =
           <int, Map<int, BookResponse>>{};
+
+      final Map<int, Map<int, ImageData>> fileMap =
+          <int, Map<int, ImageData>>{};
 
       final Map<int, PaginationResponse> paginationMap =
           <int, PaginationResponse>{};
@@ -44,21 +48,31 @@ class DiscountServiceImpl implements DiscountService {
             discountMap[key]?.content = discount.content;
             break;
           case DiscountResponse_Data.book:
-            bookMapMap[key] ??= <int, BookResponse>{};
-            bookMapMap[key]![discount.book.id.toInt()] ??= BookResponse();
+            final int bookKey = discount.book.id.toInt();
+
+            bookMap[key] ??= <int, BookResponse>{};
+            bookMap[key]![bookKey] ??= BookResponse();
+
+            fileMap[bookKey] ??= <int, ImageData>{};
+
             switch (discount.book.whichData()) {
               case BookResponse_Data.imageData:
-                final Either<Failure, void> res = discountMap[key]!
-                    .book
-                    .imageData
-                    .add(discount.book.imageData);
+                fileMap[bookKey]![discount.book.imageData.imageID.toInt()] ??=
+                    ImageData();
+
+                final ImageData id =
+                    fileMap[bookKey]![discount.book.imageData.imageID.toInt()]!;
+
+                final Either<Failure, void> res =
+                    id.add(discount.book.imageData);
                 if (res.isLeft()) {
                   return Left(res.asLeft());
                 }
+
+                fileMap[bookKey]![discount.book.imageData.imageID.toInt()] = id;
                 break;
               case BookResponse_Data.content:
-                bookMapMap[key]![discount.book.id.toInt()]!.content =
-                    discount.book.content;
+                bookMap[key]![bookKey]!.content = discount.book.content;
                 break;
               case BookResponse_Data.pagination:
                 paginationMap[key] = discount.book.pagination;
@@ -79,7 +93,7 @@ class DiscountServiceImpl implements DiscountService {
             ? e.value.content.updatedAt.toDateTime()
             : null;
 
-        final List<BookModel> books = bookMapMap[e.value.id]?.entries.map((e) {
+        final List<BookModel> books = bookMap[e.value.id]?.entries.map((e) {
               final DateTime? updatedAt = e.value.content.hasUpdatedAt()
                   ? e.value.content.updatedAt.toDateTime()
                   : null;
@@ -116,6 +130,9 @@ class DiscountServiceImpl implements DiscountService {
                 },
               ).toList();
 
+              final List<ImageData>? files =
+                  fileMap[e.value.id]?.entries.map((e) => e.value).toList();
+
               return BookModel(
                 id: e.value.id.toInt(),
                 title: e.value.content.title,
@@ -132,7 +149,7 @@ class DiscountServiceImpl implements DiscountService {
                 updatedAt: updatedAt,
                 authors: authors,
                 genres: genres,
-                file: e.value.imageData,
+                files: files,
                 stock:
                     e.value.content.hasStock() ? e.value.content.stock : null,
                 weight:

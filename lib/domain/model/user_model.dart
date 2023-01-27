@@ -24,7 +24,7 @@ class UserModel {
   @HiveField(0)
   final int id;
   @HiveField(1)
-  final List<Uint8>? profilePicture;
+  final List<int>? profilePicture;
   @HiveField(2)
   final String? email;
   @HiveField(3)

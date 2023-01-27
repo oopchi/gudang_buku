@@ -11,7 +11,7 @@ class BookModel extends Equatable {
     required this.averageRating,
     required this.createdAt,
     this.description,
-    this.file,
+    this.files,
     required this.genres,
     required this.isRated,
     required this.numOfBought,
@@ -38,7 +38,7 @@ class BookModel extends Equatable {
   final int numOfBought;
   final bool isRated;
   final List<AuthorModel> authors;
-  final ImageData? file;
+  final List<ImageData>? files;
 
   @override
   List<Object?> get props => <Object?>[
@@ -48,7 +48,7 @@ class BookModel extends Equatable {
         averageRating,
         createdAt,
         description,
-        file,
+        files,
         genres,
         isRated,
         numOfBought,

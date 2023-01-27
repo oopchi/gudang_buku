@@ -20,7 +20,7 @@ import 'package:gudang_buku/domain/dto_fs/review_response.dart';
 import 'package:gudang_buku/domain/model/event_model.dart';
 import 'package:gudang_buku/domain/model/favorite_button_model.dart';
 import 'package:gudang_buku/domain/model/product_model.dart';
-import 'package:gudang_buku/domain/model/promo_model.dart';
+import 'package:gudang_buku/domain/model/promo_code_model.dart';
 import 'package:gudang_buku/domain/dto_fs/promo_response.dart';
 import 'package:gudang_buku/util/dartz_helper.dart';
 import 'package:gudang_buku/util/failure_helper.dart';

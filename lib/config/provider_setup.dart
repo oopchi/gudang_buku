@@ -25,12 +25,6 @@ import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 
 final providers = <SingleChildWidget>[
-  Provider<AuthServiceImpl>(
-    create: (context) => AuthServiceImpl(
-      localStorage: LocalStorageHive(),
-      userRepository: UserRepositoryFS(),
-    ),
-  ),
   Provider<ClientChannel>(
     create: (context) => ClientChannel(
       dotenv.env['BASE_URL'] ?? 'localhost',
@@ -57,6 +51,12 @@ final providers = <SingleChildWidget>[
   ),
   ProxyProvider<ClientChannel, DiscountServiceClient>(
     update: (context, value, previous) => DiscountServiceClient(value),
+  ),
+  ProxyProvider<UserServiceClient, AuthServiceImpl>(
+    update: (context, value, previous) => AuthServiceImpl(
+      localStorage: LocalStorageHive(),
+      service: value,
+    ),
   ),
   Provider<NewsletterController>(
     create: (context) => NewsletterController(
