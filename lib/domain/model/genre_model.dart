@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:gudang_buku/domain/dto/genre_response.pb.dart';
 
 class GenreModel extends Equatable {
   const GenreModel({
@@ -20,4 +21,20 @@ class GenreModel extends Equatable {
         createdAt,
         updatedAt,
       ];
+}
+
+extension GenreResponseExt on List<GenreResponse> {
+  List<GenreModel> toGenreModels() => asMap().entries.map(
+        (e) {
+          final DateTime? updatedAt =
+              e.value.hasUpdatedAt() ? e.value.updatedAt.toDateTime() : null;
+
+          return GenreModel(
+            name: e.value.name,
+            id: e.value.id.toInt(),
+            createdAt: e.value.createdAt.toDateTime(),
+            updatedAt: updatedAt,
+          );
+        },
+      ).toList();
 }

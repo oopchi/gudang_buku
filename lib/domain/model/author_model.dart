@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:gudang_buku/domain/dto/author_response.pb.dart';
 
 class AuthorModel extends Equatable {
   const AuthorModel({
@@ -20,4 +21,20 @@ class AuthorModel extends Equatable {
         createdAt,
         updatedAt,
       ];
+}
+
+extension AuthorResponseExt on List<AuthorResponse> {
+  List<AuthorModel> toAuthorModels() => asMap().entries.map(
+        (e) {
+          final DateTime? updatedAt =
+              e.value.hasUpdatedAt() ? e.value.updatedAt.toDateTime() : null;
+
+          return AuthorModel(
+            name: e.value.name,
+            id: e.value.id.toInt(),
+            createdAt: e.value.createdAt.toDateTime(),
+            updatedAt: updatedAt,
+          );
+        },
+      ).toList();
 }

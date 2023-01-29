@@ -1,86 +1,66 @@
 import 'package:grpc/grpc.dart';
 import 'package:gudang_buku/domain/dto/book_response.pb.dart';
-import 'package:gudang_buku/domain/dto/discount_service.pbgrpc.dart';
-import 'package:gudang_buku/domain/dto/discount_request.pb.dart';
-import 'package:gudang_buku/domain/dto/discount_response.pb.dart';
 import 'package:dartz/dartz.dart';
 import 'package:gudang_buku/domain/dto/image_data.pb.dart';
 import 'package:gudang_buku/domain/dto/pagination_response.pb.dart';
+import 'package:gudang_buku/domain/dto/promo_code_request.pb.dart';
+import 'package:gudang_buku/domain/dto/promo_code_response.pb.dart';
+import 'package:gudang_buku/domain/dto/promo_code_service.pbgrpc.dart';
 import 'package:gudang_buku/domain/model/author_model.dart';
 import 'package:gudang_buku/domain/model/book_model.dart';
-import 'package:gudang_buku/domain/model/discount_model.dart';
 import 'package:gudang_buku/domain/model/genre_model.dart';
-import 'package:gudang_buku/service/discount_service.dart';
+import 'package:gudang_buku/domain/model/list_pagination_model.dart';
+import 'package:gudang_buku/domain/model/pagination_model.dart';
+import 'package:gudang_buku/domain/model/promo_code_model.dart';
+import 'package:gudang_buku/service/promo_code_service.dart';
 import 'package:gudang_buku/util/dartz_helper.dart';
+import 'package:gudang_buku/util/discount_helper.dart';
 import 'package:gudang_buku/util/failure_helper.dart';
 import 'package:gudang_buku/util/file_streamer.dart';
 
 class PromoCodeServiceImpl implements PromoCodeService {
   const PromoCodeServiceImpl({
-    required PromoCodeServiceClient discountServiceClient,
-  }) : _discountServiceClient = discountServiceClient;
+    required PromoCodeServiceClient promoCodeServiceClient,
+  }) : _promoCodeServiceClient = promoCodeServiceClient;
 
-  final PromoCodeServiceClient _discountServiceClient;
+  final PromoCodeServiceClient _promoCodeServiceClient;
 
   @override
-  Future<Either<Failure, List<PromoCodeModel>>> getAllPromoCodes() async {
+  Future<Either<Failure, ListPaginationModel<PromoCodeModel>>>
+      getAllOngoingPromoCodes({
+    int? pageID,
+    int? pageSize,
+  }) async {
     try {
-      final Map<int, PromoCodeResponse> discountMap =
+      final Map<int, PromoCodeResponse> promoCodeMap =
           <int, PromoCodeResponse>{};
 
-      final Map<int, Map<int, BookResponse>> bookMap =
-          <int, Map<int, BookResponse>>{};
+      ImageData? file;
 
-      final Map<int, Map<int, ImageData>> fileMap =
-          <int, Map<int, ImageData>>{};
+      PaginationModel? pagination;
 
-      final Map<int, PaginationResponse> paginationMap =
-          <int, PaginationResponse>{};
+      final ResponseStream<PromoCodeResponse> response = _promoCodeServiceClient
+          .listOngoingPromoCodes(ListOngoingPromoCodesRequest());
 
-      final ResponseStream<PromoCodeResponse> response =
-          _discountServiceClient.listPromoCodes(ListPromoCodeRequest());
+      await for (final PromoCodeResponse promoCode in response) {
+        final int key = promoCode.id.toInt();
+        promoCodeMap[key] ??= PromoCodeResponse();
 
-      await for (final PromoCodeResponse discount in response) {
-        final int key = discount.id.toInt();
-        discountMap[key] ??= PromoCodeResponse();
-
-        switch (discount.whichData()) {
+        switch (promoCode.whichData()) {
           case PromoCodeResponse_Data.content:
-            discountMap[key]?.content = discount.content;
+            promoCodeMap[key]?.content = promoCode.content;
             break;
-          case PromoCodeResponse_Data.book:
-            final int bookKey = discount.book.id.toInt();
+          case PromoCodeResponse_Data.imageData:
+            file ??= ImageData();
 
-            bookMap[key] ??= <int, BookResponse>{};
-            bookMap[key]![bookKey] ??= BookResponse();
+            final ImageData id = file;
 
-            fileMap[bookKey] ??= <int, ImageData>{};
-
-            switch (discount.book.whichData()) {
-              case BookResponse_Data.imageData:
-                fileMap[bookKey]![discount.book.imageData.imageID.toInt()] ??=
-                    ImageData();
-
-                final ImageData id =
-                    fileMap[bookKey]![discount.book.imageData.imageID.toInt()]!;
-
-                final Either<Failure, void> res =
-                    id.add(discount.book.imageData);
-                if (res.isLeft()) {
-                  return Left(res.asLeft());
-                }
-
-                fileMap[bookKey]![discount.book.imageData.imageID.toInt()] = id;
-                break;
-              case BookResponse_Data.content:
-                bookMap[key]![bookKey]!.content = discount.book.content;
-                break;
-              case BookResponse_Data.pagination:
-                paginationMap[key] = discount.book.pagination;
-                break;
-              case BookResponse_Data.notSet:
-                break;
+            final Either<Failure, void> res = id.add(promoCode.imageData);
+            if (res.isLeft()) {
+              return Left(res.asLeft());
             }
+
+            file = id;
             break;
           case PromoCodeResponse_Data.notSet:
             break;
@@ -88,94 +68,44 @@ class PromoCodeServiceImpl implements PromoCodeService {
         }
       }
 
-      final List<PromoCodeModel> discountModels =
-          discountMap.entries.map((MapEntry<int, PromoCodeResponse> e) {
+      final List<PromoCodeModel> promoCodeModels =
+          promoCodeMap.entries.map((MapEntry<int, PromoCodeResponse> e) {
         final DateTime? updatedAt = e.value.content.hasUpdatedAt()
             ? e.value.content.updatedAt.toDateTime()
             : null;
 
-        final List<BookModel> books = bookMap[e.value.id]?.entries.map((e) {
-              final DateTime? updatedAt = e.value.content.hasUpdatedAt()
-                  ? e.value.content.updatedAt.toDateTime()
-                  : null;
-
-              final List<AuthorModel> authors =
-                  e.value.content.authors.asMap().entries.map(
-                (e) {
-                  final DateTime? updatedAt = e.value.hasUpdatedAt()
-                      ? e.value.updatedAt.toDateTime()
-                      : null;
-
-                  return AuthorModel(
-                    name: e.value.name,
-                    id: e.value.id.toInt(),
-                    createdAt: e.value.createdAt.toDateTime(),
-                    updatedAt: updatedAt,
-                  );
-                },
-              ).toList();
-
-              final List<GenreModel> genres =
-                  e.value.content.genres.asMap().entries.map(
-                (e) {
-                  final DateTime? updatedAt = e.value.hasUpdatedAt()
-                      ? e.value.updatedAt.toDateTime()
-                      : null;
-
-                  return GenreModel(
-                    name: e.value.name,
-                    id: e.value.id.toInt(),
-                    createdAt: e.value.createdAt.toDateTime(),
-                    updatedAt: updatedAt,
-                  );
-                },
-              ).toList();
-
-              final List<ImageData>? files =
-                  fileMap[e.value.id]?.entries.map((e) => e.value).toList();
-
-              return BookModel(
-                id: e.value.id.toInt(),
-                title: e.value.content.title,
-                averageRating: e.value.content.averageRating,
-                createdAt: e.value.content.createdAt.toDateTime(),
-                isRated: e.value.content.isRated,
-                numOfBought: e.value.content.numOfBought.toInt(),
-                numOfRating: e.value.content.numOfRating.toInt(),
-                price: e.value.content.price,
-                productStatus: e.value.content.productStatus,
-                description: e.value.content.hasDescription()
-                    ? e.value.content.description
-                    : null,
-                updatedAt: updatedAt,
-                authors: authors,
-                genres: genres,
-                files: files,
-                stock:
-                    e.value.content.hasStock() ? e.value.content.stock : null,
-                weight:
-                    e.value.content.hasWeight() ? e.value.content.weight : null,
-              );
-            }).toList() ??
-            [];
-
         final DateTime? expirationDate = e.value.content.hasExpirationDate()
             ? e.value.content.expirationDate.toDateTime()
             : null;
+
         return PromoCodeModel(
           id: e.value.id.toInt(),
+          promoClassID: e.value.content.promoClassID.toInt(),
+          code: e.value.content.code,
           discountAmount: e.value.content.discountAmount,
+          discountType: e.value.content.discountType.toDiscountType(),
+          maximumDiscountAmount: e.value.content.maximumDiscountAmount,
+          minimumPurchaseAmount: e.value.content.minimumPurchaseAmount,
           createdAt: e.value.content.createdAt.toDateTime(),
           updatedAt: updatedAt,
-          discountType: e.value.content.discountType,
+          file: file,
           expirationDate: expirationDate,
-          maximumPromoCodeAmount: e.value.content.maximumPromoCodeAmount,
           numOfUse: e.value.content.numOfUse,
-          books: books,
         );
       }).toList();
 
-      return Right(discountModels);
+      final ListPaginationModel<PromoCodeModel> promoCodePaginationList =
+          ListPaginationModel<PromoCodeModel>(
+        contents: promoCodeModels,
+        paginationModel: pagination ??
+            PaginationModel(
+              totalElements: promoCodeModels.length,
+              currElements: promoCodeModels.length,
+              currPage: 1,
+            ),
+      );
+
+      return Right(promoCodePaginationList);
     } on GrpcError catch (e) {
       return Left(ServerFailure(e.toString()));
     } catch (e) {

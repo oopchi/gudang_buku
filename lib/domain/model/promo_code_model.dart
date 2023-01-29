@@ -1,52 +1,49 @@
-import 'package:gudang_buku/domain/model/product_model.dart';
+import 'package:gudang_buku/domain/dto/image_data.pb.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter/material.dart';
+import 'package:gudang_buku/util/discount_helper.dart';
 
 class PromoCodeModel extends Equatable {
   const PromoCodeModel({
     required this.id,
-    required this.title,
-    required this.description,
-    required this.productCardModels,
-    this.dateTimeRange,
-    required this.amount,
-    required this.amountType,
+    required this.code,
+    required this.createdAt,
+    required this.discountAmount,
+    required this.discountType,
+    this.expirationDate,
+    required this.maximumDiscountAmount,
+    required this.minimumPurchaseAmount,
+    required this.numOfUse,
+    required this.promoClassID,
+    this.updatedAt,
+    this.file,
   });
 
   final int id;
-  final String title;
-  final String description;
-  final List<ProductModel> productCardModels;
-  final DateTimeRange? dateTimeRange;
-  final int amount;
-  final String amountType;
-
-  PromoCodeModel copyWith({
-    String? id,
-    String? title,
-    String? description,
-    List<ProductModel>? productCardModels,
-    DateTimeRange? dateTimeRange,
-    int? amount,
-    String? amountType,
-  }) =>
-      PromoCodeModel(
-        id: id ?? this.id,
-        title: title ?? this.title,
-        description: description ?? this.description,
-        productCardModels: productCardModels ?? this.productCardModels,
-        amount: amount ?? this.amount,
-        amountType: amountType ?? this.amountType,
-      );
+  final String code;
+  final double discountAmount;
+  final DiscountType discountType;
+  final DateTime? expirationDate;
+  final double minimumPurchaseAmount;
+  final double maximumDiscountAmount;
+  final int numOfUse;
+  final int promoClassID;
+  final DateTime createdAt;
+  final DateTime? updatedAt;
+  final ImageData? file;
 
   @override
   List<Object?> get props => <Object?>[
         id,
-        title,
-        description,
-        productCardModels,
-        dateTimeRange,
-        amount,
-        amountType,
+        code,
+        discountAmount,
+        discountType,
+        expirationDate,
+        minimumPurchaseAmount,
+        maximumDiscountAmount,
+        numOfUse,
+        promoClassID,
+        createdAt,
+        updatedAt,
+        file,
       ];
 }

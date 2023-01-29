@@ -1,4 +1,7 @@
+import 'package:fixnum/fixnum.dart';
+import 'package:flutter/foundation.dart';
 import 'package:grpc/grpc.dart';
+import 'package:gudang_buku/config/constant/file.dart';
 import 'package:gudang_buku/domain/dto/book_request.pb.dart';
 import 'package:gudang_buku/domain/dto/book_response.pb.dart';
 import 'package:gudang_buku/domain/dto/book_service.pbgrpc.dart';
@@ -18,24 +21,16 @@ import 'package:gudang_buku/util/file_streamer.dart';
 
 class BookServiceImpl implements BookService {
   const BookServiceImpl({
-    required BookServiceClient discountServiceClient,
+    required BookServiceClient bookServiceClient,
     required LocalStorage localStorage,
-  })  : _discountServiceClient = discountServiceClient,
+  })  : _bookServiceClient = bookServiceClient,
         _localStorage = localStorage;
 
-  final BookServiceClient _discountServiceClient;
+  final BookServiceClient _bookServiceClient;
   final LocalStorage _localStorage;
 
-  @override
-  Future<Either<Failure, ListPaginationModel<BookModel>>> getAllBooks({
-    int? pageID,
-    int? pageSize,
-    String? sort,
-    double? minPrice,
-    double? maxPrice,
-    int? minRating,
-    int? maxRating,
-  }) async {
+  Future<Either<Failure, ListPaginationModel<BookModel>>> _receiveBooks(
+      ResponseStream<BookResponse> response) async {
     try {
       final Map<int, BookResponse> bookMap = <int, BookResponse>{};
 
@@ -43,17 +38,6 @@ class BookServiceImpl implements BookService {
           <int, Map<int, ImageData>>{};
 
       late final PaginationResponse pagination;
-
-      final ResponseStream<BookResponse> response =
-          _discountServiceClient.listBooks(ListBooksRequest(
-        maxPrice: maxPrice,
-        maxRating: maxRating,
-        minPrice: minPrice,
-        minRating: minRating,
-        pageID: pageID,
-        pageSize: pageSize,
-        sort: sort,
-      ));
 
       await for (final BookResponse book in response) {
         final int key = book.id.toInt();
@@ -88,34 +72,9 @@ class BookServiceImpl implements BookService {
             : null;
 
         final List<AuthorModel> authors =
-            e.value.content.authors.asMap().entries.map(
-          (e) {
-            final DateTime? updatedAt =
-                e.value.hasUpdatedAt() ? e.value.updatedAt.toDateTime() : null;
+            e.value.content.authors.toAuthorModels();
 
-            return AuthorModel(
-              name: e.value.name,
-              id: e.value.id.toInt(),
-              createdAt: e.value.createdAt.toDateTime(),
-              updatedAt: updatedAt,
-            );
-          },
-        ).toList();
-
-        final List<GenreModel> genres =
-            e.value.content.genres.asMap().entries.map(
-          (e) {
-            final DateTime? updatedAt =
-                e.value.hasUpdatedAt() ? e.value.updatedAt.toDateTime() : null;
-
-            return GenreModel(
-              name: e.value.name,
-              id: e.value.id.toInt(),
-              createdAt: e.value.createdAt.toDateTime(),
-              updatedAt: updatedAt,
-            );
-          },
-        ).toList();
+        final List<GenreModel> genres = e.value.content.genres.toGenreModels();
 
         final List<ImageData>? files = fileMap[e.value.id.toInt()]
             ?.entries
@@ -164,5 +123,108 @@ class BookServiceImpl implements BookService {
     }
 
     return Left(ServerFailure('hi'));
+  }
+
+  @override
+  Future<Either<Failure, ListPaginationModel<BookModel>>> addUserFavoriteBook(
+      AddUserFavoriteBookRequest request) async {
+    final ResponseStream<BookResponse> response =
+        _bookServiceClient.addUserFavoriteBook(request);
+
+    return _receiveBooks(response);
+  }
+
+  @override
+  Future<Either<Failure, ListPaginationModel<BookModel>>> getAllBooks(
+      ListBooksRequest request) async {
+    final ResponseStream<BookResponse> response =
+        _bookServiceClient.listBooks(request);
+
+    return _receiveBooks(response);
+  }
+
+  @override
+  Future<Either<Failure, ListPaginationModel<BookModel>>>
+      getAllUserFavoriteBooks(ListUserFavoriteBooksRequest request) async {
+    final ResponseStream<BookResponse> response =
+        _bookServiceClient.listUserFavoriteBooks(request);
+
+    return _receiveBooks(response);
+  }
+
+  @override
+  Future<Either<Failure, ListPaginationModel<BookModel>>>
+      removeUserFavoriteBook(DeleteUserFavoriteBookRequest request) async {
+    final ResponseStream<BookResponse> response =
+        _bookServiceClient.deleteUserFavoriteBook(request);
+
+    return _receiveBooks(response);
+  }
+
+  Stream<CreateBookRequest> _createBook(CreateBookContent content,
+      Map<int, ImageMetaData> metadatas, Map<int, Uint8List> files) async* {
+    yield CreateBookRequest(
+      content: content,
+    );
+
+    for (final MapEntry<int, ImageMetaData> entry in metadatas.entries) {
+      yield CreateBookRequest(
+        imageData: ImageData(
+          imageID: Int64(entry.key),
+          metaData: entry.value,
+        ),
+      );
+
+      final ReadBuffer readBuffer =
+          ReadBuffer(ByteData.view(files[entry.key]!.buffer));
+
+      while (readBuffer.hasRemaining) {
+        final Uint8List byte = readBuffer.getUint8List(AppFile.maxByte);
+        yield CreateBookRequest(
+          imageData: ImageData(
+            imageID: Int64(entry.key),
+            chunk: byte,
+          ),
+        );
+      }
+    }
+  }
+
+  @override
+  Future<Either<Failure, ListPaginationModel<BookModel>>> createBook(
+      CreateBookContent content,
+      Map<int, ImageMetaData> metadatas,
+      Map<int, Uint8List> files) async {
+    final ResponseStream<BookResponse> response =
+        _bookServiceClient.createBook(_createBook(content, metadatas, files));
+
+    return _receiveBooks(response);
+  }
+
+  @override
+  Future<Either<Failure, ListPaginationModel<BookModel>>> getBook(
+      GetBookRequest request) async {
+    final ResponseStream<BookResponse> response =
+        _bookServiceClient.getBook(request);
+
+    return _receiveBooks(response);
+  }
+
+  @override
+  Future<Either<Failure, ListPaginationModel<BookModel>>> forceDeleteBooks(
+      DeleteBooksRequest request) async {
+    final ResponseStream<BookResponse> response =
+        _bookServiceClient.forceDeleteBooks(request);
+
+    return _receiveBooks(response);
+  }
+
+  @override
+  Future<Either<Failure, ListPaginationModel<BookModel>>> softDeleteBooks(
+      DeleteBooksRequest request) async {
+    final ResponseStream<BookResponse> response =
+        _bookServiceClient.softDeleteBooks(request);
+
+    return _receiveBooks(response);
   }
 }

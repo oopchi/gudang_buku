@@ -252,6 +252,8 @@ class AuthServiceImpl {
 
       return response.bodyBytes;
     } catch (e) {}
+
+    return null;
   }
 
   Stream<CreateUserRequest> _createUser(String email, String password,

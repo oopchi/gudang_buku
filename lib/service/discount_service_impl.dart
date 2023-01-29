@@ -23,7 +23,16 @@ class DiscountServiceImpl implements DiscountService {
   final DiscountServiceClient _discountServiceClient;
 
   @override
-  Future<Either<Failure, List<DiscountModel>>> getAllDiscounts() async {
+  Future<Either<Failure, List<DiscountModel>>> getAllDiscounts(
+      ListDiscountRequest request) async {
+    final ResponseStream<DiscountResponse> response =
+        _discountServiceClient.listDiscounts(request);
+
+    return _receiveDiscounts(response);
+  }
+
+  Future<Either<Failure, List<DiscountModel>>> _receiveDiscounts(
+      ResponseStream<DiscountResponse> response) async {
     try {
       final Map<int, DiscountResponse> discountMap = <int, DiscountResponse>{};
 
@@ -35,9 +44,6 @@ class DiscountServiceImpl implements DiscountService {
 
       final Map<int, PaginationResponse> paginationMap =
           <int, PaginationResponse>{};
-
-      final ResponseStream<DiscountResponse> response =
-          _discountServiceClient.listDiscounts(ListDiscountRequest());
 
       await for (final DiscountResponse discount in response) {
         final int key = discount.id.toInt();
