@@ -1,5 +1,6 @@
 import 'dart:ffi';
 
+import 'package:gudang_buku/domain/model/token_model.dart';
 import 'package:hive/hive.dart';
 
 part 'user_model.g.dart';
@@ -42,7 +43,7 @@ class UserModel {
   @HiveField(9)
   final DateTime? updatedAt;
   @HiveField(10)
-  final String accessToken;
+  final TokenModel accessToken;
   @HiveField(11)
-  final String refreshToken;
+  final TokenModel refreshToken;
 }

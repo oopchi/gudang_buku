@@ -45,7 +45,7 @@ class _ProductMobilePageState extends State<ProductMobilePage> {
             authorRepository: AuthorRepositoryFS(),
             favoriteRepository: FavoriteRepositoryFS(),
             mediaRepository: MediaRepositoryFS(),
-            authServiceFS: Provider.of<AuthServiceImpl>(
+            authService: Provider.of<AuthServiceImpl>(
               context,
               listen: false,
             ),

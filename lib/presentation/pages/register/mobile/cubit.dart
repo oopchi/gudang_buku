@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+import 'package:gudang_buku/domain/model/user_model.dart';
 import 'package:gudang_buku/service/auth_service_impl.dart';
 import 'package:gudang_buku/util/dartz_helper.dart';
 import 'package:gudang_buku/util/failure_helper.dart';
@@ -10,11 +12,11 @@ import 'state.dart';
 
 class RegisterMobileCubit extends Cubit<RegisterMobileState> {
   RegisterMobileCubit({
-    required AuthServiceImpl authServiceFS,
-  })  : _authServiceFS = authServiceFS,
+    required AuthServiceImpl authService,
+  })  : _authService = authService,
         super(const RegisterMobileFormState());
 
-  final AuthServiceImpl _authServiceFS;
+  final AuthServiceImpl _authService;
 
   Future<void> load() async {}
 
@@ -22,15 +24,18 @@ class RegisterMobileCubit extends Cubit<RegisterMobileState> {
     required String name,
     required String email,
     required String password,
+    Uint8List? profilePicture,
   }) async {
     final RegisterMobileFormState oldState = state as RegisterMobileFormState;
 
     emit(const RegisterMobileLoading());
 
-    final Either<Failure, UserCredential> userRes =
-        await _authServiceFS.signUpWithEmailAndPassword(
+    final Either<Failure, UserModel> userRes =
+        await _authService.signUpWithEmailAndPassword(
       email: email,
       password: password,
+      name: name,
+      profilePicture: profilePicture,
     );
 
     if (userRes.isLeft()) {
@@ -45,16 +50,14 @@ class RegisterMobileCubit extends Cubit<RegisterMobileState> {
       return;
     }
 
-    await userRes.asRight().user?.updateDisplayName(name);
-
     emit(RegisterMobileSuccess());
   }
 
   Future<void> loginWithGoogle() async {
     emit(const RegisterMobileLoading());
 
-    final Either<Failure, UserCredential> userRes =
-        await _authServiceFS.loginWithGoogle();
+    final Either<Failure, UserModel> userRes =
+        await _authService.loginWithGoogle();
 
     if (userRes.isLeft()) {
       emit(RegisterMobileFailure(

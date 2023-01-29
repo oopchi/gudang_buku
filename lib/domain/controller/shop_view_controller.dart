@@ -31,7 +31,7 @@ class ShopViewController {
     required GenreRepository genreRepository,
     required BookRepository bookRepository,
     required FavoriteRepository favoriteRepository,
-    required AuthServiceImpl authServiceFS,
+    required AuthServiceImpl authService,
     required MediaRepository mediaRepository,
     required AuthorBookRepository authorBookRepository,
     required ReviewRepository reviewRepository,
@@ -42,7 +42,7 @@ class ShopViewController {
         _bookGenreRepository = bookGenreRepository,
         _mediaRepository = mediaRepository,
         _favoriteRepository = favoriteRepository,
-        _authServiceFS = authServiceFS,
+        _authService = authService,
         _authorBookRepository = authorBookRepository,
         _reviewRepository = reviewRepository,
         _authorRepository = authorRepository,
@@ -59,13 +59,13 @@ class ShopViewController {
   final BookGenreRepository _bookGenreRepository;
   final TransactionDetailRepository _transactionDetailRepository;
 
-  final AuthServiceImpl _authServiceFS;
+  final AuthServiceImpl _authService;
 
   Future<Either<Failure, String>> addToFavorite({
     required String bookId,
   }) async {
     return _favoriteRepository.addFavorite(
-      userId: _authServiceFS.getUser().uid,
+      userId: _authService.getUser().uid,
       bookId: bookId,
     );
   }
@@ -74,7 +74,7 @@ class ShopViewController {
     required String bookId,
   }) async {
     return _favoriteRepository.removeFavorite(
-      userId: _authServiceFS.getUser().uid,
+      userId: _authService.getUser().uid,
       bookId: bookId,
     );
   }
@@ -144,7 +144,7 @@ class ShopViewController {
 
     final Either<Failure, List<FavoriteResponse>> favoriteRes =
         await _favoriteRepository.fetchAllFavoritesForUserId(
-      userId: _authServiceFS.getUser().uid,
+      userId: _authService.getUser().uid,
     );
 
     if (favoriteRes.isLeft()) {

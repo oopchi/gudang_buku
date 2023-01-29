@@ -33,7 +33,7 @@ class _LoginMobilePageState extends State<LoginMobilePage> {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (BuildContext context) => LoginMobileCubit(
-        authServiceFS: Provider.of<AuthServiceImpl>(
+        authService: Provider.of<AuthServiceImpl>(
           context,
           listen: false,
         ),

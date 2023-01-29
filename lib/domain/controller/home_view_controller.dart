@@ -30,17 +30,17 @@ import 'package:flutter/material.dart';
 
 class HomeViewController {
   const HomeViewController({
-    required AuthServiceImpl authServiceFS,
+    required AuthServiceImpl authService,
     required BookServiceClient bookServiceClient,
     required DiscoveryServiceClient discoveryServiceClient,
-  })  : _authServiceFS = authServiceFS,
+  })  : _authService = authService,
         _bookServiceClient = bookServiceClient,
         _discoveryServiceClient = discoveryServiceClient;
 
   final BookServiceClient _bookServiceClient;
   final DiscoveryServiceClient _discoveryServiceClient;
 
-  final AuthServiceImpl _authServiceFS;
+  final AuthServiceImpl _authService;
 
   Future<Either<Failure, List<DiscoveryResponse>>> getAllDiscoveries() async {
     try {
@@ -112,7 +112,7 @@ class HomeViewController {
     required String bookId,
   }) async {
     return _favoriteRepository.addFavorite(
-      userId: _authServiceFS.getUser().uid,
+      userId: _authService.getUser().uid,
       bookId: bookId,
     );
   }
@@ -121,7 +121,7 @@ class HomeViewController {
     required String bookId,
   }) async {
     return _favoriteRepository.removeFavorite(
-      userId: _authServiceFS.getUser().uid,
+      userId: _authService.getUser().uid,
       bookId: bookId,
     );
   }
@@ -206,7 +206,7 @@ class HomeViewController {
 
     final Either<Failure, List<FavoriteResponse>> favoriteRes =
         await _favoriteRepository.fetchAllFavoritesForUserId(
-      userId: _authServiceFS.getUser().uid,
+      userId: _authService.getUser().uid,
     );
 
     if (favoriteRes.isLeft()) {

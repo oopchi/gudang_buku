@@ -21,7 +21,7 @@ class CartMobileCubit extends Cubit<CartMobileState> {
   CartMobileCubit({
     required bool Function() isMounted,
     required TransactionRepository transactionRepository,
-    required AuthServiceImpl authServiceFS,
+    required AuthServiceImpl authService,
     required TransactionDetailRepository transactionDetailRepository,
     required ProductController productController,
     required FavoriteRepository favoriteRepository,
@@ -32,7 +32,7 @@ class CartMobileCubit extends Cubit<CartMobileState> {
         _favoriteRepository = favoriteRepository,
         _transactionDetailRepository = transactionDetailRepository,
         _productController = productController,
-        _authServiceFS = authServiceFS,
+        _authService = authService,
         super(const CartMobileLoading());
   final bool Function() _isMounted;
 
@@ -42,12 +42,12 @@ class CartMobileCubit extends Cubit<CartMobileState> {
   final FavoriteRepository _favoriteRepository;
   final DiscountController _discountController;
 
-  final AuthServiceImpl _authServiceFS;
+  final AuthServiceImpl _authService;
 
   Future<void> load() async {
     final Either<Failure, TransactionResponse> transactionRes =
         await _transactionRepository.getCartTransaction(
-      uid: _authServiceFS.getUser().uid,
+      uid: _authService.getUser().uid,
     );
 
     if (transactionRes.isLeft()) {
@@ -125,7 +125,7 @@ class CartMobileCubit extends Cubit<CartMobileState> {
   ) async {
     final Either<Failure, String> transactionIdRes =
         await _transactionRepository.getCartTransactionId(
-      uid: _authServiceFS.getUser().uid,
+      uid: _authService.getUser().uid,
     );
 
     if (transactionIdRes.isLeft()) {
@@ -231,7 +231,7 @@ class CartMobileCubit extends Cubit<CartMobileState> {
     _emit(CartMobileBlockQtyChange());
     final Either<Failure, String> cartIdRes =
         await _transactionRepository.getCartTransactionId(
-      uid: _authServiceFS.getUser().uid,
+      uid: _authService.getUser().uid,
     );
 
     if (cartIdRes.isLeft()) {
@@ -283,7 +283,7 @@ class CartMobileCubit extends Cubit<CartMobileState> {
     _emit(CartMobileBlockQtyChange());
     final Either<Failure, String> cartIdRes =
         await _transactionRepository.getCartTransactionId(
-      uid: _authServiceFS.getUser().uid,
+      uid: _authService.getUser().uid,
     );
 
     if (cartIdRes.isLeft()) {
@@ -339,7 +339,7 @@ class CartMobileCubit extends Cubit<CartMobileState> {
   ) async {
     final Either<Failure, String> addToFavRes =
         await _favoriteRepository.addFavorite(
-      userId: _authServiceFS.getUser().uid,
+      userId: _authService.getUser().uid,
       bookId: product.id,
     );
 
@@ -379,7 +379,7 @@ class CartMobileCubit extends Cubit<CartMobileState> {
     _emit(const CartMobileLoading());
     final Either<Failure, String> discountRes =
         await _transactionRepository.addDiscountToCart(
-      uid: _authServiceFS.getUser().uid,
+      uid: _authService.getUser().uid,
       discountId: discount.id,
     );
 

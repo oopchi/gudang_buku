@@ -2,7 +2,9 @@ import 'dart:ffi';
 import 'dart:io';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/foundation.dart';
+import 'package:grpc/grpc.dart';
 import 'package:gudang_buku/domain/dto/image_data.pb.dart';
+import 'package:gudang_buku/domain/model/token_model.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:grpc/src/client/common.dart';
@@ -58,9 +60,34 @@ class AuthServiceImpl {
         ),
       ));
 
+      final Either<Failure, UserModel> res = await _receiveLoginUser(stream);
+      if (res.isLeft()) {
+        return Left(res.asLeft());
+      }
+
+      final UserModel userModel = res.asRight();
+
+      await _localStorage.overwrite<UserModel>(
+          LocalStoragePath.user, userModel);
+
+      _currentUser = userModel;
+
+      return Right(userModel);
+    } on GrpcError catch (e) {
+      return Left(handleGRPCFailure(e));
+    } on ServerException {
+      return const Left(ServerFailure('Server Failure'));
+    } on SocketException {
+      return const Left(ConnectionFailure('Failed to connect to the network'));
+    }
+  }
+
+  Future<Either<Failure, UserModel>> _receiveLoginUser(
+      ResponseStream<LoginUserResponse> responseStream) async {
+    try {
       final LoginUserResponse response = LoginUserResponse();
 
-      await for (final LoginUserResponse res in stream) {
+      await for (final LoginUserResponse res in responseStream) {
         switch (res.whichData()) {
           case LoginUserResponse_Data.content:
             response.content = res.content;
@@ -73,18 +100,32 @@ class AuthServiceImpl {
                 break;
               case UserResponse_Data.imageData:
                 final ImageData id = ud.imageData;
-                id.add(res.userData.imageData);
+                final Either<Failure, void> r = id.add(res.userData.imageData);
+                if (r.isLeft()) {
+                  return Left(r.asLeft());
+                }
                 ud.imageData = id;
                 break;
               case UserResponse_Data.notSet:
-                break;
+                return const Left(
+                    ServerFailure('Invalid response from server'));
             }
             response.userData = ud;
             break;
           case LoginUserResponse_Data.notSet:
-            break;
+            return const Left(ServerFailure('Invalid response from server'));
         }
       }
+
+      final TokenModel accessToken = TokenModel(
+        token: response.content.accessToken,
+        expiresAt: response.content.accessTokenExpiresAt.toDateTime(),
+      );
+
+      final TokenModel refreshToken = TokenModel(
+        token: response.content.refreshToken,
+        expiresAt: response.content.refreshTokenExpiresAt.toDateTime(),
+      );
 
       final UserModel userModel = UserModel(
         createdAt: response.userData.content.createdAt.toDateTime(),
@@ -105,19 +146,16 @@ class AuthServiceImpl {
         updatedAt: response.userData.content.hasUpdatedAt()
             ? response.userData.content.updatedAt.toDateTime()
             : null,
-        accessToken: response.content.accessToken,
-        refreshToken: response.content.refreshToken,
-        profilePicture: response.userData.imageData.chunk,
+        accessToken: accessToken,
+        refreshToken: refreshToken,
+        profilePicture: response.userData.imageData.hasChunk()
+            ? response.userData.imageData.chunk
+            : null,
       );
 
-      await _localStorage.overwrite<UserModel>(
-          LocalStoragePath.user, userModel);
-
-      _currentUser = userModel;
-
       return Right(userModel);
-    } on FirebaseAuthException catch (e) {
-      return Left(_handleFirebaseAuthFailure(e));
+    } on GrpcError catch (e) {
+      return Left(handleGRPCFailure(e));
     } on ServerException {
       return const Left(ServerFailure('Server Failure'));
     } on SocketException {
@@ -159,37 +197,14 @@ class AuthServiceImpl {
         ),
       ));
 
-      final LoginUserResponse response = LoginUserResponse();
+      final Either<Failure, UserModel> res =
+          await _receiveLoginUser(responseStream);
 
-      await for (final LoginUserResponse res in responseStream) {
-        switch (res.whichData()) {
-          case LoginUserResponse_Data.content:
-            response.content = res.content;
-            break;
-          case LoginUserResponse_Data.userData:
-            final UserResponse ud = response.userData;
-            switch (res.userData.whichData()) {
-              case UserResponse_Data.content:
-                ud.content = res.userData.content;
-                break;
-              case UserResponse_Data.imageData:
-                final ImageData id = ud.imageData;
-                final Either<Failure, void> r = id.add(res.userData.imageData);
-                if (r.isLeft()) {
-                  return Left(r.asLeft());
-                }
-                ud.imageData = id;
-                break;
-              case UserResponse_Data.notSet:
-                return const Left(
-                    ServerFailure('Invalid response from server'));
-            }
-            response.userData = ud;
-            break;
-          case LoginUserResponse_Data.notSet:
-            return const Left(ServerFailure('Invalid response from server'));
-        }
+      if (res.isLeft()) {
+        return Left(res.asLeft());
       }
+
+      final UserModel userModel = res.asRight();
 
       List<int>? profilePicture;
 
@@ -198,27 +213,18 @@ class AuthServiceImpl {
         profilePicture = await _getImage(url);
       }
 
-      final UserModel userModel = UserModel(
-        createdAt: response.userData.content.createdAt.toDateTime(),
-        id: response.id.toInt(),
-        name: response.userData.content.name,
-        email: response.userData.content.hasEmail()
-            ? response.userData.content.email
-            : null,
-        emailVerified: response.userData.content.hasEmailVerified()
-            ? response.userData.content.emailVerified
-            : false,
-        phoneNum: response.userData.content.hasPhoneNumber()
-            ? response.userData.content.phoneNumber
-            : null,
-        phoneNumVerified: response.userData.content.hasPhoneNumberVerified()
-            ? response.userData.content.phoneNumberVerified
-            : false,
-        updatedAt: response.userData.content.hasUpdatedAt()
-            ? response.userData.content.updatedAt.toDateTime()
-            : null,
-        accessToken: response.content.accessToken,
-        refreshToken: response.content.refreshToken,
+      final UserModel result = UserModel(
+        createdAt: userModel.createdAt,
+        id: userModel.id,
+        name: userModel.name,
+        accessToken: userModel.accessToken,
+        refreshToken: userModel.refreshToken,
+        email: userModel.email,
+        emailVerified: userModel.emailVerified,
+        password: userModel.password,
+        phoneNum: userModel.phoneNum,
+        phoneNumVerified: userModel.phoneNumVerified,
+        updatedAt: userModel.updatedAt,
         profilePicture: profilePicture,
       );
 
@@ -227,9 +233,9 @@ class AuthServiceImpl {
 
       _currentUser = userModel;
 
-      return Right(userModel);
-    } on FirebaseAuthException catch (e) {
-      return Left(_handleFirebaseAuthFailure(e));
+      return Right(result);
+    } on GrpcError catch (e) {
+      return Left(handleGRPCFailure(e));
     } on ServerException {
       return const Left(ServerFailure('Server Failure'));
     } on SocketException {
@@ -257,7 +263,7 @@ class AuthServiceImpl {
   }
 
   Stream<CreateUserRequest> _createUser(String email, String password,
-      String name, List<Uint8>? profilePicture) async* {
+      String name, Uint8List? profilePicture) async* {
     yield CreateUserRequest(
       content: CreateUserContent(
         email: email,
@@ -276,10 +282,10 @@ class AuthServiceImpl {
       ),
     );
 
-    final Uint8List bytes = profilePicture as Uint8List;
-    final ReadBuffer readBuffer = ReadBuffer(ByteData.view(bytes.buffer));
-
     if (profilePicture != null) {
+      final ReadBuffer readBuffer =
+          ReadBuffer(ByteData.view(profilePicture.buffer));
+
       while (readBuffer.hasRemaining) {
         final Uint8List byte = readBuffer.getUint8List(AppFile.maxByte);
         yield CreateUserRequest(
@@ -296,7 +302,7 @@ class AuthServiceImpl {
     required String email,
     required String password,
     required String name,
-    List<Uint8>? profilePicture,
+    Uint8List? profilePicture,
   }) async {
     try {
       final ResponseStream<UserResponse> stream = _service
@@ -326,6 +332,8 @@ class AuthServiceImpl {
         email: email,
         password: password,
       );
+    } on GrpcError catch (e) {
+      return Left(handleGRPCFailure(e));
     } on ServerException {
       return const Left(ServerFailure('Server Failure'));
     } on SocketException {
@@ -343,57 +351,5 @@ class AuthServiceImpl {
       await _localStorage.delete(LocalStoragePath.password, 0);
       await _localStorage.delete(LocalStoragePath.googleToken, 0);
     }
-  }
-
-  Failure _handleFirebaseAuthFailure(FirebaseAuthException e) {
-    AuthFailureException authFailureException =
-        AuthFailureException.invalidCredential;
-
-    switch (e.code) {
-      case 'provider-already-linked':
-        authFailureException = AuthFailureException.providerAlreadyLinked;
-        break;
-      case 'credential-already-in-use':
-        authFailureException = AuthFailureException.credentialAlreadyInUse;
-        break;
-      case 'email-already-in-use':
-        authFailureException = AuthFailureException.emailAlreadyInUse;
-        break;
-
-      case 'account-exists-with-different-credential':
-        authFailureException =
-            AuthFailureException.accountExistsWithDifferentCredential;
-        break;
-      case 'invalid-credential':
-        authFailureException = AuthFailureException.invalidCredential;
-        break;
-      case 'operation-not-allowed':
-        authFailureException = AuthFailureException.operationNotAllowed;
-        break;
-      case 'user-disabled':
-        authFailureException = AuthFailureException.userDisabled;
-        break;
-      case 'user-not-found':
-        authFailureException = AuthFailureException.userNotFound;
-        break;
-      case 'wrong-password':
-        authFailureException = AuthFailureException.wrongPassword;
-        break;
-      case 'weak-password':
-        authFailureException = AuthFailureException.weakPassword;
-        break;
-      case 'invalid-verification-code':
-        authFailureException = AuthFailureException.invalidVerificationCode;
-        break;
-      case 'invalid-verification-id':
-        authFailureException = AuthFailureException.invalidVerificationId;
-        break;
-      default:
-    }
-
-    return AuthFailure(
-      e.message ?? 'Authentication Failure',
-      authFailureException: authFailureException,
-    );
   }
 }

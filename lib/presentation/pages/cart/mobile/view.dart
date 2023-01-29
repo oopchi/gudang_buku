@@ -29,7 +29,7 @@ class _CartMobilePageState extends State<CartMobilePage> {
             context,
             listen: false,
           ),
-          authServiceFS: Provider.of<AuthServiceImpl>(
+          authService: Provider.of<AuthServiceImpl>(
             context,
             listen: false,
           ),

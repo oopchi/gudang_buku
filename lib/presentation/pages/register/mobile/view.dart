@@ -33,7 +33,7 @@ class _RegisterMobilePageState extends State<RegisterMobilePage> {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (BuildContext context) => RegisterMobileCubit(
-        authServiceFS: Provider.of<AuthServiceImpl>(
+        authService: Provider.of<AuthServiceImpl>(
           context,
           listen: false,
         ),

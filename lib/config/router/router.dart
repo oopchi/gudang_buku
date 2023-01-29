@@ -79,7 +79,7 @@ class AppRouter {
           return _isLoggedIn ? AppRoutes.home.fullPath : null;
         }
 // else if (state.location == 'add-product') {
-//         return await _authServiceFS.isAdmin() ? null : AppRoutes.home.name;
+//         return await _authService.isAdmin() ? null : AppRoutes.home.name;
 //       }
         return null;
       },

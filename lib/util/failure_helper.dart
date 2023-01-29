@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:grpc/grpc.dart';
 
 abstract class Failure extends Equatable {
   final String message;
@@ -42,4 +43,51 @@ class AuthFailure extends Failure {
   });
 
   final AuthFailureException authFailureException;
+}
+
+Failure handleGRPCFailure(GrpcError e) {
+  AuthFailureException authFailureException =
+      AuthFailureException.invalidCredential;
+
+  switch (e.code) {
+    case StatusCode.ok:
+      break;
+    case StatusCode.cancelled:
+      break;
+    case StatusCode.unknown:
+      break;
+    case StatusCode.invalidArgument:
+      break;
+    case StatusCode.deadlineExceeded:
+      break;
+    case StatusCode.notFound:
+      break;
+    case StatusCode.alreadyExists:
+      break;
+    case StatusCode.permissionDenied:
+      break;
+    case StatusCode.resourceExhausted:
+      break;
+    case StatusCode.failedPrecondition:
+      break;
+    case StatusCode.aborted:
+      break;
+    case StatusCode.outOfRange:
+      break;
+    case StatusCode.unimplemented:
+      break;
+    case StatusCode.internal:
+      break;
+    case StatusCode.unavailable:
+      break;
+    case StatusCode.dataLoss:
+      break;
+    case StatusCode.unauthenticated:
+      break;
+  }
+
+  return AuthFailure(
+    e.message ?? 'Authentication Failure',
+    authFailureException: authFailureException,
+  );
 }

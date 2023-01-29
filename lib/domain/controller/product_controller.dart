@@ -26,13 +26,13 @@ class ProductController {
     required MediaRepository mediaRepository,
     required AuthorBookRepository authorBookRepository,
     required AuthorRepository authorRepository,
-    required AuthServiceImpl authServiceFS,
+    required AuthServiceImpl authService,
   })  : _bookRepository = bookRepository,
         _favoriteRepository = favoriteRepository,
         _authorBookRepository = authorBookRepository,
         _mediaRepository = mediaRepository,
         _reviewRepository = reviewRepository,
-        _authServiceFS = authServiceFS,
+        _authService = authService,
         _authorRepository = authorRepository;
 
   final AuthorRepository _authorRepository;
@@ -42,7 +42,7 @@ class ProductController {
   final MediaRepository _mediaRepository;
   final AuthorBookRepository _authorBookRepository;
 
-  final AuthServiceImpl _authServiceFS;
+  final AuthServiceImpl _authService;
 
   Future<Either<Failure, List<ProductModel>>> loadAllProductWithIds(
     List<String> ids,
@@ -65,7 +65,7 @@ class ProductController {
 
     final Either<Failure, List<FavoriteResponse>> favoriteRes =
         await _favoriteRepository.fetchAllFavoritesForUserId(
-      userId: _authServiceFS.getUser().uid,
+      userId: _authService.getUser().uid,
     );
 
     if (favoriteRes.isLeft()) {

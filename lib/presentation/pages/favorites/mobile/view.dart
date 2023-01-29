@@ -46,7 +46,7 @@ class _FavoritesMobilePageState extends State<FavoritesMobilePage> {
           isMounted: () => mounted,
           favoritesViewController: FavoritesViewController(
             genreRepository: GenreRepositoryFS(),
-            authServiceFS: Provider.of<AuthServiceImpl>(context, listen: false),
+            authService: Provider.of<AuthServiceImpl>(context, listen: false),
             authorBookRepository: AuthorBookRepositoryFS(),
             authorRepository: AuthorRepositoryFS(),
             bookRepository: BookRepositoryFS(),

@@ -46,7 +46,7 @@ class _ShopMobilePageState extends State<ShopMobilePage> {
           isMounted: () => mounted,
           shopViewController: ShopViewController(
             genreRepository: GenreRepositoryFS(),
-            authServiceFS: Provider.of<AuthServiceImpl>(context, listen: false),
+            authService: Provider.of<AuthServiceImpl>(context, listen: false),
             authorBookRepository: AuthorBookRepositoryFS(),
             authorRepository: AuthorRepositoryFS(),
             bookRepository: BookRepositoryFS(),

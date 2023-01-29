@@ -14,15 +14,15 @@ class DiscountController {
   const DiscountController({
     required UserDiscountRepository userDiscountRepository,
     required DiscountRepository discountRepository,
-    required AuthServiceImpl authServiceFS,
+    required AuthServiceImpl authService,
   })  : _userDiscountRepository = userDiscountRepository,
-        _authServiceFS = authServiceFS,
+        _authService = authService,
         _discountRepository = discountRepository;
 
   final UserDiscountRepository _userDiscountRepository;
   final DiscountRepository _discountRepository;
 
-  final AuthServiceImpl _authServiceFS;
+  final AuthServiceImpl _authService;
 
   Future<Either<Failure, DiscountModel>> getDiscountWithId(String id) async {
     final Either<Failure, DiscountResponse> discountRes =
@@ -75,7 +75,7 @@ class DiscountController {
       getAllDiscountsForCurrentUser() async {
     final Either<Failure, List<UserDiscountResponse>> userDiscountsRes =
         await _userDiscountRepository.fetchAllUserDiscounts(
-      uid: _authServiceFS.getUser().uid,
+      uid: _authService.getUser().uid,
     );
 
     if (userDiscountsRes.isLeft()) {

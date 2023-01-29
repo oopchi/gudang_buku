@@ -1,20 +1,20 @@
+import 'package:gudang_buku/domain/model/user_model.dart';
 import 'package:gudang_buku/service/auth_service_impl.dart';
 import 'package:gudang_buku/util/dartz_helper.dart';
 import 'package:gudang_buku/util/failure_helper.dart';
 import 'package:gudang_buku/util/form_helper.dart';
 import 'package:dartz/dartz.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'state.dart';
 
 class LoginMobileCubit extends Cubit<LoginMobileState> {
   LoginMobileCubit({
-    required AuthServiceImpl authServiceFS,
-  })  : _authServiceFS = authServiceFS,
+    required AuthServiceImpl authService,
+  })  : _authService = authService,
         super(const LoginMobileFormState());
 
-  final AuthServiceImpl _authServiceFS;
+  final AuthServiceImpl _authService;
 
   Future<void> load() async {}
 
@@ -26,8 +26,8 @@ class LoginMobileCubit extends Cubit<LoginMobileState> {
 
     emit(const LoginMobileLoading());
 
-    final Either<Failure, UserCredential> userRes =
-        await _authServiceFS.loginWithEmailAndPassword(
+    final Either<Failure, UserModel> userRes =
+        await _authService.loginWithEmailAndPassword(
       email: email,
       password: password,
     );
@@ -50,8 +50,8 @@ class LoginMobileCubit extends Cubit<LoginMobileState> {
   Future<void> loginWithGoogle() async {
     emit(const LoginMobileLoading());
 
-    final Either<Failure, UserCredential> userRes =
-        await _authServiceFS.loginWithGoogle();
+    final Either<Failure, UserModel> userRes =
+        await _authService.loginWithGoogle();
 
     if (userRes.isLeft()) {
       emit(LoginMobileFailure(

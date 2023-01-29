@@ -27,7 +27,7 @@ class ProductViewController {
     required GenreRepository genreRepository,
     required BookRepository bookRepository,
     required FavoriteRepository favoriteRepository,
-    required AuthServiceImpl authServiceFS,
+    required AuthServiceImpl authService,
     required MediaRepository mediaRepository,
     required AuthorBookRepository authorBookRepository,
     required ReviewRepository reviewRepository,
@@ -37,7 +37,7 @@ class ProductViewController {
     required TransactionRepository transactionRepository,
   })  : _mediaRepository = mediaRepository,
         _favoriteRepository = favoriteRepository,
-        _authServiceFS = authServiceFS,
+        _authService = authService,
         _authorBookRepository = authorBookRepository,
         _transactionDetailRepository = transactionDetailRepository,
         _transactionRepository = transactionRepository,
@@ -54,13 +54,13 @@ class ProductViewController {
   final TransactionDetailRepository _transactionDetailRepository;
   final TransactionRepository _transactionRepository;
 
-  final AuthServiceImpl _authServiceFS;
+  final AuthServiceImpl _authService;
 
   Future<Either<Failure, String>> addToFavorite({
     required String bookId,
   }) async {
     return _favoriteRepository.addFavorite(
-      userId: _authServiceFS.getUser().uid,
+      userId: _authService.getUser().uid,
       bookId: bookId,
     );
   }
@@ -69,7 +69,7 @@ class ProductViewController {
     required String bookId,
   }) async {
     return _favoriteRepository.removeFavorite(
-      userId: _authServiceFS.getUser().uid,
+      userId: _authService.getUser().uid,
       bookId: bookId,
     );
   }
@@ -79,7 +79,7 @@ class ProductViewController {
   }) async {
     final Either<Failure, String> cartIdRes =
         await _transactionRepository.getCartTransactionId(
-      uid: _authServiceFS.getUser().uid,
+      uid: _authService.getUser().uid,
     );
 
     if (cartIdRes.isLeft()) {
@@ -117,7 +117,7 @@ class ProductViewController {
 
     final Either<Failure, List<FavoriteResponse>> favoriteRes =
         await _favoriteRepository.fetchAllFavoritesForUserId(
-      userId: _authServiceFS.getUser().uid,
+      userId: _authService.getUser().uid,
     );
 
     if (favoriteRes.isLeft()) {

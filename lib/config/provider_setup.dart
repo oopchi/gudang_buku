@@ -65,7 +65,7 @@ final providers = <SingleChildWidget>[
   ),
   ProxyProvider<AuthServiceImpl, ProductController>(
     update: (context, value, previous) => ProductController(
-      authServiceFS: value,
+      authService: value,
       authorBookRepository: AuthorBookRepositoryFS(),
       authorRepository: AuthorRepositoryFS(),
       bookRepository: BookRepositoryFS(),
@@ -76,7 +76,7 @@ final providers = <SingleChildWidget>[
   ),
   ProxyProvider<AuthServiceImpl, DiscountController>(
     update: (context, value, previous) => DiscountController(
-      authServiceFS: value,
+      authService: value,
       discountRepository: DiscountRepositoryFS(),
       userDiscountRepository: UserDiscountRepositoryFS(),
     ),
