@@ -41,6 +41,7 @@ message BookContent {
     optional int64 numOfRating = 11;
     optional int64 numOfBought = 12;
     optional bool isRated = 13;
+    bool isFavorite = 15;
     repeated AuthorResponse authors = 14;
     repeated GenreResponse genres = 1;
 }

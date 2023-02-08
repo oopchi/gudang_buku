@@ -160,6 +160,7 @@ class DiscountServiceImpl implements DiscountService {
                     e.value.content.hasStock() ? e.value.content.stock : null,
                 weight:
                     e.value.content.hasWeight() ? e.value.content.weight : null,
+                isFavorite: e.value.content.isFavorite,
               );
             }).toList() ??
             [];

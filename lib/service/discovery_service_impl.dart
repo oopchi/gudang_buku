@@ -24,7 +24,8 @@ class DiscoveryServiceImpl implements DiscoveryService {
   final DiscoveryServiceClient _discoveryServiceClient;
 
   @override
-  Future<Either<Failure, List<DiscoveryModel>>> getAllDiscoveries() async {
+  Future<Either<Failure, List<DiscoveryModel>>> getAllDiscoveries(
+      ListDiscoveryRequest request) async {
     try {
       final Map<int, DiscoveryResponse> discoveryMap =
           <int, DiscoveryResponse>{};
@@ -39,7 +40,7 @@ class DiscoveryServiceImpl implements DiscoveryService {
           <int, PaginationResponse>{};
 
       final ResponseStream<DiscoveryResponse> response =
-          _discoveryServiceClient.listDiscoveries(ListDiscoveryRequest());
+          _discoveryServiceClient.listDiscoveries(request);
 
       await for (final DiscoveryResponse discovery in response) {
         final int key = discovery.id.toInt();
@@ -164,6 +165,7 @@ class DiscoveryServiceImpl implements DiscoveryService {
                     e.value.content.hasStock() ? e.value.content.stock : null,
                 weight:
                     e.value.content.hasWeight() ? e.value.content.weight : null,
+                isFavorite: e.value.content.isFavorite,
               );
             }).toList() ??
             [];
@@ -177,6 +179,10 @@ class DiscoveryServiceImpl implements DiscoveryService {
           books: books,
         );
       }).toList();
+
+      discoveryModels.sort(
+        (a, b) => a.displayOrder - b.displayOrder,
+      );
 
       return Right(discoveryModels);
     } on GrpcError catch (e) {

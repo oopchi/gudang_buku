@@ -144,6 +144,7 @@ class BookContent extends $pb.GeneratedMessage {
     ..aInt64(12, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'numOfBought', protoName: 'numOfBought')
     ..aOB(13, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'isRated', protoName: 'isRated')
     ..pc<$16.AuthorResponse>(14, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'authors', $pb.PbFieldType.PM, subBuilder: $16.AuthorResponse.create)
+    ..aOB(15, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'isFavorite', protoName: 'isFavorite')
     ..hasRequiredFields = false
   ;
 
@@ -163,6 +164,7 @@ class BookContent extends $pb.GeneratedMessage {
     $fixnum.Int64? numOfBought,
     $core.bool? isRated,
     $core.Iterable<$16.AuthorResponse>? authors,
+    $core.bool? isFavorite,
   }) {
     final _result = create();
     if (genres != null) {
@@ -206,6 +208,9 @@ class BookContent extends $pb.GeneratedMessage {
     }
     if (authors != null) {
       _result.authors.addAll(authors);
+    }
+    if (isFavorite != null) {
+      _result.isFavorite = isFavorite;
     }
     return _result;
   }
@@ -347,5 +352,14 @@ class BookContent extends $pb.GeneratedMessage {
 
   @$pb.TagNumber(14)
   $core.List<$16.AuthorResponse> get authors => $_getList(13);
+
+  @$pb.TagNumber(15)
+  $core.bool get isFavorite => $_getBF(14);
+  @$pb.TagNumber(15)
+  set isFavorite($core.bool v) { $_setBool(14, v); }
+  @$pb.TagNumber(15)
+  $core.bool hasIsFavorite() => $_has(14);
+  @$pb.TagNumber(15)
+  void clearIsFavorite() => clearField(15);
 }
 

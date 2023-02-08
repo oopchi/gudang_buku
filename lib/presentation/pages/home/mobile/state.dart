@@ -1,3 +1,5 @@
+import 'package:gudang_buku/domain/model/discount_model.dart';
+import 'package:gudang_buku/domain/model/discovery_model.dart';
 import 'package:gudang_buku/domain/model/event_model.dart';
 import 'package:gudang_buku/domain/model/promo_code_model.dart';
 import 'package:equatable/equatable.dart';
@@ -34,16 +36,16 @@ class HomeMobileFailure extends HomeMobileState {
 
 class HomeMobileLoaded extends HomeMobileState {
   const HomeMobileLoaded({
-    required this.promos,
-    required this.events,
+    required this.discounts,
+    required this.discoveries,
   });
 
-  final List<PromoModel> promos;
-  final List<EventModel> events;
+  final List<DiscountModel> discounts;
+  final List<DiscoveryModel> discoveries;
 
   @override
   List<Object?> get props => <Object?>[
-        promos,
-        events,
+        discounts,
+        discoveries,
       ];
 }

@@ -13,6 +13,7 @@ import 'package:gudang_buku/domain/model/book_model.dart';
 import 'package:gudang_buku/domain/model/genre_model.dart';
 import 'package:gudang_buku/domain/model/list_pagination_model.dart';
 import 'package:gudang_buku/domain/model/pagination_model.dart';
+import 'package:gudang_buku/domain/model/user_model.dart';
 import 'package:gudang_buku/infra/local/local_storage.dart';
 import 'package:gudang_buku/service/book_service.dart';
 import 'package:gudang_buku/util/dartz_helper.dart';
@@ -102,6 +103,7 @@ class BookServiceImpl implements BookService {
           files: files,
           stock: e.value.content.hasStock() ? e.value.content.stock : null,
           weight: e.value.content.hasWeight() ? e.value.content.weight : null,
+          isFavorite: e.value.content.isFavorite,
         );
       }).toList();
 
@@ -128,8 +130,30 @@ class BookServiceImpl implements BookService {
   @override
   Future<Either<Failure, ListPaginationModel<BookModel>>> addUserFavoriteBook(
       AddUserFavoriteBookRequest request) async {
+    final UserModel? user =
+        await _localStorage.readAt<UserModel>(LocalStoragePath.user, 0);
+
+    if (user == null) {
+      return const Left(AuthFailure(
+        'missing access token',
+        authFailureException: AuthFailureException.userNotFound,
+      ));
+    }
+
+    if (user.accessToken.expiresAt.isAfter(DateTime.now())) {
+      return const Left(AuthFailure(
+        'access token has expired',
+        authFailureException: AuthFailureException.invalidCredential,
+      ));
+    }
+
     final ResponseStream<BookResponse> response =
-        _bookServiceClient.addUserFavoriteBook(request);
+        _bookServiceClient.addUserFavoriteBook(request,
+            options: CallOptions(
+              metadata: <String, String>{
+                'auth': user.accessToken.token,
+              },
+            ));
 
     return _receiveBooks(response);
   }

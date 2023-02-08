@@ -1,8 +1,13 @@
-import 'package:gudang_buku/domain/controller/home_view_controller.dart';
+import 'package:gudang_buku/domain/dto/discount_request.pb.dart';
+import 'package:gudang_buku/domain/dto/discovery_request.pb.dart';
+import 'package:gudang_buku/domain/model/discount_model.dart';
+import 'package:gudang_buku/domain/model/discovery_model.dart';
 import 'package:gudang_buku/domain/model/event_model.dart';
 import 'package:gudang_buku/domain/model/favorite_button_model.dart';
 import 'package:gudang_buku/domain/model/product_model.dart';
 import 'package:gudang_buku/domain/model/promo_code_model.dart';
+import 'package:gudang_buku/service/discount_service.dart';
+import 'package:gudang_buku/service/discovery_service.dart';
 import 'package:gudang_buku/util/dartz_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -13,18 +18,21 @@ import 'state.dart';
 
 class HomeMobileCubit extends Cubit<HomeMobileState> {
   HomeMobileCubit({
-    required HomeViewController homeViewController,
+    required DiscoveryService discoveryService,
+    required DiscountService discountService,
     required this.isMounted,
-  })  : _homeViewController = homeViewController,
+  })  : _discountService = discountService,
+        _discoveryService = discoveryService,
         super(const HomeMobileLoading());
 
-  final HomeViewController _homeViewController;
+  final DiscountService _discountService;
+  final DiscoveryService _discoveryService;
 
   final bool Function() isMounted;
 
   Future<void> load() async {
-    final Either<Failure, List<PromoModel>> promoRes =
-        await _homeViewController.getAllPromoWithBooks();
+    final Either<Failure, List<DiscountModel>> promoRes =
+        await _discountService.getAllDiscounts(ListDiscountRequest());
 
     if (!isMounted()) return;
     promoRes.fold(
@@ -33,9 +41,9 @@ class HomeMobileCubit extends Cubit<HomeMobileState> {
           message: l.message,
         ),
       ),
-      (List<PromoModel> promos) async {
-        final Either<Failure, List<EventModel>> eventRes =
-            await _homeViewController.getAllEvents();
+      (List<DiscountModel> promos) async {
+        final Either<Failure, List<DiscoveryModel>> eventRes =
+            await _discoveryService.getAllDiscoveries(ListDiscoveryRequest());
 
         if (!isMounted()) return;
         eventRes.fold(
@@ -60,12 +68,12 @@ class HomeMobileCubit extends Cubit<HomeMobileState> {
 
   Future<void> toggleFavorite({
     required List<EventModel> events,
-    required List<PromoModel> promos,
+    required List<DiscountModel> promos,
     required ProductModel productModel,
   }) async {
     final List<EventModel> eventC = List.from(events);
-    final List<PromoModel> promoC = promos
-        .map((PromoModel e) => e.copyWith(
+    final List<DiscountModel> promoC = promos
+        .map((DiscountModel e) => e.copyWith(
               productCardModels: List.from(e.productCardModels),
             ))
         .toList();
@@ -89,11 +97,11 @@ class HomeMobileCubit extends Cubit<HomeMobileState> {
 
   Future<void> _removeFromFavorites({
     required List<EventModel> events,
-    required List<PromoModel> promos,
+    required List<DiscountModel> promos,
     required ProductModel productModel,
   }) async {
     final Either<Failure, void> removeFromFavRes =
-        await _homeViewController.removeFromFavorite(
+        await _discountService.removeFromFavorite(
       bookId: productModel.id,
     );
 
@@ -104,7 +112,8 @@ class HomeMobileCubit extends Cubit<HomeMobileState> {
     }
 
     final int index = promos.indexWhere(
-      (PromoModel element) => element.productCardModels.contains(productModel),
+      (DiscountModel element) =>
+          element.productCardModels.contains(productModel),
     );
 
     final int productIdx = promos[index].productCardModels.indexWhere(
@@ -132,11 +141,11 @@ class HomeMobileCubit extends Cubit<HomeMobileState> {
 
   Future<void> _addToFavorites({
     required List<EventModel> events,
-    required List<PromoModel> promos,
+    required List<DiscountModel> promos,
     required ProductModel productModel,
   }) async {
     final Either<Failure, String> addToFavRes =
-        await _homeViewController.addToFavorite(
+        await _discountService.addToFavorite(
       bookId: productModel.id,
     );
 
@@ -147,7 +156,8 @@ class HomeMobileCubit extends Cubit<HomeMobileState> {
     }
 
     final int index = promos.indexWhere(
-      (PromoModel element) => element.productCardModels.contains(productModel),
+      (DiscountModel element) =>
+          element.productCardModels.contains(productModel),
     );
 
     final int productIdx = promos[index].productCardModels.indexWhere(
